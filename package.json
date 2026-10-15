@@ -16,6 +16,7 @@
     "test": "node --test",
     "assemble:assets": "node scripts/assemble-assets.mjs",
     "verify:assets": "node scripts/verify-assets.mjs",
+    "release:prepare": "node scripts/prepare-release.mjs",
     "prepack": "npm run verify:assets"
   },
   "engines": {
