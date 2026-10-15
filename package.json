@@ -1,0 +1,32 @@
+{
+  "name": "@mriekki/lean",
+  "version": "0.1.0",
+  "description": "Public consumer distribution and updater for Lean engineering assets.",
+  "type": "module",
+  "bin": {
+    "lean": "bin/lean.mjs"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "assets/",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "assemble:assets": "node scripts/assemble-assets.mjs",
+    "verify:assets": "node scripts/verify-assets.mjs",
+    "prepack": "npm run verify:assets"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mriekki/lean-platform.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
