@@ -82,8 +82,10 @@ function smokeTarball(tarball, expectedVersion) {
     fs.writeFileSync(path.join(temp, 'package.json'), JSON.stringify({ private: true }) + '\n');
     runNpm(['install', '--ignore-scripts', '--no-audit', '--no-fund', tarball], { cwd: temp });
     const bin = path.join(temp, 'node_modules', '@mriekki', 'lean', 'bin', 'lean.mjs');
-    const version = run(process.execPath, [bin, 'version'], { cwd: temp, capture: true }).trim();
-    if (version !== `@mriekki/lean ${expectedVersion}`) throw new Error(`Tarball version smoke mismatch: ${version}`);
+    const directVersion = run(process.execPath, [bin, 'version'], { cwd: temp, capture: true }).trim();
+    if (directVersion !== `@mriekki/lean ${expectedVersion}`) throw new Error(`Tarball version smoke mismatch: ${directVersion}`);
+    const npmVersion = runNpm(['exec', '--', 'lean', 'version'], { cwd: temp, capture: true }).trim();
+    if (npmVersion !== `@mriekki/lean ${expectedVersion}`) throw new Error(`Tarball npm bin smoke mismatch: ${npmVersion}`);
     const consumer = path.join(temp, 'consumer');
     fs.mkdirSync(consumer);
     run(process.execPath, [bin, 'install', '--root', consumer, '--apply', '--consumer', 'release-smoke', '--consumer-baseline', `@mriekki/lean@${expectedVersion}`], { cwd: temp });

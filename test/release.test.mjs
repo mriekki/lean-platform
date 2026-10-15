@@ -1,6 +1,22 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { npmPackArgs, parseArgs, resolveNpmInvocation } from '../scripts/prepare-release.mjs';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+function runNpm(args, cwd) {
+  const invocation = resolveNpmInvocation(args);
+  return execFileSync(invocation.command, invocation.args, {
+    cwd,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+}
 
 test('release preparation requires both canonical source roots', () => {
   assert.deepEqual(parseArgs(['--core-root', 'core', '--deployment-root', 'deployment']), {
@@ -41,6 +57,36 @@ test('release npm pack disables lifecycle scripts after explicit asset verificat
     '--pack-destination',
     'dist/pack'
   ]);
+});
+
+test('packed CLI resolves through npm exec from a neutral directory', () => {
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-npm-bin-test-'));
+  try {
+    const packDir = path.join(temp, 'pack');
+    fs.mkdirSync(packDir);
+    const packed = JSON.parse(runNpm(npmPackArgs(packDir), ROOT));
+    assert.equal(packed.length, 1);
+    const tarball = path.join(packDir, packed[0].filename);
+
+    const consumer = path.join(temp, 'consumer');
+    fs.mkdirSync(consumer);
+    fs.writeFileSync(path.join(consumer, 'package.json'), JSON.stringify({ private: true }) + '\n');
+    runNpm(['install', '--ignore-scripts', '--no-audit', '--no-fund', tarball], consumer);
+
+    const actual = runNpm(['exec', '--', 'lean', 'version'], consumer).trim();
+    const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+    assert.equal(actual, `${pkg.name} ${pkg.version}`);
+  } finally {
+    fs.rmSync(temp, { recursive: true, force: true });
+  }
+});
+
+test('trusted staging workflow pins the npm CLI and remains stage-only', () => {
+  const workflow = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'npm-stage.yml'), 'utf8');
+  assert.match(workflow, /id-token:\s*write/);
+  assert.match(workflow, /npm install --global npm@11\.21\.0/);
+  assert.match(workflow, /npm stage publish/);
+  assert.doesNotMatch(workflow, /^\s*run:\s*npm publish(?:\s|$)/m);
 });
 
 test('release preparation uses npm directly outside Windows', () => {

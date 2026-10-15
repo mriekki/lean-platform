@@ -15,9 +15,11 @@ A release candidate must satisfy all of these before it can be staged:
 - all package tests pass;
 - generated assets verify against the assembly ledger;
 - two independent `npm pack` runs produce the same SHA-256;
-- a clean temporary install of the packed tarball can run `lean version`, `lean install`, and `lean check` successfully.
+- a clean temporary install of the packed tarball can run `lean version` both through the direct Node entry point and through npm's generated executable shim, then run `lean install` and `lean check` successfully.
 
 `scripts/prepare-release.mjs` enforces these checks and writes only ignored release artifacts under `dist/release/` plus ignored generated package assets under `assets/generated/`.
+
+CI runs the package tests on both Linux and Windows so npm executable resolution is exercised on the workstation platform used for local release preparation.
 
 ## Prepare a release candidate
 
@@ -61,16 +63,27 @@ npm stage publish .\dist\release\mriekki-lean-0.1.0.tgz --access public --proven
 
 Staging is not the final publication decision. Inspect the staged package on npmjs.com or with `npm stage view` / `npm stage download`. The explicit release gate is approval of that exact staged version with 2FA.
 
-After explicit approval, verify the registry version and run the public package:
+After explicit approval, verify the registry version and run the public package from a neutral directory rather than from the Lean Platform source checkout:
 
 ```powershell
-npm view @mriekki/lean@0.1.0 version dist.integrity
-npx --yes @mriekki/lean@0.1.0 version
+npm view @mriekki/lean@0.1.0 version dist.integrity dist.shasum
+
+$smokeRoot = Join-Path $env:TEMP 'lean-public-npx-smoke'
+Remove-Item $smokeRoot -Recurse -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path $smokeRoot | Out-Null
+
+Push-Location $smokeRoot
+try {
+    npx --yes @mriekki/lean@0.1.0 version
+}
+finally {
+    Pop-Location
+}
 ```
 
 ## Trusted publishing after the bootstrap release
 
-After `@mriekki/lean` exists on npm, configure a GitHub Actions trusted publisher for:
+After `@mriekki/lean` exists on npm, the next real package release should use a GitHub Actions trusted publisher configured for:
 
 ```text
 GitHub owner: mriekki
@@ -78,6 +91,8 @@ Repository: lean-platform
 Workflow: npm-stage.yml
 Allowed action: npm stage publish
 ```
+
+Create the trust relationship only when a legitimate next package version is ready to stage. npm requires the first successful trusted publish to validate a new configuration within two days; otherwise the configuration expires and must be recreated. Do not create a throwaway package release solely to validate OIDC.
 
 The trusted publisher should be stage-only. A maintainer still reviews and approves the staged package with 2FA before it becomes public.
 
