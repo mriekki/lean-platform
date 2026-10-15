@@ -49,13 +49,19 @@ The umbrella package writes `LEAN_BASELINE.json` while preserving component-nati
 
 V0.1 intentionally starts with the greenfield POC consumer profile. Existing-repository Adoption Kit packaging can be added as another profile without changing the one-package developer experience.
 
-## Package assembly
+## Package assembly and release
 
-The public source repository intentionally does not commit generated private-source snapshots. Before packaging, run the deterministic assembler against exact local checkouts:
+The public source repository intentionally does not commit generated private-source snapshots. Prepare an auditable release candidate from clean exact canonical checkouts:
 
 ```powershell
-node scripts/assemble-assets.mjs --core-root D:\Projects\lean-agentic-core --deployment-root D:\Projects\lean-poc-deployment-kit
-npm pack
+Set-Location D:\Projects\lean-platform
+node .\scripts\prepare-release.mjs `
+  --core-root D:\Projects\lean-agentic-core `
+  --deployment-root D:\Projects\lean-poc-deployment-kit
 ```
 
-`prepack` refuses to package when generated assets are absent, stale, or do not match the pinned source provenance. Publication remains a separate explicit release gate.
+Release preparation verifies exact `origin/main`, runs the complete test suite, refuses dirty canonical source checkouts, assembles and verifies the pinned assets, compares two independent `npm pack` SHA-256 values, and smoke-tests the packed CLI from a clean temporary install. The resulting tarball and `RELEASE_MANIFEST.json` are written under `dist/release/`.
+
+The first npm version is staged manually and requires explicit 2FA approval before it becomes public. After the bootstrap version exists, `.github/workflows/npm-stage.yml` can use npm Trusted Publishing (OIDC) to stage future versions without a long-lived npm publish token; human 2FA approval remains the final publication gate.
+
+See `docs/RELEASE_PROCESS.md` for the full release contract.

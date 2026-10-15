@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { execFileSync } from 'node:child_process';
-import { componentEntries, resolveUnder, sha256File } from '../src/engine.mjs';
+import { resolveUnder, sha256File } from '../src/engine.mjs';
 import { loadPackageData, readJson } from '../src/package-data.mjs';
 
 function gitHead(root) {
@@ -10,6 +10,14 @@ function gitHead(root) {
     return execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
   } catch (error) {
     throw new Error(`Unable to resolve Git HEAD for ${root}: ${error.message}`);
+  }
+}
+
+function gitTrackedStatus(root) {
+  try {
+    return execFileSync('git', ['-C', root, 'status', '--porcelain', '--untracked-files=no'], { encoding: 'utf8' }).trim();
+  } catch (error) {
+    throw new Error(`Unable to inspect Git status for ${root}: ${error.message}`);
   }
 }
 
@@ -45,6 +53,8 @@ export function assembleAssets(packageData, sourceRoots, outputRoot = path.join(
       if (!sourceRoots[componentId] || !fs.existsSync(sourceRoot)) throw new Error(`Missing source checkout for component ${componentId}`);
       const actualCommit = gitHead(sourceRoot);
       if (actualCommit !== component.commit) throw new Error(`${componentId} checkout commit mismatch: expected ${component.commit}, got ${actualCommit}`);
+      const trackedStatus = gitTrackedStatus(sourceRoot);
+      if (trackedStatus) throw new Error(`${componentId} checkout has tracked working-tree changes; release assembly requires a clean exact checkout`);
       if (componentId === 'core') {
         const compatibility = readJson(path.join(sourceRoot, 'COMPATIBILITY.json'));
         if (compatibility.leanCoreVersion !== component.version) throw new Error(`Core version mismatch: expected ${component.version}, got ${compatibility.leanCoreVersion}`);

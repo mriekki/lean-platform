@@ -17,22 +17,14 @@ function gitRepo(root) {
   return execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 }
 
-test('assembly verifies exact commits/descriptors and creates a self-contained payload', () => {
-  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-assembly-'));
+function fixturePackage(temp, coreDescriptor, deploymentDescriptor, coreVersion = '9.9.9') {
   const packageRoot = path.join(temp, 'package');
   const coreRoot = path.join(temp, 'core');
   const deploymentRoot = path.join(temp, 'deployment');
-  fs.mkdirSync(path.join(packageRoot, 'assets/core'), { recursive: true });
-  fs.mkdirSync(path.join(packageRoot, 'assets/deployment'), { recursive: true });
-  fs.mkdirSync(path.join(coreRoot, 'distributions'), { recursive: true });
-  fs.mkdirSync(path.join(coreRoot, 'core'), { recursive: true });
-  fs.mkdirSync(path.join(deploymentRoot, 'distributions'), { recursive: true });
-  fs.mkdirSync(path.join(deploymentRoot, 'src'), { recursive: true });
-  const coreDescriptor = { name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/a.txt' }] };
-  const deploymentDescriptor = { name: 'greenfield-poc', schemaVersion: 1, mappings: [{ source: 'src/b.txt', destination: 'tools/b.txt' }] };
+  for (const dir of [path.join(packageRoot, 'assets/core'), path.join(packageRoot, 'assets/deployment'), path.join(coreRoot, 'distributions'), path.join(coreRoot, 'core'), path.join(deploymentRoot, 'distributions'), path.join(deploymentRoot, 'src')]) fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(coreRoot, 'distributions/greenfield-workspace.json'), JSON.stringify(coreDescriptor));
   fs.writeFileSync(path.join(coreRoot, 'core/a.txt'), 'core\n');
-  fs.writeFileSync(path.join(coreRoot, 'COMPATIBILITY.json'), JSON.stringify({ leanCoreVersion: '9.9.9' }));
+  fs.writeFileSync(path.join(coreRoot, 'COMPATIBILITY.json'), JSON.stringify({ leanCoreVersion: coreVersion }));
   fs.writeFileSync(path.join(deploymentRoot, 'distributions/greenfield-poc.json'), JSON.stringify(deploymentDescriptor));
   fs.writeFileSync(path.join(deploymentRoot, 'src/b.txt'), 'deployment\n');
   const coreCommit = gitRepo(coreRoot);
@@ -43,11 +35,18 @@ test('assembly verifies exact commits/descriptors and creates a self-contained p
   fs.writeFileSync(path.join(packageRoot, 'assets/components.json'), JSON.stringify({
     package: '@mriekki/lean', version: '0.1.0', defaultProfile: 'greenfield-poc', profiles: { 'greenfield-poc': { components: ['core', 'deployment'] } },
     components: {
-      core: { repository: 'core', commit: coreCommit, version: '9.9.9', distribution: 'greenfield-workspace', descriptor: 'assets/core/distribution.json', canonicalDescriptor: 'distributions/greenfield-workspace.json', sourceRoot: 'assets/generated/core' },
+      core: { repository: 'core', commit: coreCommit, version: coreVersion, distribution: 'greenfield-workspace', descriptor: 'assets/core/distribution.json', canonicalDescriptor: 'distributions/greenfield-workspace.json', sourceRoot: 'assets/generated/core' },
       deployment: { repository: 'deployment', commit: deploymentCommit, distribution: 'greenfield-poc', descriptor: 'assets/deployment/distribution.json', canonicalDescriptor: 'distributions/greenfield-poc.json', sourceRoot: 'assets/generated/deployment' }
     }
   }));
-  const packageData = loadPackageData(packageRoot);
+  return { packageRoot, coreRoot, deploymentRoot, packageData: loadPackageData(packageRoot) };
+}
+
+test('assembly verifies exact commits/descriptors and creates a self-contained payload', () => {
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-assembly-'));
+  const coreDescriptor = { name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/a.txt' }] };
+  const deploymentDescriptor = { name: 'greenfield-poc', schemaVersion: 1, mappings: [{ source: 'src/b.txt', destination: 'tools/b.txt' }] };
+  const { packageRoot, coreRoot, deploymentRoot, packageData } = fixturePackage(temp, coreDescriptor, deploymentDescriptor);
   const result = assembleAssets(packageData, { core: coreRoot, deployment: deploymentRoot });
   assert.equal(result.components.core.files.length, 1);
   assert.equal(result.components.deployment.files.length, 1);
@@ -57,23 +56,20 @@ test('assembly verifies exact commits/descriptors and creates a self-contained p
 
 test('assembly rejects a source descriptor that differs from the package contract', () => {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-assembly-reject-'));
-  const packageRoot = path.join(temp, 'package');
-  const coreRoot = path.join(temp, 'core');
-  const deploymentRoot = path.join(temp, 'deployment');
-  for (const dir of [path.join(packageRoot, 'assets/core'), path.join(packageRoot, 'assets/deployment'), path.join(coreRoot, 'distributions'), path.join(coreRoot, 'core'), path.join(deploymentRoot, 'distributions'), path.join(deploymentRoot, 'src')]) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(coreRoot, 'distributions/greenfield-workspace.json'), JSON.stringify({ name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/DIFFERENT.txt' }] }));
-  fs.writeFileSync(path.join(coreRoot, 'core/a.txt'), 'core\n');
-  fs.writeFileSync(path.join(coreRoot, 'COMPATIBILITY.json'), JSON.stringify({ leanCoreVersion: '1.0.0' }));
-  fs.writeFileSync(path.join(deploymentRoot, 'distributions/greenfield-poc.json'), JSON.stringify({ name: 'greenfield-poc', schemaVersion: 1, mappings: [{ source: 'src/b.txt', destination: 'tools/b.txt' }] }));
-  fs.writeFileSync(path.join(deploymentRoot, 'src/b.txt'), 'deployment\n');
-  const coreCommit = gitRepo(coreRoot);
-  const deploymentCommit = gitRepo(deploymentRoot);
+  const canonicalCore = { name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/DIFFERENT.txt' }] };
   const packagedCore = { name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/a.txt' }] };
-  const packagedDeployment = { name: 'greenfield-poc', schemaVersion: 1, mappings: [{ source: 'src/b.txt', destination: 'tools/b.txt' }] };
-  fs.writeFileSync(path.join(packageRoot, 'package.json'), JSON.stringify({ name: '@mriekki/lean', version: '0.1.0' }));
+  const deploymentDescriptor = { name: 'greenfield-poc', schemaVersion: 1, mappings: [{ source: 'src/b.txt', destination: 'tools/b.txt' }] };
+  const { packageRoot, coreRoot, deploymentRoot } = fixturePackage(temp, canonicalCore, deploymentDescriptor, '1.0.0');
   fs.writeFileSync(path.join(packageRoot, 'assets/core/distribution.json'), JSON.stringify(packagedCore));
-  fs.writeFileSync(path.join(packageRoot, 'assets/deployment/distribution.json'), JSON.stringify(packagedDeployment));
-  fs.writeFileSync(path.join(packageRoot, 'assets/components.json'), JSON.stringify({ package: '@mriekki/lean', version: '0.1.0', profiles: { 'greenfield-poc': { components: ['core', 'deployment'] } }, components: { core: { repository: 'core', commit: coreCommit, version: '1.0.0', distribution: 'greenfield-workspace', descriptor: 'assets/core/distribution.json', canonicalDescriptor: 'distributions/greenfield-workspace.json', sourceRoot: 'assets/generated/core' }, deployment: { repository: 'deployment', commit: deploymentCommit, distribution: 'greenfield-poc', descriptor: 'assets/deployment/distribution.json', canonicalDescriptor: 'distributions/greenfield-poc.json', sourceRoot: 'assets/generated/deployment' } } }));
   const packageData = loadPackageData(packageRoot);
   assert.throws(() => assembleAssets(packageData, { core: coreRoot, deployment: deploymentRoot }), /descriptor does not match/);
+});
+
+test('assembly rejects tracked changes in an exact canonical checkout', () => {
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-assembly-dirty-'));
+  const coreDescriptor = { name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/a.txt' }] };
+  const deploymentDescriptor = { name: 'greenfield-poc', schemaVersion: 1, mappings: [{ source: 'src/b.txt', destination: 'tools/b.txt' }] };
+  const { coreRoot, deploymentRoot, packageData } = fixturePackage(temp, coreDescriptor, deploymentDescriptor);
+  fs.writeFileSync(path.join(coreRoot, 'core/a.txt'), 'locally modified\n');
+  assert.throws(() => assembleAssets(packageData, { core: coreRoot, deployment: deploymentRoot }), /tracked working-tree changes/);
 });
