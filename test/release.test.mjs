@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseArgs, resolveNpmInvocation } from '../scripts/prepare-release.mjs';
+import { npmPackArgs, parseArgs, resolveNpmInvocation } from '../scripts/prepare-release.mjs';
 
 test('release preparation requires both canonical source roots', () => {
   assert.deepEqual(parseArgs(['--core-root', 'core', '--deployment-root', 'deployment']), {
@@ -30,6 +30,16 @@ test('release preparation runs npm through Node on Windows', () => {
     'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
     'pack',
     '--json'
+  ]);
+});
+
+test('release npm pack disables lifecycle scripts after explicit asset verification', () => {
+  assert.deepEqual(npmPackArgs('dist/pack'), [
+    'pack',
+    '--json',
+    '--ignore-scripts',
+    '--pack-destination',
+    'dist/pack'
   ]);
 });
 
