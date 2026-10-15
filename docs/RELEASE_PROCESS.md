@@ -83,7 +83,7 @@ finally {
 
 ## Trusted publishing after the bootstrap release
 
-After `@mriekki/lean` exists on npm, configure a GitHub Actions trusted publisher for:
+After `@mriekki/lean` exists on npm, the next real package release should use a GitHub Actions trusted publisher configured for:
 
 ```text
 GitHub owner: mriekki
@@ -91,6 +91,8 @@ Repository: lean-platform
 Workflow: npm-stage.yml
 Allowed action: npm stage publish
 ```
+
+Create the trust relationship only when a legitimate next package version is ready to stage. npm requires the first successful trusted publish to validate a new configuration within two days; otherwise the configuration expires and must be recreated. Do not create a throwaway package release solely to validate OIDC.
 
 The trusted publisher should be stage-only. A maintainer still reviews and approves the staged package with 2FA before it becomes public.
 
