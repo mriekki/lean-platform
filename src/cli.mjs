@@ -119,8 +119,12 @@ export async function run(argv = process.argv.slice(2), packageData = loadPackag
     console.log('\nPreview only. Re-run with --apply, or run interactively and approve the prompt.');
     return 0;
   }
-  const consumer = options.consumer ?? installed.consumer ?? inferConsumer(root);
-  const consumerBaseline = options.consumerBaseline ?? installed.consumerBaseline ?? `${packageData.pkg.name}@${packageData.pkg.version}`;
+  const baselineConsumers = [...new Set(plan.plans.map((item) => item.baseline.consumer).filter(Boolean))];
+  const baselineLabels = [...new Set(plan.plans.map((item) => item.baseline.consumerBaseline).filter(Boolean))];
+  if (baselineConsumers.length > 1) throw new Error(`Component baselines disagree on consumer identity: ${baselineConsumers.join(', ')}`);
+  if (baselineLabels.length > 1) throw new Error(`Component baselines disagree on consumer baseline: ${baselineLabels.join(', ')}`);
+  const consumer = options.consumer ?? installed.consumer ?? baselineConsumers[0] ?? inferConsumer(root);
+  const consumerBaseline = options.consumerBaseline ?? installed.consumerBaseline ?? baselineLabels[0] ?? `${packageData.pkg.name}@${packageData.pkg.version}`;
   applyProfile(packageData, plan, root, consumer, consumerBaseline);
   console.log(`\nLean ${command}: PASS (${packageData.pkg.name}@${packageData.pkg.version})`);
   return 0;
