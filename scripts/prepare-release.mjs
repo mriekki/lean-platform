@@ -8,8 +8,17 @@ import { assembleAssets } from './assemble-assets.mjs';
 import { verifyAssets } from './verify-assets.mjs';
 import { loadPackageData } from '../src/package-data.mjs';
 
-function npmCommand() {
-  return process.platform === 'win32' ? 'npm.cmd' : 'npm';
+export function resolveNpmInvocation(args, options = {}) {
+  const platform = options.platform ?? process.platform;
+  if (platform !== 'win32') return { command: 'npm', args };
+
+  const execPath = options.execPath ?? process.execPath;
+  const existsSync = options.existsSync ?? fs.existsSync;
+  const npmCli = path.win32.join(path.win32.dirname(execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+  if (!existsSync(npmCli)) {
+    throw new Error(`Unable to locate npm CLI next to the Node executable: ${npmCli}`);
+  }
+  return { command: execPath, args: [npmCli, ...args] };
 }
 
 function run(command, args, options = {}) {
@@ -19,6 +28,11 @@ function run(command, args, options = {}) {
     stdio: options.capture ? ['ignore', 'pipe', 'pipe'] : 'inherit',
     env: { ...process.env, ...(options.env ?? {}) }
   });
+}
+
+function runNpm(args, options = {}) {
+  const invocation = resolveNpmInvocation(args);
+  return run(invocation.command, invocation.args, options);
 }
 
 function git(root, args) {
@@ -50,7 +64,7 @@ function assertReleaseSource(packageData) {
 
 function pack(packageData, destination) {
   fs.mkdirSync(destination, { recursive: true });
-  const raw = run(npmCommand(), ['pack', '--json', '--pack-destination', destination], { cwd: packageData.root, capture: true });
+  const raw = runNpm(['pack', '--json', '--pack-destination', destination], { cwd: packageData.root, capture: true });
   const result = JSON.parse(raw);
   if (!Array.isArray(result) || result.length !== 1 || !result[0].filename) throw new Error('Unexpected npm pack output');
   return { metadata: result[0], file: path.join(destination, result[0].filename) };
@@ -60,7 +74,7 @@ function smokeTarball(tarball, expectedVersion) {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-release-smoke-'));
   try {
     fs.writeFileSync(path.join(temp, 'package.json'), JSON.stringify({ private: true }) + '\n');
-    run(npmCommand(), ['install', '--ignore-scripts', '--no-audit', '--no-fund', tarball], { cwd: temp });
+    runNpm(['install', '--ignore-scripts', '--no-audit', '--no-fund', tarball], { cwd: temp });
     const bin = path.join(temp, 'node_modules', '@mriekki', 'lean', 'bin', 'lean.mjs');
     const version = run(process.execPath, [bin, 'version'], { cwd: temp, capture: true }).trim();
     if (version !== `@mriekki/lean ${expectedVersion}`) throw new Error(`Tarball version smoke mismatch: ${version}`);
@@ -88,7 +102,7 @@ export function parseArgs(argv) {
 
 export function prepareRelease(args, packageData = loadPackageData()) {
   const sourceCommit = assertReleaseSource(packageData);
-  run(npmCommand(), ['test'], { cwd: packageData.root });
+  runNpm(['test'], { cwd: packageData.root });
   const assembly = assembleAssets(packageData, { core: args.core, deployment: args.deployment });
   const assetCount = verifyAssets(packageData);
 
