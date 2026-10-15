@@ -21,6 +21,12 @@ export function resolveNpmInvocation(args, options = {}) {
   return { command: execPath, args: [npmCli, ...args] };
 }
 
+export function npmPackArgs(destination) {
+  // Release preparation already verifies the assembled assets explicitly. Disable
+  // lifecycle scripts here so prepack stdout cannot corrupt npm pack --json output.
+  return ['pack', '--json', '--ignore-scripts', '--pack-destination', destination];
+}
+
 function run(command, args, options = {}) {
   return execFileSync(command, args, {
     cwd: options.cwd,
@@ -64,7 +70,7 @@ function assertReleaseSource(packageData) {
 
 function pack(packageData, destination) {
   fs.mkdirSync(destination, { recursive: true });
-  const raw = runNpm(['pack', '--json', '--pack-destination', destination], { cwd: packageData.root, capture: true });
+  const raw = runNpm(npmPackArgs(destination), { cwd: packageData.root, capture: true });
   const result = JSON.parse(raw);
   if (!Array.isArray(result) || result.length !== 1 || !result[0].filename) throw new Error('Unexpected npm pack output');
   return { metadata: result[0], file: path.join(destination, result[0].filename) };
