@@ -81,6 +81,14 @@ test('packed CLI resolves through npm exec from a neutral directory', () => {
   }
 });
 
+test('trusted staging workflow pins the npm CLI and remains stage-only', () => {
+  const workflow = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'npm-stage.yml'), 'utf8');
+  assert.match(workflow, /id-token:\s*write/);
+  assert.match(workflow, /npm install --global npm@11\.21\.0/);
+  assert.match(workflow, /npm stage publish/);
+  assert.doesNotMatch(workflow, /^\s*run:\s*npm publish(?:\s|$)/m);
+});
+
 test('release preparation uses npm directly outside Windows', () => {
   assert.deepEqual(resolveNpmInvocation(['test'], { platform: 'linux' }), {
     command: 'npm',
