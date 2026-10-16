@@ -27,7 +27,7 @@ Use repository facts rather than memory. Do not invent accepted commits, CI stat
 
 The skill is resume-aware. If preparation, PR creation, merge, publication, or verification already happened, continue from the furthest safe observed state rather than repeating it.
 
-For an intended npm release, verify local npm maintainer authentication and trusted-publisher state before the package PR merge gate. This avoids merging first and discovering afterward that npm access still needs setup.
+Routine releases do not require a local npm login. GitHub Actions uses OIDC for publication. Inspect or change npm trusted-publisher settings only during initial setup, migration, after a workflow/repository identity change, or when an OIDC publish attempt reports a trust error. A successful publish by the exact workflow is evidence that the relationship works; do not query `npm trust list` on every routine release.
 
 ## 2. Resolve accepted component commits
 
@@ -117,14 +117,7 @@ Do not publish npm from a release branch or PR.
 
 ## 5. Package PR merge gate
 
-Before presenting the merge gate for a release intended for publication, verify the local npm account and trusted publisher. If `npm whoami` returns `E401`, stop and ask the operator to run:
-
-```powershell
-npm login --auth-type=web --registry=https://registry.npmjs.org/
-npm whoami --registry=https://registry.npmjs.org/
-```
-
-If `npm trust list` returns `EOTP`, instruct the operator to open the browser URL printed in their local terminal, complete npm's authorization, and retry. Never request or copy the one-time URL or OTP. Do not merge while an intended release's publisher state remains unverified.
+If trusted-publisher setup or migration is needed, complete section 6 before presenting the merge gate. Do not make routine package PR merging depend on local npm authentication or a fresh `npm trust list` authorization.
 
 When PR CI is green and the PR diff still matches the verified release preparation, stop once at:
 
@@ -150,12 +143,13 @@ After merge, verify exact Lean Platform `main` and its configured post-merge CI 
 
 Normal publication uses `.github/workflows/npm-publish.yml` with npm Trusted Publishing (OIDC) and **direct `npm publish`**. No long-lived npm publish token is used.
 
-Read the current trust relationship with:
+When inspecting or changing trust settings, the npm website is the simplest route. The CLI may require a separate browser authorization even when `npm whoami` succeeds.
 
 ```powershell
-npm whoami --registry=https://registry.npmjs.org/
 npm trust list @mriekki/lean --json
 ```
+
+If the CLI returns `EOTP`, have the operator open the URL printed in their local terminal, finish npm's browser authorization, then rerun the command. If `npm whoami` returns `E401`, use `npm login --auth-type=web --registry=https://registry.npmjs.org/` before retrying CLI trust management. Never request or copy the one-time URL or OTP.
 
 The required relationship is:
 
@@ -198,7 +192,7 @@ Once all of these are true:
 - configured post-merge CI for that exact `main` commit is green;
 - package version and component pins are internally consistent;
 - target npm version does not already exist;
-- trusted publisher permits `npm publish` from `npm-publish.yml`;
+- trusted publisher is known to permit `npm publish` from `npm-publish.yml` (use a successful exact-workflow OIDC publish as evidence; inspect the relationship only for initial setup, migration, identity changes, or a trust error);
 
 present exactly one publication gate:
 
