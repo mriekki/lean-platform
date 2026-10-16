@@ -1,7 +1,6 @@
 ---
 name: release-lean
 description: Prepare, deliver, publish, and verify an exact @mriekki/lean package release from accepted Lean component commits.
-argument-hint: "[exact version | patch | minor | major]"
 user-invocable: true
 disable-model-invocation: true
 ---
@@ -43,17 +42,37 @@ Do not pin an unmerged branch, dirty checkout, guessed SHA, or commit whose conf
 
 A component that has not changed since the installed package stays on its existing exact pin.
 
-## 3. Choose the package version
+## 3. Select the package version automatically
 
-Accept an exact semantic version or a requested bump (`patch`, `minor`, `major`). When the user did not specify one, recommend a bump from the observed consumer-visible change.
+Default invocation is `/release-lean` with no version argument.
+
+Inspect the consumer-visible change between the currently packaged component pins and the accepted component commits selected in step 2. Choose the next package version automatically from that evidence. Do not require the user to choose `patch`, `minor`, or `major` when the classification is clear.
+
+Before modifying package metadata, report the decision concisely, for example:
+
+```text
+Version decision: 0.2.1 -> 0.3.0
+Classification: minor
+Reason: consumer-visible breaking managed-path/command rename while @mriekki/lean is pre-1.0
+```
 
 For pre-1.0 `@mriekki/lean` releases, use this default policy unless a repository decision supersedes it:
 
-- `patch` — compatible corrections/content/tooling updates;
-- `minor` — consumer-visible breaking changes such as managed-path removal/rename or command removal;
-- `major` — only when explicitly justified/approved.
+- `patch` — compatible corrections, additive behavior, documentation, or tooling changes that do not break existing consumers;
+- `minor` — consumer-visible breaking changes such as managed-path removal/rename, command removal/rename, or an incompatible consumer contract change;
+- `major` — never infer `1.0.0` automatically; moving from `0.x` to `1.0.0` is an explicit product/stability decision.
 
-Never reuse a version already present on npm. Read the registry before modifying package metadata.
+For `1.0.0` and later, use conventional semantic-versioning behavior:
+
+- `patch` — backward-compatible fixes;
+- `minor` — backward-compatible features;
+- `major` — breaking consumer changes.
+
+When multiple changes are present, use the highest applicable classification. If the evidence is materially ambiguous, ask one bounded question explaining the competing classifications. Otherwise proceed without a version-choice prompt.
+
+Explicit bump or exact-version arguments are optional overrides for unusual cases. Validate an override against the observed change: do not silently accept a lower version class than the change requires, and never reuse a version already present on npm.
+
+After choosing the version, use the exact computed version internally for release preparation.
 
 ## 4. Prepare the release PR automatically
 
