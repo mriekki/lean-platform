@@ -93,6 +93,28 @@ No long-lived npm publish token is required. GitHub Actions receives a short-liv
 
 The package can retain npm's `Require two-factor authentication and disallow tokens` package setting; that restriction applies to traditional tokens, not the configured OIDC trusted publisher.
 
+### Operator authentication and one-time setup
+
+Complete the local npm identity and publisher check before merging the package release PR, so missing access does not become a post-merge surprise:
+
+```powershell
+npm whoami --registry=https://registry.npmjs.org/
+npm trust list @mriekki/lean --json
+```
+
+If `npm whoami` returns `E401`, sign in interactively and verify the account:
+
+```powershell
+npm login --auth-type=web --registry=https://registry.npmjs.org/
+npm whoami --registry=https://registry.npmjs.org/
+```
+
+The account must be allowed to manage `@mriekki/lean`. `npm trust list` can require a separate browser authorization (`EOTP`); open the URL printed in the local terminal, finish npm's prompt, and rerun the command. Never paste or save that one-time URL or an OTP in chat, repository files, or CI.
+
+The trusted publisher can be inspected or configured in npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher**. Configure GitHub Actions with owner `mriekki`, repository `lean-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission. The same relationship can be created through `npm trust github` after the release skill's `[NPM TRUST WRITE]` gate.
+
+No long-lived npm token is needed or appropriate for this flow. The local npm login is only for maintainer operations and trust inspection; GitHub Actions publishes with OIDC. The workflow uses the repository's `LEAN_SOURCE_TOKEN` only to read the private canonical component repositories.
+
 ### One-time migration from the old staged workflow
 
 If the npm trusted publisher still points at `npm-stage.yml` or only permits staged publication, replace it once. Inspect the current relationship:
@@ -149,7 +171,7 @@ The workflow refuses changed/stale evidence.
 7. runs `scripts/prepare-release.mjs` to reproduce/test the package;
 8. verifies the release manifest matches the authorized Lean Platform commit/version;
 9. publishes the exact tarball with `npm publish --access public` using OIDC;
-10. waits for registry visibility and verifies npm integrity/shasum against the release manifest;
+10. waits up to 10 minutes, with exponential backoff, for registry visibility and verifies npm integrity/shasum against the release manifest;
 11. runs `npx --yes @mriekki/lean@<version> version` from a neutral temporary directory.
 
 If any pre-publication step fails, npm is not published. If publication succeeds but a post-publish verification fails, report the published state accurately and diagnose the verification failure; do not attempt to republish the same version.

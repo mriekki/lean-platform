@@ -67,6 +67,8 @@ After publication approval it triggers `.github/workflows/npm-publish.yml`. The 
 
 The normal flow does not use staged npm publication or a long-lived npm publish token. An existing stage-only trusted publisher must be migrated once to allow direct `npm publish` from `npm-publish.yml`; `/release-lean` guides that bounded one-time setup.
 
+Before merging a release PR, verify the local npm maintainer login and trusted-publisher relationship; the release skill explains npm's browser/2FA reauthorization if `npm trust list` returns `EOTP`. GitHub Actions publication uses OIDC, not a manually managed npm token. See `docs/RELEASE_PROCESS.md` for the operator setup.
+
 The underlying release-candidate command remains available for diagnostics:
 
 ```powershell
