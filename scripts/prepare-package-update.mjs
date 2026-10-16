@@ -135,17 +135,25 @@ export function preparePackageUpdate(args, root = ROOT) {
   nextLock.version = args.version;
   nextLock.packages[''].version = args.version;
 
-  writeJson(packageFile, nextPackage);
-  writeJson(lockFile, nextLock);
-  writeJson(componentsFile, nextComponents);
-
+  // Complete every source-side validation/read before touching release metadata so
+  // a missing descriptor cannot leave a partially prepared release branch.
+  const descriptorUpdates = [];
   for (const [componentId, checkout] of Object.entries({ core, deployment })) {
     const component = nextComponents.components[componentId];
     const canonical = path.join(checkout.root, component.canonicalDescriptor);
-    if (!fs.existsSync(canonical)) throw new Error(`Missing canonical descriptor for ${componentId}: ${canonical}`);
-    const destination = path.join(packageRoot, component.descriptor);
-    fs.writeFileSync(destination, fs.readFileSync(canonical, 'utf8'));
+    if (!fs.existsSync(canonical) || !fs.statSync(canonical).isFile()) {
+      throw new Error(`Missing canonical descriptor for ${componentId}: ${canonical}`);
+    }
+    descriptorUpdates.push({
+      destination: path.join(packageRoot, component.descriptor),
+      content: fs.readFileSync(canonical, 'utf8')
+    });
   }
+
+  writeJson(packageFile, nextPackage);
+  writeJson(lockFile, nextLock);
+  writeJson(componentsFile, nextComponents);
+  for (const update of descriptorUpdates) fs.writeFileSync(update.destination, update.content);
 
   return {
     package: nextPackage.name,

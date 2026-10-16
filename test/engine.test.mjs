@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { applyProfile, checkProfile, planProfile } from '../src/engine.mjs';
+import { applyProfile, checkProfile, planProfile, sha256File } from '../src/engine.mjs';
 
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-package-'));
@@ -54,19 +54,83 @@ test('local drift blocks the whole apply', () => {
   assert.equal(fs.readFileSync(path.join(consumerRoot, 'tools/b.txt'), 'utf8'), 'kit-v1\n');
 });
 
-test('Core retirement requires explicit transfer and preserves the consumer file', () => {
+test('unchanged retired Core path is removed automatically', () => {
   const { consumerRoot, packageData } = fixture();
   applyProfile(packageData, planProfile(packageData, 'greenfield-poc', consumerRoot), consumerRoot, 'demo', 'base');
   const descriptor = path.join(packageData.root, 'assets/core/distribution.json');
   fs.writeFileSync(descriptor, JSON.stringify({ name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/replacement.txt' }] }));
   fs.writeFileSync(path.join(packageData.root, 'assets/core/source/core/a.txt'), 'core-v2\n');
+  const plan = planProfile(packageData, 'greenfield-poc', consumerRoot);
+  const core = plan.plans.find((item) => item.componentId === 'core');
+  assert.deepEqual(core.retired.map((item) => [item.path, item.state]), [['.github/a.txt', 'REMOVE']]);
+  assert.equal(plan.unsafe.length, 0);
+  applyProfile(packageData, plan, consumerRoot, 'demo', 'base2');
+  assert.equal(fs.existsSync(path.join(consumerRoot, '.github/a.txt')), false);
+  assert.equal(fs.readFileSync(path.join(consumerRoot, '.github/replacement.txt'), 'utf8'), 'core-v2\n');
+});
+
+test('modified retired Core path requires explicit ownership transfer and is preserved', () => {
+  const { consumerRoot, packageData } = fixture();
+  applyProfile(packageData, planProfile(packageData, 'greenfield-poc', consumerRoot), consumerRoot, 'demo', 'base');
+  const descriptor = path.join(packageData.root, 'assets/core/distribution.json');
+  fs.writeFileSync(descriptor, JSON.stringify({ name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/replacement.txt' }] }));
+  fs.writeFileSync(path.join(packageData.root, 'assets/core/source/core/a.txt'), 'core-v2\n');
+  fs.writeFileSync(path.join(consumerRoot, '.github/a.txt'), 'consumer override\n');
   let plan = planProfile(packageData, 'greenfield-poc', consumerRoot);
-  assert(plan.unsafe.some((x) => x.state === 'RETIRED_PATH'));
+  assert(plan.unsafe.some((x) => x.state === 'RETIRED_DRIFT'));
   plan = planProfile(packageData, 'greenfield-poc', consumerRoot, new Map([['core', new Set(['.github/a.txt'])]]));
   assert.equal(plan.unsafe.length, 0);
   applyProfile(packageData, plan, consumerRoot, 'demo', 'base2');
-  assert.equal(fs.readFileSync(path.join(consumerRoot, '.github/a.txt'), 'utf8'), 'core-v1\n');
+  assert.equal(fs.readFileSync(path.join(consumerRoot, '.github/a.txt'), 'utf8'), 'consumer override\n');
   assert.equal(fs.readFileSync(path.join(consumerRoot, '.github/replacement.txt'), 'utf8'), 'core-v2\n');
+});
+
+test('readiness rename removes old Core-managed paths and installs replacement paths', () => {
+  const { consumerRoot, packageRoot, packageData } = fixture();
+  const oldSkill = '.github/skills/production-readiness/SKILL.md';
+  const oldProcess = 'docs/process/PRODUCTION_ENABLEMENT.md';
+  const newSkill = '.github/skills/deployment-readiness/SKILL.md';
+  const newProcess = 'docs/process/DEPLOYMENT_ENABLEMENT.md';
+  fs.mkdirSync(path.join(packageRoot, 'assets/core/source/core/skills'), { recursive: true });
+  fs.mkdirSync(path.join(packageRoot, 'assets/core/source/core/process'), { recursive: true });
+  fs.writeFileSync(path.join(packageRoot, 'assets/core/source/core/skills/deployment-readiness.md'), 'deployment readiness\n');
+  fs.writeFileSync(path.join(packageRoot, 'assets/core/source/core/process/deployment-enablement.md'), 'deployment enablement\n');
+  fs.writeFileSync(path.join(packageRoot, 'assets/core/distribution.json'), JSON.stringify({
+    name: 'greenfield-workspace',
+    mappings: [
+      { source: 'core/skills/deployment-readiness.md', destination: newSkill },
+      { source: 'core/process/deployment-enablement.md', destination: newProcess }
+    ]
+  }));
+  for (const [relative, content] of [[oldSkill, 'old readiness\n'], [oldProcess, 'old enablement\n']]) {
+    const file = path.join(consumerRoot, relative);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, content);
+  }
+  const oldSkillFile = path.join(consumerRoot, oldSkill);
+  const oldProcessFile = path.join(consumerRoot, oldProcess);
+  fs.writeFileSync(path.join(consumerRoot, 'CORE_BASELINE.json'), JSON.stringify({
+    schemaVersion: 1,
+    consumer: 'demo',
+    consumerBaseline: '@mriekki/lean@0.2.1',
+    coreRepository: 'mriekki/lean-agentic-core',
+    coreVersion: '1.11.1',
+    coreCommit: 'c'.repeat(40),
+    distribution: 'greenfield-workspace',
+    managedPaths: [
+      { source: 'core/skills/production-readiness/SKILL.md', path: oldSkill, sha256: sha256File(oldSkillFile) },
+      { source: 'core/process/PRODUCTION_ENABLEMENT.md', path: oldProcess, sha256: sha256File(oldProcessFile) }
+    ]
+  }, null, 2) + '\n');
+  const plan = planProfile(packageData, 'greenfield-poc', consumerRoot);
+  const core = plan.plans.find((item) => item.componentId === 'core');
+  assert.deepEqual(core.retired.map((item) => [item.path, item.state]), [[oldSkill, 'REMOVE'], [oldProcess, 'REMOVE']]);
+  assert.equal(plan.unsafe.length, 0);
+  applyProfile(packageData, plan, consumerRoot, 'demo', '@mriekki/lean@0.3.x');
+  assert.equal(fs.existsSync(oldSkillFile), false);
+  assert.equal(fs.existsSync(oldProcessFile), false);
+  assert.equal(fs.readFileSync(path.join(consumerRoot, newSkill), 'utf8'), 'deployment readiness\n');
+  assert.equal(fs.readFileSync(path.join(consumerRoot, newProcess), 'utf8'), 'deployment enablement\n');
 });
 
 test('Deployment retires only unchanged Kit-owned paths', () => {
