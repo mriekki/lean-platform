@@ -21,6 +21,16 @@ function gitTrackedStatus(root) {
   }
 }
 
+function gitBlob(root, commit, relative) {
+  try {
+    return execFileSync('git', ['-C', root, 'show', `${commit}:${relative}`], {
+      maxBuffer: 64 * 1024 * 1024
+    });
+  } catch (error) {
+    throw new Error(`Unable to read ${relative} from pinned commit ${commit}: ${error.message}`);
+  }
+}
+
 function stableJson(value) {
   if (Array.isArray(value)) return value.map(stableJson);
   if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableJson(value[key])]));
@@ -76,7 +86,7 @@ export function assembleAssets(packageData, sourceRoots, outputRoot = path.join(
         }
         const destination = resolveUnder(tempRoot, `${componentId}/${mapping.source}`, 'generated asset');
         fs.mkdirSync(path.dirname(destination), { recursive: true });
-        fs.copyFileSync(source, destination);
+        fs.writeFileSync(destination, gitBlob(sourceRoot, component.commit, mapping.source));
         files.push({ source: mapping.source, destination: mapping.path, sha256: sha256File(destination) });
       }
       assembly.components[componentId] = {
