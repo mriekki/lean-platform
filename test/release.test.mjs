@@ -97,9 +97,14 @@ test('trusted publish workflow is exact-source, direct OIDC publication with ver
   assert.equal(fs.existsSync(path.join(ROOT, '.github', 'workflows', 'npm-stage.yml')), false);
 });
 
-test('release skill owns package preparation, trust migration, exact publish gate, and consumer handoff', () => {
+test('release skill owns automatic version selection, package preparation, trust migration, exact publish gate, and consumer handoff', () => {
   const skill = fs.readFileSync(path.join(ROOT, '.github', 'skills', 'release-lean', 'SKILL.md'), 'utf8');
   assert.match(skill, /name: release-lean/);
+  assert.doesNotMatch(skill, /^argument-hint:/m);
+  assert.match(skill, /Default invocation is `\/release-lean` with no version argument/);
+  assert.match(skill, /Choose the next package version automatically/);
+  assert.match(skill, /Do not require the user to choose `patch`, `minor`, or `major`/);
+  assert.match(skill, /Explicit bump or exact-version arguments are optional overrides/);
   assert.match(skill, /prepare-package-update\.mjs/);
   assert.match(skill, /npm trust list @mriekki\/lean --json/);
   assert.match(skill, /\[NPM TRUST WRITE\]/);
