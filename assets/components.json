@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "@mriekki/lean",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "defaultProfile": "greenfield-poc",
   "profiles": {
     "greenfield-poc": {
