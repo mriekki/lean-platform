@@ -27,6 +27,8 @@ Use repository facts rather than memory. Do not invent accepted commits, CI stat
 
 The skill is resume-aware. If preparation, PR creation, merge, publication, or verification already happened, continue from the furthest safe observed state rather than repeating it.
 
+For an intended npm release, verify local npm maintainer authentication and trusted-publisher state before the package PR merge gate. This avoids merging first and discovering afterward that npm access still needs setup.
+
 ## 2. Resolve accepted component commits
 
 For each canonical component included by `assets/components.json`:
@@ -115,6 +117,15 @@ Do not publish npm from a release branch or PR.
 
 ## 5. Package PR merge gate
 
+Before presenting the merge gate for a release intended for publication, verify the local npm account and trusted publisher. If `npm whoami` returns `E401`, stop and ask the operator to run:
+
+```powershell
+npm login --auth-type=web --registry=https://registry.npmjs.org/
+npm whoami --registry=https://registry.npmjs.org/
+```
+
+If `npm trust list` returns `EOTP`, instruct the operator to open the browser URL printed in their local terminal, complete npm's authorization, and retry. Never request or copy the one-time URL or OTP. Do not merge while an intended release's publisher state remains unverified.
+
 When PR CI is green and the PR diff still matches the verified release preparation, stop once at:
 
 ```text
@@ -142,6 +153,7 @@ Normal publication uses `.github/workflows/npm-publish.yml` with npm Trusted Pub
 Read the current trust relationship with:
 
 ```powershell
+npm whoami --registry=https://registry.npmjs.org/
 npm trust list @mriekki/lean --json
 ```
 
@@ -153,6 +165,8 @@ repository: mriekki/lean-platform
 workflow file: npm-publish.yml
 allowed action: npm publish
 ```
+
+It can be managed on npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher**. Select GitHub Actions, owner `mriekki`, repository `lean-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission. The CLI equivalent for creating a missing relationship is documented below; both routes require maintainer authorization, and npm may prompt for 2FA.
 
 If that exact relationship already exists, do not touch it.
 
@@ -229,6 +243,8 @@ If `main`, version, pins, or workflow evidence changes before publication, stop 
 The workflow publishes the exact prepared tarball with OIDC, then automatically verifies registry version/integrity and runs a neutral-directory `npx` smoke check.
 
 Do not use `npm stage publish`, `npm stage approve`, a long-lived npm publish token, or a second manual package-inspection ceremony in the normal flow.
+
+Registry propagation is asynchronous. The workflow polls with exponential backoff for up to 10 minutes and prints the last registry-query error if it times out. If publishing succeeded but verification still fails, inspect the exact run and registry tarball; never retry publication for an already-existing version.
 
 ## 9. Completion
 

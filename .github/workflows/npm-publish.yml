@@ -135,16 +135,44 @@ jobs:
           EXPECTED_INTEGRITY="$(node -e "const m=require('./dist/release/RELEASE_MANIFEST.json'); process.stdout.write(m.tarball.integrity)")"
           EXPECTED_SHASUM="$(node -e "const m=require('./dist/release/RELEASE_MANIFEST.json'); process.stdout.write(m.tarball.shasum)")"
           FOUND=""
-          for attempt in $(seq 1 12); do
-            ACTUAL_VERSION="$(npm view "@mriekki/lean@${VERSION}" version 2>/dev/null || true)"
-            if [ "$ACTUAL_VERSION" = "$VERSION" ]; then
-              FOUND=1
+          DEADLINE=$((SECONDS + 600))
+          DELAY=5
+          ATTEMPT=0
+          LAST_ERROR="${RUNNER_TEMP}/npm-registry-query-error.log"
+          while (( SECONDS < DEADLINE )); do
+            ATTEMPT=$((ATTEMPT + 1))
+            if ACTUAL_VERSION="$(npm view "@mriekki/lean@${VERSION}" version 2>"$LAST_ERROR")"; then
+              if [ "$ACTUAL_VERSION" = "$VERSION" ]; then
+                FOUND=1
+                break
+              fi
+            fi
+            if (( ATTEMPT == 1 || ATTEMPT % 4 == 0 )); then
+              ELAPSED=$((600 - (DEADLINE - SECONDS)))
+              echo "Waiting for npm registry visibility: attempt ${ATTEMPT}, ${ELAPSED}s elapsed"
+            fi
+            REMAINING=$((DEADLINE - SECONDS))
+            if (( REMAINING <= 0 )); then
               break
             fi
-            sleep 5
+            SLEEP_FOR="$DELAY"
+            if (( SLEEP_FOR > REMAINING )); then
+              SLEEP_FOR="$REMAINING"
+            fi
+            sleep "$SLEEP_FOR"
+            if (( DELAY < 30 )); then
+              DELAY=$((DELAY * 2))
+              if (( DELAY > 30 )); then
+                DELAY=30
+              fi
+            fi
           done
           if [ -z "$FOUND" ]; then
-            echo "Published version did not become visible in the registry" >&2
+            echo "Published version did not become visible in the registry after 10 minutes" >&2
+            if [ -s "$LAST_ERROR" ]; then
+              echo "Last npm registry query error:" >&2
+              cat "$LAST_ERROR" >&2
+            fi
             exit 1
           fi
           ACTUAL_INTEGRITY="$(npm view "@mriekki/lean@${VERSION}" dist.integrity)"

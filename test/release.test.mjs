@@ -92,6 +92,11 @@ test('trusted publish workflow is exact-source, direct OIDC publication with ver
   assert.match(workflow, /prepare-release\.mjs/);
   assert.match(workflow, /npm publish .*--access public/);
   assert.match(workflow, /npm view/);
+  assert.match(workflow, /DEADLINE=\$\(\(SECONDS \+ 600\)\)/);
+  assert.match(workflow, /DELAY=5/);
+  assert.match(workflow, /DELAY=30/);
+  assert.match(workflow, /after 10 minutes/);
+  assert.match(workflow, /Last npm registry query error/);
   assert.match(workflow, /npx --yes/);
   assert.doesNotMatch(workflow, /npm stage publish|npm stage approve/);
   assert.equal(fs.existsSync(path.join(ROOT, '.github', 'workflows', 'npm-stage.yml')), false);
@@ -106,6 +111,9 @@ test('release skill owns automatic version selection, package preparation, trust
   assert.match(skill, /Do not require the user to choose `patch`, `minor`, or `major`/);
   assert.match(skill, /Explicit bump or exact-version arguments are optional overrides/);
   assert.match(skill, /prepare-package-update\.mjs/);
+  assert.match(skill, /npm login --auth-type=web/);
+  assert.match(skill, /npm whoami --registry=https:\/\/registry\.npmjs\.org/);
+  assert.match(skill, /EOTP/);
   assert.match(skill, /npm trust list @mriekki\/lean --json/);
   assert.match(skill, /\[NPM TRUST WRITE\]/);
   assert.match(skill, /\[NPM PUBLISH\]/);
