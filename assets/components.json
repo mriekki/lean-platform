@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "@mriekki/lean",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "defaultProfile": "greenfield-poc",
   "profiles": {
     "greenfield-poc": {
@@ -14,8 +14,8 @@
   "components": {
     "core": {
       "repository": "mriekki/lean-agentic-core",
-      "commit": "e3a8a994d1e95923d629af7640d3b3a0a4f098d4",
-      "version": "1.11.1",
+      "commit": "009572aa4c61ad9a45ec5473b6affc984d6faac0",
+      "version": "1.12.0",
       "distribution": "greenfield-workspace",
       "descriptor": "assets/core/distribution.json",
       "sourceRoot": "assets/generated/core",
