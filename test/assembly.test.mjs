@@ -54,6 +54,23 @@ test('assembly verifies exact commits/descriptors and creates a self-contained p
   assert.equal(verifyAssets(packageData), 2);
 });
 
+test('assembly reads canonical Git blob bytes from a clean CRLF checkout', () => {
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-assembly-crlf-'));
+  const coreDescriptor = { name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/a.txt' }] };
+  const deploymentDescriptor = { name: 'greenfield-poc', schemaVersion: 1, mappings: [{ source: 'src/b.txt', destination: 'tools/b.txt' }] };
+  const { packageRoot, coreRoot, deploymentRoot, packageData } = fixturePackage(temp, coreDescriptor, deploymentDescriptor);
+
+  execFileSync('git', ['-C', deploymentRoot, 'config', 'core.autocrlf', 'true']);
+  fs.rmSync(path.join(deploymentRoot, 'src/b.txt'));
+  execFileSync('git', ['-C', deploymentRoot, 'checkout', '--', 'src/b.txt']);
+
+  assert.equal(fs.readFileSync(path.join(deploymentRoot, 'src/b.txt'), 'utf8'), 'deployment\r\n');
+  assert.equal(execFileSync('git', ['-C', deploymentRoot, 'status', '--porcelain', '--untracked-files=no'], { encoding: 'utf8' }).trim(), '');
+
+  assembleAssets(packageData, { core: coreRoot, deployment: deploymentRoot });
+  assert.equal(fs.readFileSync(path.join(packageRoot, 'assets/generated/deployment/src/b.txt'), 'utf8'), 'deployment\n');
+});
+
 test('assembly rejects a source descriptor that differs from the package contract', () => {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-assembly-reject-'));
   const canonicalCore = { name: 'greenfield-workspace', mappings: [{ source: 'core/a.txt', destination: '.github/DIFFERENT.txt' }] };
