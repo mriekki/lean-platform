@@ -16,6 +16,7 @@
     {"source":"core/skills/deliver/SKILL.md","destination":".github/skills/deliver/SKILL.md"},
     {"source":"core/skills/cleanup-branches/SKILL.md","destination":".github/skills/cleanup-branches/SKILL.md"},
     {"source":"core/skills/pull-latest/SKILL.md","destination":".github/skills/pull-latest/SKILL.md"},
+    {"source":"core/skills/lean-update/SKILL.md","destination":".github/skills/lean-update/SKILL.md"},
     {"source":"core/skills/core-sync/SKILL.md","destination":".github/skills/core-sync/SKILL.md"},
     {"source":"core/skills/upstream-fix/SKILL.md","destination":".github/skills/upstream-fix/SKILL.md"},
     {"source":"core/skills/wait-what/SKILL.md","destination":".github/skills/wait-what/SKILL.md"},
