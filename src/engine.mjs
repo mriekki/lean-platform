@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { readJson } from './package-data.mjs';
 
-const CORE_SAFE = new Set(['SAME', 'ADD', 'CORE_UPDATE', 'UNTRACKED_MATCH', 'BASELINE_STALE']);
+const CORE_SAFE = new Set(['SAME', 'ADD', 'CORE_UPDATE', 'UNTRACKED_MATCH', 'BASELINE_STALE', 'REMOVE', 'RETIRED_MISSING']);
 const DEPLOYMENT_SAFE = new Set(['SAME', 'ADD', 'KIT_UPDATE', 'UNTRACKED_MATCH', 'BASELINE_STALE', 'REMOVE', 'RETIRED_MISSING']);
 
 export function safeRelative(value, label = 'path') {
@@ -123,22 +123,24 @@ export function planComponent(packageData, componentId, targetRoot, acceptedReti
   for (const [retiredPath, item] of [...baseMap.entries()].sort(([a], [b]) => a.localeCompare(b))) {
     if (desired.has(retiredPath)) continue;
     const dst = resolveUnder(targetRoot, retiredPath, 'retired destination');
-    if (componentId === 'core') {
-      retired.push({ path: retiredPath, item, state: acceptedRetired.has(retiredPath) ? 'RETIRED_ACCEPTED' : 'RETIRED_PATH' });
-      continue;
-    }
     if (!fs.existsSync(dst)) {
       retired.push({ path: retiredPath, item, state: 'RETIRED_MISSING' });
+      continue;
+    }
+    const stat = fs.lstatSync(dst);
+    const currentHash = stat.isFile() && !stat.isSymbolicLink() ? sha256File(dst) : null;
+    if (currentHash === item.sha256) {
+      retired.push({ path: retiredPath, item, currentHash, state: 'REMOVE' });
+    } else if (componentId === 'core' && acceptedRetired.has(retiredPath)) {
+      retired.push({ path: retiredPath, item, currentHash, state: 'RETIRED_ACCEPTED' });
     } else {
-      const stat = fs.lstatSync(dst);
-      const currentHash = stat.isFile() && !stat.isSymbolicLink() ? sha256File(dst) : null;
-      retired.push({ path: retiredPath, item, currentHash, state: currentHash === item.sha256 ? 'REMOVE' : 'RETIRED_DRIFT' });
+      retired.push({ path: retiredPath, item, currentHash, state: 'RETIRED_DRIFT' });
     }
   }
   const safe = componentId === 'core' ? CORE_SAFE : DEPLOYMENT_SAFE;
   const unsafe = rows.filter((row) => !safe.has(row.state)).map((row) => ({ state: row.state, path: row.path }));
   for (const item of retired) {
-    const isSafe = componentId === 'core' ? item.state === 'RETIRED_ACCEPTED' : safe.has(item.state);
+    const isSafe = item.state === 'RETIRED_ACCEPTED' || safe.has(item.state);
     if (!isSafe) unsafe.push({ state: item.state, path: item.path });
   }
   return {
@@ -202,10 +204,8 @@ export function applyProfile(packageData, profilePlan, targetRoot, consumer, con
       fs.mkdirSync(path.dirname(dst), { recursive: true });
       fs.copyFileSync(row.bundlePath, dst);
     }
-    if (plan.componentId === 'deployment') {
-      for (const retired of plan.retired) {
-        if (retired.state === 'REMOVE') fs.unlinkSync(resolveUnder(targetRoot, retired.path, 'retired destination'));
-      }
+    for (const retired of plan.retired) {
+      if (retired.state === 'REMOVE') fs.unlinkSync(resolveUnder(targetRoot, retired.path, 'retired destination'));
     }
   }
   for (const plan of profilePlan.plans) {

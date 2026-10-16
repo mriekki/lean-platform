@@ -88,6 +88,9 @@ test('trusted publish workflow is exact-source, direct OIDC publication with ver
   assert.match(workflow, /source_commit:/);
   assert.match(workflow, /version:/);
   assert.match(workflow, /id-token:\s*write/);
+  assert.match(workflow, /actions\/checkout@d23441a48e516b6c34aea4fa41551a30e30af803/);
+  assert.match(workflow, /actions\/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38/);
+  assert.doesNotMatch(workflow, /uses:\s+actions\/(?:checkout|setup-node)@v\d+/);
   assert.match(workflow, /npm install --global npm@11\.21\.0/);
   assert.match(workflow, /prepare-release\.mjs/);
   assert.match(workflow, /npm publish .*--access public/);
@@ -137,6 +140,16 @@ test('package update preparation requires an exact increasing semantic version a
     () => parseUpdateArgs(['--version', '0.3.0', '--core-root', 'core']),
     /--version, --core-root, and --deployment-root are required/
   );
+});
+
+test('package update preparation validates all canonical descriptors before metadata writes', () => {
+  const script = fs.readFileSync(path.join(ROOT, 'scripts', 'prepare-package-update.mjs'), 'utf8');
+  const validation = script.indexOf('const descriptorUpdates = []');
+  const packageWrite = script.indexOf('writeJson(packageFile, nextPackage)');
+  assert.notEqual(validation, -1);
+  assert.notEqual(packageWrite, -1);
+  assert(validation < packageWrite);
+  assert.match(script, /Missing canonical descriptor/);
 });
 
 test('release preparation uses npm directly outside Windows', () => {

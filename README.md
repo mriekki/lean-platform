@@ -33,7 +33,7 @@ npx @mriekki/lean@latest status
 npx @mriekki/lean@latest check
 ```
 
-The umbrella package writes `LEAN_BASELINE.json` while preserving component-native `CORE_BASELINE.json` and `DEPLOYMENT_BASELINE.json` ledgers. Updates refuse managed drift/conflicts before modifying any component. Core retired paths require explicit ownership transfer with `--accept-retired core:<path>`; unchanged Deployment Kit retirements may be removed under its existing ownership contract.
+The umbrella package writes `LEAN_BASELINE.json` while preserving component-native `CORE_BASELINE.json` and `DEPLOYMENT_BASELINE.json` ledgers. Updates refuse managed drift/conflicts before modifying any component. An unchanged retired managed path can be removed safely; a locally modified retired Core path stops the update until the operator explicitly transfers ownership with `--accept-retired core:<path>`.
 
 ## Safety and ownership
 
@@ -53,10 +53,10 @@ The package currently starts with the `greenfield-poc` consumer profile. Existin
 For normal releases in the Lean Platform VS Code workspace, use:
 
 ```text
-/release-lean [version | patch | minor | major]
+/release-lean
 ```
 
-The repo-local skill resolves accepted component commits, prepares the version/pin/descriptor update, runs local verification, creates the release PR, waits for the package-PR merge gate, verifies post-merge `main` CI, then stops once at the exact npm publication gate.
+The repo-local skill resolves accepted component commits, automatically selects the package version from the observed consumer-visible changes, prepares the version/pin/descriptor update, runs local verification, creates the release PR, waits for the package-PR merge gate, verifies post-merge `main` CI, then stops once at the exact npm publication gate. Explicit bump or exact-version arguments remain available only as unusual overrides.
 
 After publication approval it triggers `.github/workflows/npm-publish.yml`. The workflow reconstructs the package from the exact private component pins, runs the deterministic release preparation, publishes the exact tarball directly with npm Trusted Publishing (OIDC), and automatically verifies the registry identity plus a neutral-directory `npx` smoke check.
 
