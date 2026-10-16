@@ -4,12 +4,14 @@
 
 Canonical engineering remains in the private platform repositories. Before publication, a deterministic assembly step verifies exact pinned source commits and distribution descriptors, then copies only those approved consumer mappings into the npm payload. Each published npm release is therefore self-contained; consumers do not need access to the canonical repositories to install or update Lean assets.
 
-## V0.1 profile
+## Current `greenfield-poc` profile
 
-The initial `greenfield-poc` profile bundles:
+The current profile bundles:
 
-- Lean Agentic Core `1.10.0` from commit `e2d64b10f1a30507471755339c20e8b58e62be16`, distribution `greenfield-workspace`;
+- Lean Agentic Core `1.11.0` from commit `5b2f13bb188f74fa0d7b6b8d7985fe3abfc543f9`, distribution `greenfield-workspace`;
 - Lean POC Deployment Kit commit `4c23140576b39608a3ef285cad4abe53dccb9c47`, distribution `greenfield-poc`.
+
+Core `1.11.0` adds the package-aware `/lean-update` workflow for `LEAN_BASELINE.json` consumers, keeps `/core-sync` as a compatibility/router path for component-only Core consumers, and aligns `/upstream-fix` and `/deploy` with the package and generated Deployment Kit boundaries.
 
 ## Developer experience
 
@@ -26,6 +28,8 @@ Update using the newest published package:
 ```powershell
 npx @mriekki/lean@latest update
 ```
+
+For reviewed maintenance operations, prefer resolving and using one exact package version for preview, apply, and final check rather than allowing a moving `@latest` reference to change between those steps.
 
 Inspect or verify:
 
@@ -47,7 +51,7 @@ The umbrella package writes `LEAN_BASELINE.json` while preserving component-nati
 
 ## Current scope
 
-V0.1 intentionally starts with the greenfield POC consumer profile. Existing-repository Adoption Kit packaging can be added as another profile without changing the one-package developer experience.
+The package currently starts with the `greenfield-poc` consumer profile. Existing-repository Adoption Kit packaging can be added as another profile without changing the one-package developer experience.
 
 ## Package assembly and release
 
@@ -62,6 +66,6 @@ node .\scripts\prepare-release.mjs `
 
 Release preparation verifies exact `origin/main`, runs the complete test suite, refuses dirty canonical source checkouts, assembles and verifies the pinned assets, compares two independent `npm pack` SHA-256 values, and smoke-tests the packed CLI from a clean temporary install. The resulting tarball and `RELEASE_MANIFEST.json` are written under `dist/release/`.
 
-The first npm version is staged manually and requires explicit 2FA approval before it becomes public. After the bootstrap version exists, `.github/workflows/npm-stage.yml` can use npm Trusted Publishing (OIDC) to stage future versions without a long-lived npm publish token; human 2FA approval remains the final publication gate.
+The first npm version was staged manually and required explicit 2FA approval before becoming public. Current releases use `.github/workflows/npm-stage.yml` with npm Trusted Publishing (OIDC) to stage future versions without a long-lived npm publish token; human 2FA approval remains the final publication gate.
 
 See `docs/RELEASE_PROCESS.md` for the full release contract.
