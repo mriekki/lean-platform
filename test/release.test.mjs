@@ -6,6 +6,7 @@ import test from 'node:test';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { npmPackArgs, parseArgs, resolveNpmInvocation } from '../scripts/prepare-release.mjs';
+import { assertVersionIncrease, parseArgs as parseUpdateArgs, parseSemver } from '../scripts/prepare-package-update.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -81,12 +82,47 @@ test('packed CLI resolves through npm exec from a neutral directory', () => {
   }
 });
 
-test('trusted staging workflow pins the npm CLI and remains stage-only', () => {
-  const workflow = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'npm-stage.yml'), 'utf8');
+test('trusted publish workflow is exact-source, direct OIDC publication with verification', () => {
+  const workflow = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'npm-publish.yml'), 'utf8');
+  assert.match(workflow, /workflow_dispatch:/);
+  assert.match(workflow, /source_commit:/);
+  assert.match(workflow, /version:/);
   assert.match(workflow, /id-token:\s*write/);
   assert.match(workflow, /npm install --global npm@11\.21\.0/);
-  assert.match(workflow, /npm stage publish/);
-  assert.doesNotMatch(workflow, /^\s*run:\s*npm publish(?:\s|$)/m);
+  assert.match(workflow, /prepare-release\.mjs/);
+  assert.match(workflow, /npm publish .*--access public/);
+  assert.match(workflow, /npm view/);
+  assert.match(workflow, /npx --yes/);
+  assert.doesNotMatch(workflow, /npm stage publish|npm stage approve/);
+  assert.equal(fs.existsSync(path.join(ROOT, '.github', 'workflows', 'npm-stage.yml')), false);
+});
+
+test('release skill owns package preparation, trust migration, exact publish gate, and consumer handoff', () => {
+  const skill = fs.readFileSync(path.join(ROOT, '.github', 'skills', 'release-lean', 'SKILL.md'), 'utf8');
+  assert.match(skill, /name: release-lean/);
+  assert.match(skill, /prepare-package-update\.mjs/);
+  assert.match(skill, /npm trust list @mriekki\/lean --json/);
+  assert.match(skill, /\[NPM TRUST WRITE\]/);
+  assert.match(skill, /\[NPM PUBLISH\]/);
+  assert.match(skill, /gh workflow run npm-publish\.yml/);
+  assert.match(skill, /\/lean-update/);
+  assert.doesNotMatch(skill, /npm stage approve/);
+});
+
+test('package update preparation requires an exact increasing semantic version and both component roots', () => {
+  assert.deepEqual(parseSemver('0.3.0'), [0, 3, 0]);
+  assert.doesNotThrow(() => assertVersionIncrease('0.2.1', '0.3.0'));
+  assert.throws(() => assertVersionIncrease('0.2.1', '0.2.1'), /must increase/);
+  assert.throws(() => assertVersionIncrease('0.2.1', '0.2.0'), /must increase/);
+  assert.throws(() => parseSemver('0.3'), /Expected semantic version/);
+  assert.deepEqual(
+    parseUpdateArgs(['--version', '0.3.0', '--core-root', 'core', '--deployment-root', 'deployment']),
+    { version: '0.3.0', coreRoot: 'core', deploymentRoot: 'deployment' }
+  );
+  assert.throws(
+    () => parseUpdateArgs(['--version', '0.3.0', '--core-root', 'core']),
+    /--version, --core-root, and --deployment-root are required/
+  );
 });
 
 test('release preparation uses npm directly outside Windows', () => {
