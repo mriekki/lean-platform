@@ -11,7 +11,8 @@ function parseArgs(argv) {
   const positional = [];
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (arg === '--apply' || arg === '--yes') options.apply = true;
+    if (arg === '--help' || arg === '-h') options.help = true;
+    else if (arg === '--apply' || arg === '--yes') options.apply = true;
     else if (arg === '--root') options.root = argv[++i];
     else if (arg === '--profile') options.profile = argv[++i];
     else if (arg === '--consumer') options.consumer = argv[++i];
@@ -65,13 +66,31 @@ async function shouldApply(options) {
   }
 }
 
-function usage() {
-  console.log(`@mriekki/lean\n\nCommands:\n  install   Preview/install bundled Lean assets\n  update    Preview/update to this package's bundled Lean assets\n  status    Show installed umbrella/component provenance\n  check     Verify managed files and baselines exactly match this package\n  version   Show package version\n\nCommon options:\n  --root PATH\n  --profile greenfield-poc\n  --apply | --yes\n  --consumer NAME\n  --consumer-baseline LABEL\n  --accept-retired core:path\n`);
+function usage(command) {
+  const commandUsage = {
+    install: 'lean install [--root PATH] [--profile NAME] [--apply|--yes] [--consumer NAME] [--consumer-baseline LABEL] [--accept-retired component:path]',
+    update: 'lean update [--root PATH] [--profile NAME] [--apply|--yes] [--accept-retired component:path]',
+    status: 'lean status [--root PATH] [--profile NAME]',
+    check: 'lean check [--root PATH] [--profile NAME]',
+    version: 'lean version'
+  };
+
+  if (commandUsage[command]) {
+    console.log(`@mriekki/lean\n\nUsage:\n  ${commandUsage[command]}\n`);
+    return;
+  }
+
+  console.log(`@mriekki/lean\n\nCommands:\n  install   Preview/install bundled Lean assets\n  update    Preview/update to this package's bundled Lean assets\n  status    Show installed umbrella/component provenance\n  check     Verify managed files and baselines exactly match this package\n  version   Show package version\n\nCommon options:\n  --root PATH\n  --profile greenfield-poc\n  --apply | --yes\n  --consumer NAME\n  --consumer-baseline LABEL\n  --accept-retired core:path\n  -h, --help\n`);
 }
 
 export async function run(argv = process.argv.slice(2), packageData = loadPackageData()) {
   const { command, options } = parseArgs(argv);
-  if (command === 'help' || command === '--help') { usage(); return 0; }
+  if (command === 'help') { usage(); return 0; }
+  if (options.help) {
+    if (!['install', 'update', 'status', 'check', 'version'].includes(command)) throw new Error(`Unknown command: ${command}`);
+    usage(command);
+    return 0;
+  }
   if (command === 'version') { console.log(`${packageData.pkg.name} ${packageData.pkg.version}`); return 0; }
   const root = path.resolve(options.root ?? process.cwd());
   if (!fs.existsSync(root) || !fs.statSync(root).isDirectory()) throw new Error(`Repository root not found: ${root}`);
