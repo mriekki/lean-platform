@@ -106,7 +106,7 @@ test('release skill owns package preparation, trust migration, exact publish gat
   assert.match(skill, /\[NPM PUBLISH\]/);
   assert.match(skill, /gh workflow run npm-publish\.yml/);
   assert.match(skill, /\/lean-update/);
-  assert.doesNotMatch(skill, /npm stage approve/);
+  assert.doesNotMatch(skill, /^\s*npm stage (?:publish|approve)(?:\s|$)/m);
 });
 
 test('package update preparation requires an exact increasing semantic version and both component roots', () => {
