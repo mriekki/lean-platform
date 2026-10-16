@@ -8,10 +8,10 @@ Canonical engineering remains in the private platform repositories. Before publi
 
 The current profile bundles:
 
-- Lean Agentic Core `1.11.0` from commit `5b2f13bb188f74fa0d7b6b8d7985fe3abfc543f9`, distribution `greenfield-workspace`;
+- Lean Agentic Core `1.11.1` from commit `e3a8a994d1e95923d629af7640d3b3a0a4f098d4`, distribution `greenfield-workspace`;
 - Lean POC Deployment Kit commit `4c23140576b39608a3ef285cad4abe53dccb9c47`, distribution `greenfield-poc`.
 
-Core `1.11.0` adds the package-aware `/lean-update` workflow for `LEAN_BASELINE.json` consumers, keeps `/core-sync` as a compatibility/router path for component-only Core consumers, and aligns `/upstream-fix` and `/deploy` with the package and generated Deployment Kit boundaries.
+Core `1.11.1` tightens `/lean-update` for Bootstrap-generated package-managed consumers: it keeps `POC_BOOTSTRAP.json`, umbrella/component baselines, exact registry integrity, and generated package-verification surfaces coherent while retaining `/core-sync` as the compatibility/router path for component-only Core consumers.
 
 ## Developer experience
 
