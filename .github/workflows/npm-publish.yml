@@ -1,0 +1,163 @@
+name: Publish npm Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact @mriekki/lean version to publish
+        required: true
+        type: string
+      source_commit:
+        description: Exact Lean Platform main commit authorized for publication
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Lean Platform
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify authorized Lean Platform source
+        shell: bash
+        run: |
+          set -euo pipefail
+          ACTUAL_COMMIT="$(git rev-parse HEAD)"
+          if [ "$ACTUAL_COMMIT" != "${{ inputs.source_commit }}" ]; then
+            echo "Authorized source mismatch: expected ${{ inputs.source_commit }}, got $ACTUAL_COMMIT" >&2
+            exit 1
+          fi
+          ACTUAL_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$ACTUAL_VERSION" != "${{ inputs.version }}" ]; then
+            echo "Authorized version mismatch: expected ${{ inputs.version }}, got $ACTUAL_VERSION" >&2
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - name: Use pinned npm with trusted publishing support
+        run: npm install --global npm@11.21.0
+
+      - name: Install package dependencies
+        run: npm ci
+
+      - name: Refuse an already-published version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if npm view "@mriekki/lean@${{ inputs.version }}" version >/dev/null 2>&1; then
+            echo "@mriekki/lean@${{ inputs.version }} is already published" >&2
+            exit 1
+          fi
+
+      - name: Resolve exact component pins
+        id: pins
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const data = JSON.parse(fs.readFileSync('assets/components.json', 'utf8'));
+          if (data.version !== process.env.EXPECTED_VERSION) {
+            throw new Error(`components version mismatch: expected ${process.env.EXPECTED_VERSION}, got ${data.version}`);
+          }
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `core=${data.components.core.commit}\n`);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `deployment=${data.components.deployment.commit}\n`);
+          NODE
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+
+      - name: Checkout exact Core source
+        uses: actions/checkout@v6
+        with:
+          repository: mriekki/lean-agentic-core
+          ref: ${{ steps.pins.outputs.core }}
+          path: .release-sources/core
+          token: ${{ secrets.LEAN_SOURCE_TOKEN }}
+          persist-credentials: false
+
+      - name: Checkout exact Deployment Kit source
+        uses: actions/checkout@v6
+        with:
+          repository: mriekki/lean-poc-deployment-kit
+          ref: ${{ steps.pins.outputs.deployment }}
+          path: .release-sources/deployment
+          token: ${{ secrets.LEAN_SOURCE_TOKEN }}
+          persist-credentials: false
+
+      - name: Prepare reproducible release candidate
+        run: >-
+          node scripts/prepare-release.mjs
+          --core-root .release-sources/core
+          --deployment-root .release-sources/deployment
+
+      - name: Verify release manifest matches authorization
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const manifest = JSON.parse(fs.readFileSync('dist/release/RELEASE_MANIFEST.json', 'utf8'));
+          if (manifest.version !== process.env.EXPECTED_VERSION) {
+            throw new Error(`manifest version mismatch: ${manifest.version}`);
+          }
+          if (manifest.sourceCommit !== process.env.EXPECTED_COMMIT) {
+            throw new Error(`manifest source mismatch: ${manifest.sourceCommit}`);
+          }
+          NODE
+        env:
+          EXPECTED_VERSION: ${{ inputs.version }}
+          EXPECTED_COMMIT: ${{ inputs.source_commit }}
+
+      - name: Publish exact package with npm Trusted Publishing
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARBALL="$(node -e "const m=require('./dist/release/RELEASE_MANIFEST.json'); process.stdout.write(m.tarball.filename)")"
+          npm publish "dist/release/${TARBALL}" --access public
+
+      - name: Verify published registry identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.version }}"
+          EXPECTED_INTEGRITY="$(node -e "const m=require('./dist/release/RELEASE_MANIFEST.json'); process.stdout.write(m.tarball.integrity)")"
+          EXPECTED_SHASUM="$(node -e "const m=require('./dist/release/RELEASE_MANIFEST.json'); process.stdout.write(m.tarball.shasum)")"
+          FOUND=""
+          for attempt in $(seq 1 12); do
+            ACTUAL_VERSION="$(npm view "@mriekki/lean@${VERSION}" version 2>/dev/null || true)"
+            if [ "$ACTUAL_VERSION" = "$VERSION" ]; then
+              FOUND=1
+              break
+            fi
+            sleep 5
+          done
+          if [ -z "$FOUND" ]; then
+            echo "Published version did not become visible in the registry" >&2
+            exit 1
+          fi
+          ACTUAL_INTEGRITY="$(npm view "@mriekki/lean@${VERSION}" dist.integrity)"
+          ACTUAL_SHASUM="$(npm view "@mriekki/lean@${VERSION}" dist.shasum)"
+          test "$ACTUAL_INTEGRITY" = "$EXPECTED_INTEGRITY"
+          test "$ACTUAL_SHASUM" = "$EXPECTED_SHASUM"
+
+      - name: Verify public package from neutral directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          SMOKE_ROOT="$(mktemp -d)"
+          trap 'rm -rf "$SMOKE_ROOT"' EXIT
+          cd "$SMOKE_ROOT"
+          ACTUAL="$(npx --yes "@mriekki/lean@${{ inputs.version }}" version)"
+          test "$ACTUAL" = "@mriekki/lean ${{ inputs.version }}"

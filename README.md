@@ -47,7 +47,7 @@ The umbrella package writes `LEAN_BASELINE.json` while preserving component-nati
 - install/update never require private GitHub access.
 - no install/update lifecycle hook mutates a consumer repository; changes occur only when the user invokes the Lean CLI.
 - one preflight plan covers all selected components; an unsafe component blocks the entire apply.
-- package publication is separate from merging this repository and requires an explicit release action.
+- package publication is separate from merging a release PR and requires one explicit exact-version publication action.
 
 ## Current scope
 
@@ -55,7 +55,19 @@ The package currently starts with the `greenfield-poc` consumer profile. Existin
 
 ## Package assembly and release
 
-The public source repository intentionally does not commit generated private-source snapshots. Prepare an auditable release candidate from clean exact canonical checkouts:
+For normal releases in the Lean Platform VS Code workspace, use:
+
+```text
+/release-lean [version | patch | minor | major]
+```
+
+The repo-local skill resolves accepted component commits, prepares the version/pin/descriptor update, runs local verification, creates the release PR, waits for the package-PR merge gate, verifies post-merge `main` CI, then stops once at the exact npm publication gate.
+
+After publication approval it triggers `.github/workflows/npm-publish.yml`. The workflow reconstructs the package from the exact private component pins, runs the deterministic release preparation, publishes the exact tarball directly with npm Trusted Publishing (OIDC), and automatically verifies the registry identity plus a neutral-directory `npx` smoke check.
+
+The normal flow does not use staged npm publication or a long-lived npm publish token. An existing stage-only trusted publisher must be migrated once to allow direct `npm publish` from `npm-publish.yml`; `/release-lean` guides that bounded one-time setup.
+
+The underlying release-candidate command remains available for diagnostics:
 
 ```powershell
 Set-Location D:\Projects\lean-platform
@@ -65,7 +77,5 @@ node .\scripts\prepare-release.mjs `
 ```
 
 Release preparation verifies exact `origin/main`, runs the complete test suite, refuses dirty canonical source checkouts, assembles and verifies the pinned assets, compares two independent `npm pack` SHA-256 values, and smoke-tests the packed CLI from a clean temporary install. The resulting tarball and `RELEASE_MANIFEST.json` are written under `dist/release/`.
-
-The first npm version was staged manually and required explicit 2FA approval before becoming public. Current releases use `.github/workflows/npm-stage.yml` with npm Trusted Publishing (OIDC) to stage future versions without a long-lived npm publish token; human 2FA approval remains the final publication gate.
 
 See `docs/RELEASE_PROCESS.md` for the full release contract.

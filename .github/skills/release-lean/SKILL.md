@@ -1,0 +1,232 @@
+---
+name: release-lean
+description: Prepare, deliver, publish, and verify an exact @mriekki/lean package release from accepted Lean component commits.
+argument-hint: "[exact version | patch | minor | major]"
+user-invocable: true
+disable-model-invocation: true
+---
+
+# Release Lean
+
+`/release-lean` is the Lean Platform-specific release workflow for `@mriekki/lean`.
+
+It owns package transport mechanics. Canonical Core and Deployment Kit repositories still own their reusable source behavior.
+
+## 1. Resume from observed state
+
+Start by inspecting the current Lean Platform checkout, Git/GitHub state, package metadata, component pins, open release PRs, CI, registry state, and local canonical component checkouts.
+
+Default local roots on Mark's workstation are:
+
+```text
+D:\Projects\lean-platform
+D:\Projects\lean-agentic-core
+D:\Projects\lean-poc-deployment-kit
+```
+
+Use repository facts rather than memory. Do not invent accepted commits, CI status, registry state, or npm trusted-publisher state.
+
+The skill is resume-aware. If preparation, PR creation, merge, publication, or verification already happened, continue from the furthest safe observed state rather than repeating it.
+
+## 2. Resolve accepted component commits
+
+For each canonical component included by `assets/components.json`:
+
+- fetch its default branch;
+- require a clean tracked working tree;
+- require the local checkout to be at exact `origin/main`;
+- verify the selected commit is the accepted merged commit intended for the package;
+- verify configured post-merge CI for that exact commit completed successfully;
+- read canonical version metadata when the component defines one.
+
+Do not pin an unmerged branch, dirty checkout, guessed SHA, or commit whose configured default-branch CI is failing/pending.
+
+A component that has not changed since the installed package stays on its existing exact pin.
+
+## 3. Choose the package version
+
+Accept an exact semantic version or a requested bump (`patch`, `minor`, `major`). When the user did not specify one, recommend a bump from the observed consumer-visible change.
+
+For pre-1.0 `@mriekki/lean` releases, use this default policy unless a repository decision supersedes it:
+
+- `patch` — compatible corrections/content/tooling updates;
+- `minor` — consumer-visible breaking changes such as managed-path removal/rename or command removal;
+- `major` — only when explicitly justified/approved.
+
+Never reuse a version already present on npm. Read the registry before modifying package metadata.
+
+## 4. Prepare the release PR automatically
+
+Invoking `/release-lean` authorizes safe release-preparation mechanics but does **not** authorize npm publication.
+
+When preparation has not happened yet:
+
+1. require Lean Platform tracked state to be clean;
+2. refresh `main` using fast-forward-only behavior;
+3. create/switch to `release/lean-<version>` unless the matching release branch already exists safely;
+4. run:
+
+```powershell
+Set-Location D:\Projects\lean-platform
+node .\scripts\prepare-package-update.mjs `
+  --version <version> `
+  --core-root D:\Projects\lean-agentic-core `
+  --deployment-root D:\Projects\lean-poc-deployment-kit
+```
+
+The deterministic preparation script updates only package version metadata, exact component pins/versions, and packaged distribution descriptors copied from those exact canonical commits.
+
+Then run:
+
+```powershell
+npm test
+npm run assemble:assets -- --core-root D:\Projects\lean-agentic-core --deployment-root D:\Projects\lean-poc-deployment-kit
+npm run verify:assets
+git diff --check
+git --no-pager diff
+```
+
+Generated assets remain ignored release-build products; do not commit them unless repository policy changes.
+
+If the diff contains anything outside the expected release-preparation scope, stop.
+
+After successful verification, routine branch/stage/commit/push/PR creation and PR-CI observation are authorized by this invocation. Use a concise release commit/PR such as `Prepare @mriekki/lean <version>`.
+
+Do not publish npm from a release branch or PR.
+
+## 5. Package PR merge gate
+
+When PR CI is green and the PR diff still matches the verified release preparation, stop once at:
+
+```text
+PACKAGE RELEASE PR READY
+
+Version: <version>
+Core: <exact commit/version>
+Deployment Kit: <exact commit>
+PR CI: GREEN
+Diff: expected release-preparation files only
+
+1. Merge and finalize package release PR [GITHUB WRITE]
+2. Review PR diff [READ ONLY]
+3. Leave open [NO ACTION]
+```
+
+Merge authorization does not authorize npm publication.
+
+After merge, verify exact Lean Platform `main` and its configured post-merge CI before publication.
+
+## 6. One-time npm trusted-publisher setup
+
+Normal publication uses `.github/workflows/npm-publish.yml` with npm Trusted Publishing (OIDC) and **direct `npm publish`**. No long-lived npm publish token is used.
+
+Read the current trust relationship with:
+
+```powershell
+npm trust list @mriekki/lean --json
+```
+
+The required relationship is:
+
+```text
+provider: GitHub Actions
+repository: mriekki/lean-platform
+workflow file: npm-publish.yml
+allowed action: npm publish
+```
+
+If that exact relationship already exists, do not touch it.
+
+If the existing relationship is stage-only or points at the retired `npm-stage.yml`, explain that this is a one-time migration. Show the exact existing trust ID and require one bounded gate:
+
+```text
+[NPM TRUST WRITE]
+Replace the existing @mriekki/lean trusted publisher with direct-publish permission for mriekki/lean-platform/.github/workflows/npm-publish.yml?
+```
+
+Only after approval, use the observed trust ID:
+
+```powershell
+npm trust revoke @mriekki/lean --id <observed-id>
+npm trust github @mriekki/lean --file npm-publish.yml --repo mriekki/lean-platform --allow-publish --yes
+npm trust list @mriekki/lean --json
+```
+
+npm may require interactive 2FA for this one-time trust-configuration change. Do not store or request an OTP in repository files, chat transcripts, scripts, or CI secrets.
+
+If no trust relationship exists, skip revoke and create the required relationship after the same `[NPM TRUST WRITE]` gate.
+
+## 7. Exact npm publication gate
+
+Once all of these are true:
+
+- release PR merged;
+- Lean Platform local checkout is exact clean `origin/main`;
+- configured post-merge CI for that exact `main` commit is green;
+- package version and component pins are internally consistent;
+- target npm version does not already exist;
+- trusted publisher permits `npm publish` from `npm-publish.yml`;
+
+present exactly one publication gate:
+
+```text
+NPM PUBLISH READY
+
+Package: @mriekki/lean@<version>
+Lean Platform source: <exact main SHA>
+Core: <exact commit/version>
+Deployment Kit: <exact commit>
+Post-merge CI: GREEN
+Publisher: GitHub OIDC / npm-publish.yml
+
+1. Publish this exact package [NPM PUBLISH]
+2. Stop [NO ACTION]
+```
+
+Selecting option 1 authorizes only the exact package/version/source/pins shown.
+
+Trigger:
+
+```powershell
+gh workflow run npm-publish.yml --ref main `
+  -f version=<version> `
+  -f source_commit=<exact-main-sha>
+```
+
+Then monitor the exact workflow run without another permission prompt.
+
+If `main`, version, pins, or workflow evidence changes before publication, stop for renewed review.
+
+## 8. Publication workflow contract
+
+`npm-publish.yml` must fail closed before `npm publish` unless:
+
+- the checked-out Lean Platform commit equals the authorized `source_commit` input;
+- `package.json` equals the authorized version input;
+- the exact pinned Core and Deployment Kit commits can be checked out;
+- `scripts/prepare-release.mjs` passes its reproducibility, assembly, test, and clean-install checks;
+- the target npm version is not already published.
+
+The workflow publishes the exact prepared tarball with OIDC, then automatically verifies registry version/integrity and runs a neutral-directory `npx` smoke check.
+
+Do not use `npm stage publish`, `npm stage approve`, a long-lived npm publish token, or a second manual package-inspection ceremony in the normal flow.
+
+## 9. Completion
+
+On success report only evidence-backed state:
+
+```text
+LEAN PACKAGE RELEASE COMPLETE
+
+Package: @mriekki/lean@<version>
+Lean Platform source: <sha>
+Core: <sha/version>
+Deployment Kit: <sha>
+Publish workflow: GREEN
+Registry verification: GREEN
+Neutral npx smoke: GREEN
+```
+
+Publishing the package does not update existing consumers. Package-managed consumers adopt it separately through `/lean-update`.
+
+Do not regenerate a POC, modify Bootstrap provenance, deploy an application, publish Core/Deployment-Kit tags/releases, or update consumers as an implicit side effect of `/release-lean`.
