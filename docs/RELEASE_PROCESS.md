@@ -95,25 +95,21 @@ The package can retain npm's `Require two-factor authentication and disallow tok
 
 ### Operator authentication and one-time setup
 
-Complete the local npm identity and publisher check before merging the package release PR, so missing access does not become a post-merge surprise:
+Routine releases do not require a local npm login. GitHub Actions uses OIDC, and a successful publish from the exact workflow confirms that the trusted-publisher relationship works. Do not run `npm trust list` on every release: npm may require fresh browser/2FA authorization even when `npm whoami` succeeds.
 
-```powershell
-npm whoami --registry=https://registry.npmjs.org/
-npm trust list @mriekki/lean --json
-```
+Use npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher** for initial setup or inspection. Configure GitHub Actions with owner `mriekki`, repository `lean-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission.
 
-If `npm whoami` returns `E401`, sign in interactively and verify the account:
+If CLI access is needed to configure or investigate the relationship, sign in interactively:
 
 ```powershell
 npm login --auth-type=web --registry=https://registry.npmjs.org/
 npm whoami --registry=https://registry.npmjs.org/
+npm trust list @mriekki/lean --json
 ```
 
-The account must be allowed to manage `@mriekki/lean`. `npm trust list` can require a separate browser authorization (`EOTP`); open the URL printed in the local terminal, finish npm's prompt, and rerun the command. Never paste or save that one-time URL or an OTP in chat, repository files, or CI.
+The account must be allowed to manage `@mriekki/lean`. `npm trust list` can require a separate browser authorization (`EOTP`) even after login; open the URL printed in the local terminal, finish npm's prompt, and rerun the command. Never paste or save that one-time URL or an OTP in chat, repository files, or CI. The same relationship can be created through `npm trust github` after the release skill's `[NPM TRUST WRITE]` gate.
 
-The trusted publisher can be inspected or configured in npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher**. Configure GitHub Actions with owner `mriekki`, repository `lean-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission. The same relationship can be created through `npm trust github` after the release skill's `[NPM TRUST WRITE]` gate.
-
-No long-lived npm token is needed or appropriate for this flow. The local npm login is only for maintainer operations and trust inspection; GitHub Actions publishes with OIDC. The workflow uses the repository's `LEAN_SOURCE_TOKEN` only to read the private canonical component repositories.
+No long-lived npm token is needed or appropriate for this flow. Local npm login is only for occasional maintainer operations and trust configuration; GitHub Actions publishes with OIDC. The workflow uses the repository's `LEAN_SOURCE_TOKEN` only to read the private canonical component repositories.
 
 ### One-time migration from the old staged workflow
 

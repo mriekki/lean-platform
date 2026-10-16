@@ -111,8 +111,9 @@ test('release skill owns automatic version selection, package preparation, trust
   assert.match(skill, /Do not require the user to choose `patch`, `minor`, or `major`/);
   assert.match(skill, /Explicit bump or exact-version arguments are optional overrides/);
   assert.match(skill, /prepare-package-update\.mjs/);
+  assert.match(skill, /Routine releases do not require a local npm login/);
+  assert.match(skill, /do not query `npm trust list` on every routine release/);
   assert.match(skill, /npm login --auth-type=web/);
-  assert.match(skill, /npm whoami --registry=https:\/\/registry\.npmjs\.org/);
   assert.match(skill, /EOTP/);
   assert.match(skill, /npm trust list @mriekki\/lean --json/);
   assert.match(skill, /\[NPM TRUST WRITE\]/);

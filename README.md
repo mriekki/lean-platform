@@ -6,12 +6,7 @@ Canonical engineering remains in the private platform repositories. Before publi
 
 ## Current `greenfield-poc` profile
 
-The current profile bundles:
-
-- Lean Agentic Core `1.11.1` from commit `e3a8a994d1e95923d629af7640d3b3a0a4f098d4`, distribution `greenfield-workspace`;
-- Lean POC Deployment Kit commit `4c23140576b39608a3ef285cad4abe53dccb9c47`, distribution `greenfield-poc`.
-
-Core `1.11.1` tightens `/lean-update` for Bootstrap-generated package-managed consumers: it keeps `POC_BOOTSTRAP.json`, umbrella/component baselines, exact registry integrity, and generated package-verification surfaces coherent while retaining `/core-sync` as the compatibility/router path for component-only Core consumers.
+The profile bundles Lean Agentic Core's `greenfield-workspace` distribution and the Lean POC Deployment Kit's `greenfield-poc` distribution. The package version and exact canonical component commits are recorded in [`assets/components.json`](./assets/components.json), which is the source of truth for each release.
 
 ## Developer experience
 
@@ -67,7 +62,7 @@ After publication approval it triggers `.github/workflows/npm-publish.yml`. The 
 
 The normal flow does not use staged npm publication or a long-lived npm publish token. An existing stage-only trusted publisher must be migrated once to allow direct `npm publish` from `npm-publish.yml`; `/release-lean` guides that bounded one-time setup.
 
-Before merging a release PR, verify the local npm maintainer login and trusted-publisher relationship; the release skill explains npm's browser/2FA reauthorization if `npm trust list` returns `EOTP`. GitHub Actions publication uses OIDC, not a manually managed npm token. See `docs/RELEASE_PROCESS.md` for the operator setup.
+Routine releases do not require local npm authentication: GitHub Actions publishes through OIDC. npm login and trusted-publisher inspection are only needed for initial setup, migration, or troubleshooting a trust error. See `docs/RELEASE_PROCESS.md` for details.
 
 The underlying release-candidate command remains available for diagnostics:
 
