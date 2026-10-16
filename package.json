@@ -1,6 +1,6 @@
 {
   "name": "@mriekki/lean",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Public consumer distribution and updater for Lean engineering assets.",
   "type": "module",
   "bin": {
