@@ -64,6 +64,12 @@ test('contract preserves canonical ownership and safe fallback behavior', async 
   assert.match(newPoc, /Ask one material question at a time/);
   assert.match(newPoc, /CATALOG GAP/);
   assert.match(newPoc, /Only the final approved `POC_BOOTSTRAP\.json`/);
+  assert.match(newPoc, /Deployment discovery — outcome first/);
+  assert.match(newPoc, /second computer, a home LAN, SSH, Staging, or Production/);
+  assert.match(newPoc, /placement: workstation/);
+  assert.match(newPoc, /placement: deferred/);
+  assert.match(newPoc, /provider-adapter boundary/);
+  assert.match(newPoc, /host-level Production isolation is not demonstrated/);
   assert.match(onboarding, /Knowing the URL alone does not grant access/);
   assert.match(onboarding, /Revocation removes future Control Plane authorization/);
 });
