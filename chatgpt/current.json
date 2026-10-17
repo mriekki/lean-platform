@@ -14,7 +14,7 @@
     },
     {
       "path": "chatgpt/contracts/v1/ONBOARDING.md",
-      "sha256": "375056be43422b94220708578e8a1467607e0bc0c8f9ac0ad5b36c446e6d1e45"
+      "sha256": "e86bf726759f13e7fa6be0e45d156e7f5027620e33279b3bfedc8d9e3d21eb59"
     },
     {
       "path": "chatgpt/contracts/v1/PROJECT_INSTRUCTIONS.md",
@@ -60,7 +60,9 @@
     "inviteIssuePrefix": "[invite-lean]",
     "revokeIssuePrefix": "[revoke-lean]",
     "acceptCommand": "/accept-lean",
-    "doctorCommand": "/lean-doctor"
+    "declineCommand": "/decline-lean",
+    "doctorCommand": "/lean-doctor",
+    "invitationPolicyUrl": "https://raw.githubusercontent.com/mriekki/lean-poc-control-plane/main/config/invitation-policy.json"
   },
   "bootstrapUrl": "https://raw.githubusercontent.com/mriekki/lean-platform/main/chatgpt/current.json"
 }
