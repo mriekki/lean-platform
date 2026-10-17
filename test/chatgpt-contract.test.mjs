@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
@@ -11,6 +12,20 @@ async function text(relative) {
   return readFile(path.join(root, relative), 'utf8');
 }
 
+function canonicalGitBlob(relative) {
+  const result = spawnSync('git', ['show', `HEAD:${relative}`], {
+    cwd: root,
+    encoding: null,
+    maxBuffer: 1024 * 1024,
+  });
+  assert.equal(
+    result.status,
+    0,
+    `Unable to read canonical Git blob ${relative}: ${result.stderr?.toString() ?? ''}`,
+  );
+  return result.stdout;
+}
+
 test('public ChatGPT descriptor resolves one immutable contract snapshot', async () => {
   const descriptor = JSON.parse(await text('chatgpt/current.json'));
   assert.equal(descriptor.schemaVersion, 1);
@@ -21,8 +36,7 @@ test('public ChatGPT descriptor resolves one immutable contract snapshot', async
 
   for (const document of descriptor.documents) {
     assert.ok(document.path.startsWith(`${descriptor.snapshotPath}/`));
-    const content = await text(document.path);
-    const digest = createHash('sha256').update(content).digest('hex');
+    const digest = createHash('sha256').update(canonicalGitBlob(document.path)).digest('hex');
     assert.equal(digest, document.sha256, document.path);
   }
 });
