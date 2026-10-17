@@ -16,7 +16,7 @@ generated POC repository becomes the durable project handoff
 
 The public Control Plane invitation issue is the onboarding portal.
 
-Expected lifecycle:
+Expected happy path:
 
 ```text
 PENDING
@@ -27,7 +27,16 @@ PENDING
 → configure ChatGPT Project once
 ```
 
-The invitation URL may be shared with the invited developer. Knowing the URL alone does not grant access: claim identity must match the GitHub owner named by the invitation, and the required GitHub App installation must be verifiable.
+Other invitation outcomes:
+
+```text
+DECLINED
+EXPIRED
+```
+
+The invited owner may comment `/decline-lean` to decline without changing developer authorization. Unclaimed invitations expire according to the public Control Plane invitation policy; expiration also makes no authorization change.
+
+The invitation URL may be shared with the invited developer. Knowing the URL alone does not grant access: claim identity must match the GitHub owner named by the invitation, the invitation must still be valid, and the required GitHub App installation must be verifiable.
 
 ## ChatGPT setup
 
