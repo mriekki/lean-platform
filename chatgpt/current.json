@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "channel": "stable",
+  "contractVersion": 1,
+  "snapshotPath": "chatgpt/contracts/v1",
+  "documents": [
+    {
+      "path": "chatgpt/contracts/v1/EXISTING_POC.md",
+      "sha256": "a3867712c80e4018441bf48d5cc3fbcdffec5bfcaf61d48e328aaf85d39feac2"
+    },
+    {
+      "path": "chatgpt/contracts/v1/NEW_POC.md",
+      "sha256": "0eb5d131f8095182a906f82033209199322e5f590e985af0e63c185b40815cda"
+    },
+    {
+      "path": "chatgpt/contracts/v1/ONBOARDING.md",
+      "sha256": "375056be43422b94220708578e8a1467607e0bc0c8f9ac0ad5b36c446e6d1e45"
+    },
+    {
+      "path": "chatgpt/contracts/v1/PROJECT_INSTRUCTIONS.md",
+      "sha256": "b336a347a66ab3fdec44849f3aae7c5857d388e4ff9964dd31dbe075a3026039"
+    },
+    {
+      "path": "chatgpt/contracts/v1/PROJECT_RULES.md",
+      "sha256": "6b2f4c88e96128c907c7e76c367b2db443421a5b94892987a9a4bacc1ab1e114"
+    },
+    {
+      "path": "chatgpt/contracts/v1/USER_PROFILE.schema.json",
+      "sha256": "f9f90bd261724d310a2898dfac8663f2bc0b739541ac7047accb660fff34099d"
+    }
+  ],
+  "sourceProvenance": {
+    "core": {
+      "repository": "mriekki/lean-agentic-core",
+      "commit": "f48508da043b8640daea4fa7f717de2ad55baccc",
+      "sources": [
+        {
+          "path": "core/instructions/lean-workflow.instructions.md",
+          "blobSha": "c4b558ba224c8b4f4f655cfabc7cf6d95dffa337"
+        },
+        {
+          "path": "core/process/PROJECT_DOCUMENTATION_FRAMEWORK.md",
+          "blobSha": "dcf70b76d9dfe8ff4b06ce10c809acdf0ca9d60c"
+        }
+      ]
+    },
+    "bootstrap": {
+      "repository": "mriekki/lean-poc-bootstrap",
+      "commit": "fc0621d3116a8ed6e7083d4bbfca8467382de2cb",
+      "sources": [
+        {
+          "path": "docs/discovery/QUESTION_MODEL.md",
+          "blobSha": "5fc80a13945fabe9c2c9b7b6c17b259a25538ec4"
+        }
+      ]
+    }
+  },
+  "controlPlane": {
+    "repository": "mriekki/lean-poc-control-plane",
+    "inviteIssuePrefix": "[invite-lean]",
+    "revokeIssuePrefix": "[revoke-lean]",
+    "acceptCommand": "/accept-lean",
+    "doctorCommand": "/lean-doctor"
+  },
+  "bootstrapUrl": "https://raw.githubusercontent.com/mriekki/lean-platform/main/chatgpt/current.json"
+}
