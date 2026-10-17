@@ -58,6 +58,11 @@ test('descriptor records exact canonical source provenance', async () => {
   assert.equal(value.sourceProvenance.core.repository, 'mriekki/lean-agentic-core');
   assert.equal(value.sourceProvenance.bootstrap.repository, 'mriekki/lean-poc-bootstrap');
   assert.equal(value.sourceProvenance.controlPlane.repository, 'mriekki/lean-poc-control-plane');
+
+  const controlPlaneSources = new Set(value.sourceProvenance.controlPlane.sources.map((item) => item.path));
+  assert.ok(controlPlaneSources.has('.github/workflows/generate-poc.yml'));
+  assert.ok(controlPlaneSources.has('.github/workflows/onboarding-doctor.yml'));
+  assert.ok(controlPlaneSources.has('tools/onboarding_doctor.py'));
 });
 
 test('contract preserves canonical ownership and safe fallback behavior', async () => {
@@ -85,7 +90,12 @@ test('contract preserves canonical ownership and safe fallback behavior', async 
   assert.match(newPoc, /Do not require `\/lean-doctor` as a per-POC discovery or approval gate/);
   assert.match(onboarding, /Knowing the URL alone does not grant access/);
   assert.match(onboarding, /onboarding\/readiness evidence, not a mandatory prerequisite for every `New POC:`/);
+  assert.match(onboarding, /\[lean-doctor\] <github-owner>/);
+  assert.match(onboarding, /Opening it runs the readiness check immediately/);
   assert.match(onboarding, /Revocation removes future Control Plane authorization/);
+
+  assert.equal(value.controlPlane.doctorIssuePrefix, '[lean-doctor]');
+  assert.equal(value.controlPlane.doctorCommand, '/lean-doctor');
 });
 
 test('developer profile is small, secret-free, and not project state', async () => {
