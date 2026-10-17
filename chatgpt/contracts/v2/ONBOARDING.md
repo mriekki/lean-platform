@@ -38,7 +38,21 @@ The invited owner may comment `/decline-lean` to decline without changing develo
 
 The invitation URL may be shared with the invited developer. Knowing the URL alone does not grant access: claim identity must match the GitHub owner named by the invitation, the invitation must still be valid, and the required GitHub App installation must be verifiable.
 
+## Doctor/readiness
+
 `/lean-doctor` is onboarding/readiness evidence, not a mandatory prerequisite for every `New POC:`. Once a developer is ACTIVE, generation itself revalidates the exact target GitHub App access at the fail-closed Control Plane boundary.
+
+For a newly invited developer, the invitation issue remains the natural doctor surface after activation.
+
+For an already-ACTIVE developer without an invitation issue, use the standalone Control Plane doctor path:
+
+```text
+[lean-doctor] <github-owner>
+```
+
+Open that public issue with an empty body. Opening it runs the readiness check immediately. After fixing a failed prerequisite, comment exactly `/lean-doctor` on the same issue to retry. Self-service is limited to the matching ACTIVE developer; an authorized Lean admin may run the doctor for another ACTIVE developer.
+
+The standalone doctor issue contains only the GitHub owner identity. It does not authorize generation, change developer status, or become POC state.
 
 ## ChatGPT setup
 
