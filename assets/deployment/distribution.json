@@ -18,9 +18,8 @@
     {"source": "src/lean_poc_deployment/errors.py", "destination": "tools/lean-deployment/lean_poc_deployment/errors.py"},
     {"source": "src/lean_poc_deployment/keys.py", "destination": "tools/lean-deployment/lean_poc_deployment/keys.py"},
     {"source": "src/lean_poc_deployment/profiles.py", "destination": "tools/lean-deployment/lean_poc_deployment/profiles.py"},
-    {"source": "src/lean_poc_deployment/teardown.py", "destination": "tools/lean-deployment/lean_poc_deployment/teardown.py"},
-    {"source": "src/lean_poc_deployment/teardown_cli.py", "destination": "tools/lean-deployment/lean_poc_deployment/teardown_cli.py"},
-    {"source": "src/lean_poc_deployment/teardown_remote.py", "destination": "tools/lean-deployment/lean_poc_deployment/teardown_remote.py"},
+    {"source": "src/lean_poc_deployment/registry_access.py", "destination": "tools/lean-deployment/lean_poc_deployment/registry_access.py"},
+    {"source": "src/lean_poc_deployment/registry_cli.py", "destination": "tools/lean-deployment/lean_poc_deployment/registry_cli.py"},
     {"source": "src/lean_poc_deployment/route_registry.py", "destination": "tools/lean-deployment/lean_poc_deployment/route_registry.py"},
     {"source": "src/lean_poc_deployment/route_registry_remote.py", "destination": "tools/lean-deployment/lean_poc_deployment/route_registry_remote.py"},
     {"source": "src/lean_poc_deployment/security.py", "destination": "tools/lean-deployment/lean_poc_deployment/security.py"},
@@ -29,6 +28,9 @@
     {"source": "src/lean_poc_deployment/sqlite_cli.py", "destination": "tools/lean-deployment/lean_poc_deployment/sqlite_cli.py"},
     {"source": "src/lean_poc_deployment/sqlite_import_recovery.py", "destination": "tools/lean-deployment/lean_poc_deployment/sqlite_import_recovery.py"},
     {"source": "src/lean_poc_deployment/ssh.py", "destination": "tools/lean-deployment/lean_poc_deployment/ssh.py"},
+    {"source": "src/lean_poc_deployment/teardown.py", "destination": "tools/lean-deployment/lean_poc_deployment/teardown.py"},
+    {"source": "src/lean_poc_deployment/teardown_cli.py", "destination": "tools/lean-deployment/lean_poc_deployment/teardown_cli.py"},
+    {"source": "src/lean_poc_deployment/teardown_remote.py", "destination": "tools/lean-deployment/lean_poc_deployment/teardown_remote.py"},
     {"source": "src/lean_poc_deployment/trust.py", "destination": "tools/lean-deployment/lean_poc_deployment/trust.py"}
   ]
 }
