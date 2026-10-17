@@ -14,7 +14,7 @@
     },
     {
       "path": "chatgpt/contracts/v1/NEW_POC.md",
-      "sha256": "0eb5d131f8095182a906f82033209199322e5f590e985af0e63c185b40815cda"
+      "sha256": "26e6e7bab830c082edeca5d9bb896656c6126866ed6fca9e931ade0629c198ba"
     },
     {
       "path": "chatgpt/contracts/v1/ONBOARDING.md",
@@ -36,7 +36,7 @@
   "sourceProvenance": {
     "core": {
       "repository": "mriekki/lean-agentic-core",
-      "commit": "f48508da043b8640daea4fa7f717de2ad55baccc",
+      "commit": "68f3f45e663cab535c5a9544cf4efe2f048f8f34",
       "sources": [
         {
           "path": "core/instructions/lean-workflow.instructions.md",
@@ -50,11 +50,11 @@
     },
     "bootstrap": {
       "repository": "mriekki/lean-poc-bootstrap",
-      "commit": "fc0621d3116a8ed6e7083d4bbfca8467382de2cb",
+      "commit": "1610453f9efdb5b709a27a15743be64cd3239f21",
       "sources": [
         {
           "path": "docs/discovery/QUESTION_MODEL.md",
-          "blobSha": "5fc80a13945fabe9c2c9b7b6c17b259a25538ec4"
+          "blobSha": "96499ccdf9a8dd9a71a4e22822d3c07bef09754f"
         }
       ]
     }
