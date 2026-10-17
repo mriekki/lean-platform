@@ -48,12 +48,15 @@ After confirming the exact ACTIVE GitHub owner, present one explicit gate, then 
 
 Do not imply revocation deletes, transfers, disables, or mutates repositories the developer already owns.
 
-## Status
+## Status and readiness
 
 For onboarding/authorization status, use current Control Plane evidence:
 
 - `config/developers.json` for ACTIVE/REVOKED authorization;
 - the developer's invitation issue for PENDING/DECLINED/EXPIRED/ACTIVE onboarding history;
-- `/lean-doctor` on an invitation issue for current readiness evidence.
+- `/lean-doctor` on an invitation issue for readiness evidence after invitation activation;
+- for an already-ACTIVE developer without an invitation issue, one empty-body public issue titled `[lean-doctor] <github-owner>`; opening it runs the doctor immediately and `/lean-doctor` may retry it.
+
+Doctor results are onboarding/readiness evidence, not a per-POC discovery or generation prerequisite. Generation independently fails closed if the required GitHub App target access is unavailable.
 
 Never treat a person's ChatGPT profile, a copied handoff file, or a POC repository as the authorization registry.
