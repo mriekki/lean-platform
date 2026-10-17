@@ -43,7 +43,7 @@ Gather only what is material to a credible V1:
 - learning/demonstration goals;
 - supported development operating systems;
 - approved GitHub repository owner/name;
-- production/deployment intent.
+- deployment outcome/intent.
 
 Ask conditionally when relevant about:
 
@@ -56,6 +56,91 @@ Ask conditionally when relevant about:
 - repository/team constraints;
 - stack constraints/preferences;
 - imported source maturity and future-roadmap intent.
+
+## Deployment discovery — outcome first
+
+Do not begin by assuming a second computer, a home LAN, SSH, Staging, or Production exists.
+
+When deployment is material, establish the desired outcome before infrastructure. Prefer a bounded choice such as:
+
+```text
+How do you expect to run/share this POC?
+
+1. Local development only
+2. Local/demo use on my development machine
+3. Shareable demo accessible to other people
+4. Production-like deployment for learning/testing
+5. Real Production deployment
+6. Not sure — recommend one
+```
+
+Map that decision to deployment outcome/intent without silently choosing infrastructure. Only then ask the smallest topology questions needed.
+
+When another execution target may be needed, establish what is actually available:
+
+```text
+workstation only
+second machine
+VPS/cloud VM
+managed hosting
+undecided
+```
+
+A developer with one workstation is a normal discovery case.
+
+Keep environment purpose separate from physical placement:
+
+```text
+environment purpose
+→ placement
+→ isolation
+→ exposure
+→ optional concrete target/provider binding
+```
+
+Current placement vocabulary includes `workstation`, `remote-target`, `managed-service`, and `deferred`.
+
+For compatible local/demo use, a repository-supported one-machine path may be:
+
+```text
+purpose: demo
+placement: workstation
+isolation: container
+exposure: loopback
+adapter: workstation-container
+bindingState: configured
+```
+
+The reusable workstation-container adapter is loopback-only. Do not silently widen it to LAN or public exposure.
+
+If the user wants a shareable/public demo but has no supported target/provider adapter yet, preserve the outcome and allow an intentionally deferred binding:
+
+```text
+purpose: demo
+placement: deferred
+isolation: deferred
+exposure: deferred
+adapter: deferred
+bindingState: deferred
+```
+
+Deferred deployment is a valid generated-project state. It must not block repository generation, local development, scaffolding, tests/CI, documentation, or learning. Do not force infrastructure provisioning just to make Bootstrap complete.
+
+For a remote target, ask only relevant facts: named environment/purpose, supported target/runtime profile, network scope, access transport, promotion needs, routing intent when material, and lifecycle/disposal intent. Address discovery is not host identity; strict independently verified trust remains separate.
+
+Multiple logical environments may share one physical target. If Staging and Production share a physical failure domain, preserve their independent environment/data/runtime/authorization identities and state explicitly that host-level Production isolation is not demonstrated. Colocation never weakens Production gates.
+
+`managed-service` is a provider-adapter boundary, not generic cloud support. Do not call a provider supported unless the live catalog and reusable implementation define its credential boundary, deterministic plan/apply/check behavior, and proof evidence. Otherwise label the recommendation `CATALOG GAP`.
+
+Safety invariants:
+
+- Production is never implicit/default;
+- environment identity is independent of physical-machine count;
+- failure of one environment never redirects to another;
+- workstation deployment never silently widens loopback exposure;
+- deferred deployment never triggers guessed provisioning;
+- unknown/changed remote host identity blocks access;
+- destructive tear-down remains explicit and limited to owned POC/environment resources.
 
 ## Stack support
 
@@ -124,7 +209,7 @@ Discovery is ready for a generation proposal when:
 - V1 is coherent;
 - major risks are acknowledged;
 - development platforms are known;
-- deployment intent/environment roles are known when relevant;
+- deployment outcome and required logical environment topology are known when relevant;
 - target owner/repository is approved;
 - exact Bootstrap provenance can be established;
 - exact supported Lean distribution provenance can be established;
