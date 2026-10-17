@@ -5,6 +5,10 @@
   "snapshotPath": "chatgpt/contracts/v1",
   "documents": [
     {
+      "path": "chatgpt/contracts/v1/ADMIN.md",
+      "sha256": "75dc86f1b27ef6aeb168a437896bf88bec6dcd6a68f08ca46bab713bf0e27ca0"
+    },
+    {
       "path": "chatgpt/contracts/v1/EXISTING_POC.md",
       "sha256": "a3867712c80e4018441bf48d5cc3fbcdffec5bfcaf61d48e328aaf85d39feac2"
     },
