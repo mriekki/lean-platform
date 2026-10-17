@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "@mriekki/lean",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "defaultProfile": "greenfield-poc",
   "profiles": {
     "greenfield-poc": {
@@ -23,7 +23,7 @@
     },
     "deployment": {
       "repository": "mriekki/lean-poc-deployment-kit",
-      "commit": "4e52b74e1f23829e37b5f16ac03ada124621ffa0",
+      "commit": "2763e604c20e64720d7de71fa93a88d99677be36",
       "distribution": "greenfield-poc",
       "descriptor": "assets/deployment/distribution.json",
       "sourceRoot": "assets/generated/deployment",
