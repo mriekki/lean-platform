@@ -18,7 +18,7 @@
     },
     {
       "path": "chatgpt/contracts/v2/ONBOARDING.md",
-      "sha256": "440b389c106a9120857f514d3ea0185a6be13f713a39b60a85d92a7cc0d2fb47"
+      "sha256": "78b90a19ec78605d5e5791ea77c914e313edfaef18d9cd7a5a947ae14ee24a08"
     },
     {
       "path": "chatgpt/contracts/v2/PROJECT_INSTRUCTIONS.md",
@@ -60,15 +60,27 @@
     },
     "controlPlane": {
       "repository": "mriekki/lean-poc-control-plane",
-      "commit": "df33d99d7f0a3abfcd6281047a9bbd2fe1fa1882",
+      "commit": "d5e0a6d6ec07823023babead22f33185b01dab5f",
       "sources": [
         {
           "path": "docs/SETUP.md",
-          "blobSha": "9a1b5a74d09f26051aca4b063c98eeda6ed5ba85"
+          "blobSha": "547a152ca6d64ca1c8008a0e67abadd6c7d7b195"
         },
         {
           "path": ".github/workflows/generate-poc.yml",
           "blobSha": "40d07531176c5d550ef8b7ad7ac63523017890e3"
+        },
+        {
+          "path": "docs/INVITATIONS.md",
+          "blobSha": "c5c39f253c768f63fab159d1863a7c4ed0ef0812"
+        },
+        {
+          "path": ".github/workflows/onboarding-doctor.yml",
+          "blobSha": "f3e98cb3505d5ba8856b5e62004166157a0ead91"
+        },
+        {
+          "path": "tools/onboarding_doctor.py",
+          "blobSha": "11ec4a41357baa769d4bc85941ba83fcab7efbed"
         }
       ]
     }
@@ -77,6 +89,7 @@
     "repository": "mriekki/lean-poc-control-plane",
     "inviteIssuePrefix": "[invite-lean]",
     "revokeIssuePrefix": "[revoke-lean]",
+    "doctorIssuePrefix": "[lean-doctor]",
     "acceptCommand": "/accept-lean",
     "declineCommand": "/decline-lean",
     "doctorCommand": "/lean-doctor",
