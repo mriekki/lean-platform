@@ -1,42 +1,42 @@
 {
   "schemaVersion": 1,
   "channel": "stable",
-  "contractVersion": 1,
-  "snapshotPath": "chatgpt/contracts/v1",
+  "contractVersion": 2,
+  "snapshotPath": "chatgpt/contracts/v2",
   "documents": [
     {
-      "path": "chatgpt/contracts/v1/ADMIN.md",
+      "path": "chatgpt/contracts/v2/ADMIN.md",
       "sha256": "75dc86f1b27ef6aeb168a437896bf88bec6dcd6a68f08ca46bab713bf0e27ca0"
     },
     {
-      "path": "chatgpt/contracts/v1/EXISTING_POC.md",
+      "path": "chatgpt/contracts/v2/EXISTING_POC.md",
       "sha256": "a3867712c80e4018441bf48d5cc3fbcdffec5bfcaf61d48e328aaf85d39feac2"
     },
     {
-      "path": "chatgpt/contracts/v1/NEW_POC.md",
-      "sha256": "26e6e7bab830c082edeca5d9bb896656c6126866ed6fca9e931ade0629c198ba"
+      "path": "chatgpt/contracts/v2/NEW_POC.md",
+      "sha256": "7d52b99ddbbbd0f558b2d2da23b69e99785021857125eb24ce10e3c9270b667a"
     },
     {
-      "path": "chatgpt/contracts/v1/ONBOARDING.md",
-      "sha256": "e86bf726759f13e7fa6be0e45d156e7f5027620e33279b3bfedc8d9e3d21eb59"
+      "path": "chatgpt/contracts/v2/ONBOARDING.md",
+      "sha256": "440b389c106a9120857f514d3ea0185a6be13f713a39b60a85d92a7cc0d2fb47"
     },
     {
-      "path": "chatgpt/contracts/v1/PROJECT_INSTRUCTIONS.md",
+      "path": "chatgpt/contracts/v2/PROJECT_INSTRUCTIONS.md",
       "sha256": "b336a347a66ab3fdec44849f3aae7c5857d388e4ff9964dd31dbe075a3026039"
     },
     {
-      "path": "chatgpt/contracts/v1/PROJECT_RULES.md",
+      "path": "chatgpt/contracts/v2/PROJECT_RULES.md",
       "sha256": "6b2f4c88e96128c907c7e76c367b2db443421a5b94892987a9a4bacc1ab1e114"
     },
     {
-      "path": "chatgpt/contracts/v1/USER_PROFILE.schema.json",
-      "sha256": "f9f90bd261724d310a2898dfac8663f2bc0b739541ac7047accb660fff34099d"
+      "path": "chatgpt/contracts/v2/USER_PROFILE.schema.json",
+      "sha256": "a15ec805f0a30dc2566e17262071efa475ba76f2957a043068e694be6acace96"
     }
   ],
   "sourceProvenance": {
     "core": {
       "repository": "mriekki/lean-agentic-core",
-      "commit": "68f3f45e663cab535c5a9544cf4efe2f048f8f34",
+      "commit": "52905468c06fe39caa491a15a77e33cd400a60d9",
       "sources": [
         {
           "path": "core/instructions/lean-workflow.instructions.md",
@@ -44,17 +44,31 @@
         },
         {
           "path": "core/process/PROJECT_DOCUMENTATION_FRAMEWORK.md",
-          "blobSha": "dcf70b76d9dfe8ff4b06ce10c809acdf0ca9d60c"
+          "blobSha": "c63b734ffac390cc3a44deaa562e65a912db8f7b"
         }
       ]
     },
     "bootstrap": {
       "repository": "mriekki/lean-poc-bootstrap",
-      "commit": "1610453f9efdb5b709a27a15743be64cd3239f21",
+      "commit": "f96142b169f8df422838ece2053e51ef347dfa79",
       "sources": [
         {
           "path": "docs/discovery/QUESTION_MODEL.md",
-          "blobSha": "96499ccdf9a8dd9a71a4e22822d3c07bef09754f"
+          "blobSha": "2a3949d669eb3af108abfd3b8016039a927b8164"
+        }
+      ]
+    },
+    "controlPlane": {
+      "repository": "mriekki/lean-poc-control-plane",
+      "commit": "df33d99d7f0a3abfcd6281047a9bbd2fe1fa1882",
+      "sources": [
+        {
+          "path": "docs/SETUP.md",
+          "blobSha": "9a1b5a74d09f26051aca4b063c98eeda6ed5ba85"
+        },
+        {
+          "path": ".github/workflows/generate-poc.yml",
+          "blobSha": "40d07531176c5d550ef8b7ad7ac63523017890e3"
         }
       ]
     }
