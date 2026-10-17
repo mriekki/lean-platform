@@ -60,7 +60,7 @@
     },
     "controlPlane": {
       "repository": "mriekki/lean-poc-control-plane",
-      "commit": "d5e0a6d6ec07823023babead22f33185b01dab5f",
+      "commit": "b4ca559bdd3e20f3c3777e01a81ce0103a6a93cd",
       "sources": [
         {
           "path": "docs/SETUP.md",
