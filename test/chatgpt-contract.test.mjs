@@ -26,36 +26,46 @@ function canonicalGitBlob(relative) {
   return result.stdout;
 }
 
-test('public ChatGPT descriptor resolves one immutable contract snapshot', async () => {
-  const descriptor = JSON.parse(await text('chatgpt/current.json'));
-  assert.equal(descriptor.schemaVersion, 1);
-  assert.equal(descriptor.channel, 'stable');
-  assert.equal(descriptor.contractVersion, 1);
-  assert.equal(descriptor.snapshotPath, 'chatgpt/contracts/v1');
-  assert.ok(descriptor.documents.length >= 6);
+async function descriptor() {
+  return JSON.parse(await text('chatgpt/current.json'));
+}
 
-  for (const document of descriptor.documents) {
-    assert.ok(document.path.startsWith(`${descriptor.snapshotPath}/`));
+function contractPath(value, name) {
+  return `${value.snapshotPath}/${name}`;
+}
+
+test('public ChatGPT descriptor resolves one immutable contract snapshot', async () => {
+  const value = await descriptor();
+  assert.equal(value.schemaVersion, 1);
+  assert.equal(value.channel, 'stable');
+  assert.ok(Number.isInteger(value.contractVersion) && value.contractVersion >= 1);
+  assert.equal(value.snapshotPath, `chatgpt/contracts/v${value.contractVersion}`);
+  assert.ok(value.documents.length >= 6);
+
+  for (const document of value.documents) {
+    assert.ok(document.path.startsWith(`${value.snapshotPath}/`));
     const digest = createHash('sha256').update(canonicalGitBlob(document.path)).digest('hex');
     assert.equal(digest, document.sha256, document.path);
   }
 });
 
 test('descriptor records exact canonical source provenance', async () => {
-  const descriptor = JSON.parse(await text('chatgpt/current.json'));
-  assert.match(descriptor.sourceProvenance.core.commit, /^[0-9a-f]{40}$/);
-  assert.match(descriptor.sourceProvenance.bootstrap.commit, /^[0-9a-f]{40}$/);
-  assert.equal(descriptor.sourceProvenance.core.repository, 'mriekki/lean-agentic-core');
-  assert.equal(descriptor.sourceProvenance.bootstrap.repository, 'mriekki/lean-poc-bootstrap');
-  assert.ok(descriptor.sourceProvenance.core.sources.every((item) => /^[0-9a-f]{40}$/.test(item.blobSha)));
-  assert.ok(descriptor.sourceProvenance.bootstrap.sources.every((item) => /^[0-9a-f]{40}$/.test(item.blobSha)));
+  const value = await descriptor();
+  for (const key of ['core', 'bootstrap', 'controlPlane']) {
+    assert.match(value.sourceProvenance[key].commit, /^[0-9a-f]{40}$/);
+    assert.ok(value.sourceProvenance[key].sources.every((item) => /^[0-9a-f]{40}$/.test(item.blobSha)));
+  }
+  assert.equal(value.sourceProvenance.core.repository, 'mriekki/lean-agentic-core');
+  assert.equal(value.sourceProvenance.bootstrap.repository, 'mriekki/lean-poc-bootstrap');
+  assert.equal(value.sourceProvenance.controlPlane.repository, 'mriekki/lean-poc-control-plane');
 });
 
 test('contract preserves canonical ownership and safe fallback behavior', async () => {
-  const projectRules = await text('chatgpt/contracts/v1/PROJECT_RULES.md');
-  const projectInstructions = await text('chatgpt/contracts/v1/PROJECT_INSTRUCTIONS.md');
-  const newPoc = await text('chatgpt/contracts/v1/NEW_POC.md');
-  const onboarding = await text('chatgpt/contracts/v1/ONBOARDING.md');
+  const value = await descriptor();
+  const projectRules = await text(contractPath(value, 'PROJECT_RULES.md'));
+  const projectInstructions = await text(contractPath(value, 'PROJECT_INSTRUCTIONS.md'));
+  const newPoc = await text(contractPath(value, 'NEW_POC.md'));
+  const onboarding = await text(contractPath(value, 'ONBOARDING.md'));
 
   assert.match(projectRules, /Bootstrap.*discovery/i);
   assert.match(projectRules, /generated POCs.*their own product scope/i);
@@ -70,12 +80,17 @@ test('contract preserves canonical ownership and safe fallback behavior', async 
   assert.match(newPoc, /placement: deferred/);
   assert.match(newPoc, /provider-adapter boundary/);
   assert.match(newPoc, /host-level Production isolation is not demonstrated/);
+  assert.match(newPoc, /integrity.*registry/i);
+  assert.match(newPoc, /Do not ask the human to look up, paste, or approve npm `dist\.integrity`/);
+  assert.match(newPoc, /Do not require `\/lean-doctor` as a per-POC discovery or approval gate/);
   assert.match(onboarding, /Knowing the URL alone does not grant access/);
+  assert.match(onboarding, /onboarding\/readiness evidence, not a mandatory prerequisite for every `New POC:`/);
   assert.match(onboarding, /Revocation removes future Control Plane authorization/);
 });
 
 test('developer profile is small, secret-free, and not project state', async () => {
-  const schema = JSON.parse(await text('chatgpt/contracts/v1/USER_PROFILE.schema.json'));
+  const value = await descriptor();
+  const schema = JSON.parse(await text(contractPath(value, 'USER_PROFILE.schema.json')));
   assert.equal(schema.additionalProperties, false);
   assert.deepEqual(schema.required, ['schemaVersion', 'githubOwner']);
   for (const forbidden of ['password', 'token', 'secret', 'pocState', 'workItem', 'commitSha']) {
