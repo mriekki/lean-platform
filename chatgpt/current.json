@@ -50,7 +50,7 @@
     },
     "bootstrap": {
       "repository": "mriekki/lean-poc-bootstrap",
-      "commit": "f96142b169f8df422838ece2053e51ef347dfa79",
+      "commit": "9f8b9e585b0d1779e7aab3b248a4fef0a9983308",
       "sources": [
         {
           "path": "docs/discovery/QUESTION_MODEL.md",
