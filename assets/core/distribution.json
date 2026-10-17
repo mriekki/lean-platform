@@ -25,6 +25,7 @@
     {"source":"core/skills/tear-down/SKILL.md","destination":".github/skills/tear-down/SKILL.md"},
     {"source":"core/skills/coach/SKILL.md","destination":".github/skills/coach/SKILL.md"},
     {"source":"core/skills/db-lab/SKILL.md","destination":".github/skills/db-lab/SKILL.md"},
+    {"source":"core/skills/system-lab/SKILL.md","destination":".github/skills/system-lab/SKILL.md"},
     {"source":"core/skills/code-walkthrough/SKILL.md","destination":".github/skills/code-walkthrough/SKILL.md"},
     {"source":"core/skills/learning-review/SKILL.md","destination":".github/skills/learning-review/SKILL.md"},
     {"source":"core/process/WORK_ITEM_MODEL.md","destination":"docs/process/WORK_ITEM_MODEL.md"},
@@ -35,6 +36,7 @@
     {"source":"core/process/INTERACTIVE_SESSION_GUIDE.md","destination":"docs/process/INTERACTIVE_SESSION_GUIDE.md"},
     {"source":"core/process/COACHING_GUIDE.md","destination":"docs/process/COACHING_GUIDE.md"},
     {"source":"core/process/DATABASE_LEARNING_WORKBENCH.md","destination":"docs/process/DATABASE_LEARNING_WORKBENCH.md"},
+    {"source":"core/process/SYSTEM_DESIGN_LEARNING_WORKBENCH.md","destination":"docs/process/SYSTEM_DESIGN_LEARNING_WORKBENCH.md"},
     {"source":"core/process/SETUP_ACCEPTANCE_CHECKLIST.md","destination":"docs/process/SETUP_ACCEPTANCE_CHECKLIST.md"},
     {"source":"core/templates/PULL_REQUEST_TEMPLATE.md","destination":".github/PULL_REQUEST_TEMPLATE.md"},
     {"source":"core/templates/PRODUCT_BRIEF_TEMPLATE.md","destination":"docs/templates/PRODUCT_BRIEF_TEMPLATE.md"},
@@ -49,6 +51,7 @@
     {"source":"core/learning/DIAGRAM_GUIDE.md","destination":"learning/DIAGRAM_GUIDE.md"},
     {"source":"core/learning/RESOURCE_CATALOG.md","destination":"learning/RESOURCE_CATALOG.md"},
     {"source":"tools/db_lab/sqlite_workbench.py","destination":"tools/lean-db-lab/sqlite-workbench.py"},
+    {"source":"tools/system_lab/system_workbench.py","destination":"tools/lean-system-lab/system-workbench.py"},
     {"source":"tools/package/check_baseline.py","destination":"tools/lean-core/check-core-baseline.py"},
     {"source":"tools/package/check_upstream.py","destination":"tools/lean-core/check-core-upstream.py"}
   ]
