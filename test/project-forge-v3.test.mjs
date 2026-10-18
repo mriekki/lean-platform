@@ -22,11 +22,14 @@ async function text(relative) {
 }
 
 test('Project Forge v3 uses Project publicly while preserving compatibility identifiers', async () => {
+  const admin = await text(`${snapshot}/ADMIN.md`);
   const instructions = await text(`${snapshot}/PROJECT_INSTRUCTIONS.md`);
   const rules = await text(`${snapshot}/PROJECT_RULES.md`);
   const discovery = await text(`${snapshot}/NEW_POC.md`);
   const onboarding = await text(`${snapshot}/ONBOARDING.md`);
 
+  assert.match(admin, /must not make membership in a shared or admin-owned GitHub organization a normal prerequisite/);
+  assert.match(admin, /Builders normally use their own GitHub identities and own their own Project repositories/);
   assert.match(instructions, /This is a Project Forge coding Project/);
   assert.match(instructions, /New Project:/);
   assert.match(rules, /New POC:.*compatibility alias/s);
