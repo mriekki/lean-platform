@@ -50,7 +50,7 @@
     },
     "bootstrap": {
       "repository": "mriekki/lean-poc-bootstrap",
-      "commit": "35c0eaa0162f5f2276ff51b13b79aab7588fabca",
+      "commit": "285dfaae2562f8c14e1184a2da3cdcf264023651",
       "sources": [
         {
           "path": "docs/discovery/QUESTION_MODEL.md",
@@ -68,7 +68,7 @@
     },
     "controlPlane": {
       "repository": "mriekki/lean-poc-control-plane",
-      "commit": "dd48d96ff12f32b0fa820064449a7820c8f2ccad",
+      "commit": "44247e17a39c38c40c7e333da905aea4b798327a",
       "sources": [
         {
           "path": "docs/SETUP.md",
