@@ -11,6 +11,8 @@
     {"source": "src/lean_poc_deployment/app_runtime_remote.py", "destination": "tools/lean-deployment/lean_poc_deployment/app_runtime_remote.py"},
     {"source": "src/lean_poc_deployment/local_cli.py", "destination": "tools/lean-deployment/lean_poc_deployment/local_cli.py"},
     {"source": "src/lean_poc_deployment/local_runtime.py", "destination": "tools/lean-deployment/lean_poc_deployment/local_runtime.py"},
+    {"source": "src/lean_poc_deployment/local_spec.py", "destination": "tools/lean-deployment/lean_poc_deployment/local_spec.py"},
+    {"source": "src/lean_poc_deployment/local_sqlite.py", "destination": "tools/lean-deployment/lean_poc_deployment/local_sqlite.py"},
     {"source": "src/lean_poc_deployment/box_platform.py", "destination": "tools/lean-deployment/lean_poc_deployment/box_platform.py"},
     {"source": "src/lean_poc_deployment/box_platform_assets.py", "destination": "tools/lean-deployment/lean_poc_deployment/box_platform_assets.py"},
     {"source": "src/lean_poc_deployment/box_platform_remote.py", "destination": "tools/lean-deployment/lean_poc_deployment/box_platform_remote.py"},
