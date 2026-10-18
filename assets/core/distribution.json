@@ -20,6 +20,7 @@
     {"source":"core/skills/core-sync/SKILL.md","destination":".github/skills/core-sync/SKILL.md"},
     {"source":"core/skills/upstream-fix/SKILL.md","destination":".github/skills/upstream-fix/SKILL.md"},
     {"source":"core/skills/wait-what/SKILL.md","destination":".github/skills/wait-what/SKILL.md"},
+    {"source":"core/skills/developer-env-mode/SKILL.md","destination":".github/skills/developer-env-mode/SKILL.md"},
     {"source":"core/skills/deployment-readiness/SKILL.md","destination":".github/skills/deployment-readiness/SKILL.md"},
     {"source":"core/skills/deploy/SKILL.md","destination":".github/skills/deploy/SKILL.md"},
     {"source":"core/skills/tear-down/SKILL.md","destination":".github/skills/tear-down/SKILL.md"},
