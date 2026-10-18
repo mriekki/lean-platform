@@ -109,7 +109,8 @@ test('Project Forge contract preserves canonical ownership, safety, and compatib
   assert.match(onboarding, /Knowing the URL alone does not grant access/);
   assert.match(onboarding, /readiness verification automatically/i);
   assert.match(onboarding, /READY FOR PROJECT FORGE/);
-  assert.match(onboarding, /retry\/diagnostic path/i);
+  assert.match(onboarding, /stays available for recovery/i);
+  assert.match(onboarding, /\/lean-doctor/);
   assert.match(onboarding, /not a mandatory prerequisite for every `New Project:`/);
   assert.match(onboarding, /\[lean-doctor\] <github-owner>/);
   assert.match(onboarding, /Opening that public issue runs the readiness check immediately/);
