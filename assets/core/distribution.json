@@ -12,6 +12,8 @@
     {"source":"core/skills/grill-with-docs/SKILL.md","destination":".github/skills/grill-with-docs/SKILL.md"},
     {"source":"core/skills/refine-requirements/SKILL.md","destination":".github/skills/refine-requirements/SKILL.md"},
     {"source":"core/skills/start-work/SKILL.md","destination":".github/skills/start-work/SKILL.md"},
+    {"source":"core/skills/setup/SKILL.md","destination":".github/skills/setup/SKILL.md"},
+    {"source":"core/skills/progress/SKILL.md","destination":".github/skills/progress/SKILL.md"},
     {"source":"core/skills/next-step/SKILL.md","destination":".github/skills/next-step/SKILL.md"},
     {"source":"core/skills/deliver/SKILL.md","destination":".github/skills/deliver/SKILL.md"},
     {"source":"core/skills/cleanup-branches/SKILL.md","destination":".github/skills/cleanup-branches/SKILL.md"},
