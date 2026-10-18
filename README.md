@@ -1,14 +1,119 @@
-# Lean Platform
+# Project Forge
 
-`@mriekki/lean` is the public consumer-facing distribution for Lean engineering assets.
+**Build real software. Learn the engineering behind it.**
 
-Canonical engineering remains in the private platform repositories. Before publication, a deterministic assembly step verifies exact pinned source commits and distribution descriptors, then copies only those approved consumer mappings into the npm payload. Each published npm release is therefore self-contained; consumers do not need access to the canonical repositories to install or update Lean assets.
+Project Forge is an AI-guided software development and learning platform for building your own projects from idea through definition, implementation, testing, deployment, and structured learning.
 
-## Current `greenfield-poc` profile
+The developer brings the idea and makes the material decisions. Project Forge supplies a repeatable engineering path, deterministic project generation, AI-assisted implementation/review, environment setup/deployment guidance, and optional learning/coaching.
 
-The profile bundles Lean Agentic Core's `greenfield-workspace` distribution and the Lean POC Deployment Kit's `greenfield-poc` distribution. The package version and exact canonical component commits are recorded in [`assets/components.json`](./assets/components.json), which is the source of truth for each release.
+> **Compatibility note:** the public product is now **Project Forge**. Existing technical repositories, package names, schemas, commands, and provenance identifiers such as `lean-platform`, `@mriekki/lean`, `POC_BOOTSTRAP.json`, `[generate-poc]`, and `/lean-update` remain stable for compatibility.
 
-## Developer experience
+## What it feels like
+
+Start with an idea:
+
+```text
+New Project: I want to build a hiking trail tracker.
+```
+
+Project Forge guides the Builder through:
+
+```text
+idea
+→ project discovery
+→ V1 scope and non-goals
+→ technology and testing choices
+→ project definition
+→ private GitHub project creation
+→ deterministic workspace generation
+→ local setup
+→ small work items
+→ implementation + tests
+→ meaningful review
+→ delivery / pull request / CI
+→ optional deployment
+→ optional code walkthrough, learning review, and coaching
+```
+
+The legacy `New POC:` wording remains a compatibility alias; **Project** is the normal human-facing term.
+
+## What Project Forge is for
+
+Project Forge is intended for personal software projects, experiments that may grow into real applications, learning projects, technology explorations, automation, APIs, web/mobile/desktop work, embedded projects, AI/LLM projects, testing projects, and other supported software shapes.
+
+A project does not have to stay a disposable proof of concept. It can have persistent data, CI, multiple workstations, named environments such as Demo/Staging/Production, deployment, and ongoing work items.
+
+## Human control stays meaningful
+
+Project Forge automates routine mechanics but keeps important decisions with the Builder:
+
+- material requirements/scope;
+- substantive implementation plans when warranted;
+- meaningful code/diff acceptance;
+- pull-request merge/finalization;
+- release publication;
+- Production deployment or destructive Production actions.
+
+Learning is optional and never blocks delivery.
+
+## Your projects are yours
+
+Each Builder owns their own project repositories and development credentials.
+
+Project Forge authorization does not grant access to another developer's private projects. New Builders also do not need direct access to private Core/Bootstrap implementation repositories.
+
+The normal public reusable-asset delivery boundary is the published npm package `@mriekki/lean`.
+
+## New Builder onboarding
+
+Read the product overview and onboarding journey in [`WELCOME.md`](WELCOME.md).
+
+An invited Builder normally does only this:
+
+```text
+open personal invitation
+→ install/approve the Project Forge GitHub App
+→ /accept-lean
+→ automatic readiness verification
+→ configure one ChatGPT coding Project
+→ New Project: <idea>
+```
+
+One-time ChatGPT setup is documented in [`chatgpt/SETUP.md`](chatgpt/SETUP.md).
+
+## Existing generated projects
+
+A generated project is self-contained for normal development. The normal workstation flow is:
+
+```text
+clone repository
+→ open generated VS Code workspace
+→ /setup
+→ /progress or /next-step
+→ /start-work <ID>
+```
+
+Project Forge supports independent workspace instances on multiple developer computers. Git/GitHub is the shared source boundary; local databases, credentials, SSH keys/trust, Docker state, and readiness remain workstation-local.
+
+## Public ChatGPT contract
+
+Project Forge's public ChatGPT bootstrap entrypoint is [`chatgpt/START_HERE.md`](chatgpt/START_HERE.md).
+
+The stable descriptor at `chatgpt/current.json` resolves one immutable contract snapshot for a conversation/session. New contract versions are published as new snapshot directories rather than rewriting an already-resolved snapshot.
+
+## Technical distribution (`@mriekki/lean`)
+
+`@mriekki/lean` remains the public consumer-facing distribution for Project Forge engineering assets.
+
+Canonical engineering remains in the component repositories. Before publication, deterministic assembly verifies exact pinned source commits and distribution descriptors, then copies only approved consumer mappings into the npm payload. Published releases are self-contained; consumers do not need access to canonical private repositories to install or update managed assets.
+
+Current consumer profile:
+
+```text
+greenfield-poc
+```
+
+Technical identifiers keep their historical names until a separate compatibility migration is worth the cost.
 
 Preview/install:
 
@@ -16,63 +121,31 @@ Preview/install:
 npx @mriekki/lean install
 ```
 
-When run interactively, the command previews all managed changes and asks once before applying a safe plan. Automation can use `--apply` after reviewing the preview contract.
-
 Update using the newest published package:
 
 ```powershell
 npx @mriekki/lean@latest update
 ```
 
-For reviewed maintenance operations, prefer resolving and using one exact package version for preview, apply, and final check rather than allowing a moving `@latest` reference to change between those steps.
-
-Inspect or verify:
+Inspect/verify:
 
 ```powershell
 npx @mriekki/lean@latest status
 npx @mriekki/lean@latest check
 ```
 
-The umbrella package writes `LEAN_BASELINE.json` while preserving component-native `CORE_BASELINE.json` and `DEPLOYMENT_BASELINE.json` ledgers. Updates refuse managed drift/conflicts before modifying any component. An unchanged retired managed path can be removed safely; a locally modified retired Core path stops the update until the operator explicitly transfers ownership with `--accept-retired core:<path>`.
+The umbrella package writes `LEAN_BASELINE.json` while preserving component-native `CORE_BASELINE.json` and `DEPLOYMENT_BASELINE.json` ledgers. Updates refuse unsafe managed drift/conflicts before modifying components.
 
-## Safety and ownership
+## Maintainer release workflow
 
-- npm is the distribution transport, not the canonical source of reusable behavior.
-- package releases pin exact accepted source commits.
-- install/update never require private GitHub access.
-- no install/update lifecycle hook mutates a consumer repository; changes occur only when the user invokes the Lean CLI.
-- one preflight plan covers all selected components; an unsafe component blocks the entire apply.
-- package publication is separate from merging a release PR and requires one explicit exact-version publication action.
-
-## Current scope
-
-The package currently starts with the `greenfield-poc` consumer profile. Existing-repository Adoption Kit packaging can be added as another profile without changing the one-package developer experience.
-
-## Package assembly and release
-
-For normal releases in the Lean Platform VS Code workspace, use:
+For normal releases in the Lean Platform workspace, use:
 
 ```text
 /release-lean
 ```
 
-The repo-local skill resolves accepted component commits, automatically selects the package version from the observed consumer-visible changes, prepares the version/pin/descriptor update, runs local verification, creates the release PR, waits for the package-PR merge gate, verifies post-merge `main` CI, then stops once at the exact npm publication gate. Explicit bump or exact-version arguments remain available only as unusual overrides.
+The release workflow resolves accepted component commits, selects/prepares the package version, runs verification, creates the package PR, waits for the merge gate, verifies post-merge `main` CI, and stops at the explicit npm publication gate.
 
-After publication approval it triggers `.github/workflows/npm-publish.yml`. The workflow reconstructs the package from the exact private component pins, runs the deterministic release preparation, publishes the exact tarball directly with npm Trusted Publishing (OIDC), and automatically verifies the registry identity plus a neutral-directory `npx` smoke check.
+Publication uses npm Trusted Publishing (OIDC), reconstructs the exact package from pinned sources, verifies registry identity/integrity, and smoke-tests the public package from a neutral directory.
 
-The normal flow does not use staged npm publication or a long-lived npm publish token. An existing stage-only trusted publisher must be migrated once to allow direct `npm publish` from `npm-publish.yml`; `/release-lean` guides that bounded one-time setup.
-
-Routine releases do not require local npm authentication: GitHub Actions publishes through OIDC. npm login and trusted-publisher inspection are only needed for initial setup, migration, or troubleshooting a trust error. See `docs/RELEASE_PROCESS.md` for details.
-
-The underlying release-candidate command remains available for diagnostics:
-
-```powershell
-Set-Location D:\Projects\lean-platform
-node .\scripts\prepare-release.mjs `
-  --core-root D:\Projects\lean-agentic-core `
-  --deployment-root D:\Projects\lean-poc-deployment-kit
-```
-
-Release preparation verifies exact `origin/main`, runs the complete test suite, refuses dirty canonical source checkouts, assembles and verifies the pinned assets, compares two independent `npm pack` SHA-256 values, and smoke-tests the packed CLI from a clean temporary install. The resulting tarball and `RELEASE_MANIFEST.json` are written under `dist/release/`.
-
-See `docs/RELEASE_PROCESS.md` for the full release contract.
+See [`docs/RELEASE_PROCESS.md`](docs/RELEASE_PROCESS.md) for the technical release contract.
