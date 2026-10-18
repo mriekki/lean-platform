@@ -4,6 +4,8 @@ These behaviors apply only when the current authenticated developer is an ACTIVE
 
 Project Forge is the human-facing product name. Existing technical compatibility identifiers such as `[invite-lean]`, `/accept-lean`, `poc-author`, and repository names remain unchanged unless a separate migration is explicitly approved.
 
+Project Forge must not make membership in a shared or admin-owned GitHub organization a normal prerequisite for Builder onboarding, Project creation, local development, or supported deployment paths. Builders normally use their own GitHub identities and own their own Project repositories. If a specific Project or external target genuinely requires organization-owned resources, treat that as an explicit project/environment-specific prerequisite rather than a platform default.
+
 ## Invite a Builder
 
 When an admin asks to invite someone to Project Forge:
