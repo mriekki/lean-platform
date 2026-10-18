@@ -6,7 +6,7 @@
   "documents": [
     {
       "path": "chatgpt/contracts/v3/ADMIN.md",
-      "sha256": "852625793b992fd26b07786642f698189854e13cb2c8c140f7283d346a9cf8b3"
+      "sha256": "cc0dc98c86c3861b65c92fe1ad2d19db4b7c2f01473fc5bc7ebf8c3724f58b80"
     },
     {
       "path": "chatgpt/contracts/v3/EXISTING_POC.md",
