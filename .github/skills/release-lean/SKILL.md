@@ -1,26 +1,26 @@
 ---
 name: release-lean
-description: Prepare, deliver, publish, and verify an exact @mriekki/lean package release from accepted Lean component commits.
+description: Prepare, deliver, publish, and verify an exact @mriekki/lean package release from accepted Project Forge component commits.
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # Release Lean
 
-`/release-lean` is the Lean Platform-specific release workflow for `@mriekki/lean`.
+`/release-lean` is the Project Forge Platform-specific release workflow for `@mriekki/lean`.
 
 It owns package transport mechanics. Canonical Core and Deployment Kit repositories still own their reusable source behavior.
 
 ## 1. Resume from observed state
 
-Start by inspecting the current Lean Platform checkout, Git/GitHub state, package metadata, component pins, open release PRs, CI, registry state, and local canonical component checkouts.
+Start by inspecting the current Project Forge Platform checkout, Git/GitHub state, package metadata, component pins, open release PRs, CI, registry state, and local canonical component checkouts.
 
 Default local roots on Mark's workstation are:
 
 ```text
-D:\Projects\lean-platform
-D:\Projects\lean-agentic-core
-D:\Projects\lean-poc-deployment-kit
+D:\Projects\project-forge-platform
+D:\Projects\project-forge-core
+D:\Projects\project-forge-deployment-kit
 ```
 
 Use repository facts rather than memory. Do not invent accepted commits, CI status, registry state, or npm trusted-publisher state.
@@ -82,17 +82,17 @@ Invoking `/release-lean` authorizes safe release-preparation mechanics but does 
 
 When preparation has not happened yet:
 
-1. require Lean Platform tracked state to be clean;
+1. require Project Forge Platform tracked state to be clean;
 2. refresh `main` using fast-forward-only behavior;
 3. create/switch to `release/lean-<version>` unless the matching release branch already exists safely;
 4. run:
 
 ```powershell
-Set-Location D:\Projects\lean-platform
+Set-Location D:\Projects\project-forge-platform
 node .\scripts\prepare-package-update.mjs `
   --version <version> `
-  --core-root D:\Projects\lean-agentic-core `
-  --deployment-root D:\Projects\lean-poc-deployment-kit
+  --core-root D:\Projects\project-forge-core `
+  --deployment-root D:\Projects\project-forge-deployment-kit
 ```
 
 The deterministic preparation script updates only package version metadata, exact component pins/versions, and packaged distribution descriptors copied from those exact canonical commits.
@@ -101,7 +101,7 @@ Then run:
 
 ```powershell
 npm test
-npm run assemble:assets -- --core-root D:\Projects\lean-agentic-core --deployment-root D:\Projects\lean-poc-deployment-kit
+npm run assemble:assets -- --core-root D:\Projects\project-forge-core --deployment-root D:\Projects\project-forge-deployment-kit
 npm run verify:assets
 git diff --check
 git --no-pager diff
@@ -137,7 +137,7 @@ Diff: expected release-preparation files only
 
 Merge authorization does not authorize npm publication.
 
-After merge, verify exact Lean Platform `main` and its configured post-merge CI before publication.
+After merge, verify exact Project Forge Platform `main` and its configured post-merge CI before publication.
 
 ## 6. One-time npm trusted-publisher setup
 
@@ -155,12 +155,12 @@ The required relationship is:
 
 ```text
 provider: GitHub Actions
-repository: mriekki/lean-platform
+repository: mriekki/project-forge-platform
 workflow file: npm-publish.yml
 allowed action: npm publish
 ```
 
-It can be managed on npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher**. Select GitHub Actions, owner `mriekki`, repository `lean-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission. The CLI equivalent for creating a missing relationship is documented below; both routes require maintainer authorization, and npm may prompt for 2FA.
+It can be managed on npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher**. Select GitHub Actions, owner `mriekki`, repository `project-forge-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission. The CLI equivalent for creating a missing relationship is documented below; both routes require maintainer authorization, and npm may prompt for 2FA.
 
 If that exact relationship already exists, do not touch it.
 
@@ -168,14 +168,14 @@ If the existing relationship is stage-only or points at the retired `npm-stage.y
 
 ```text
 [NPM TRUST WRITE]
-Replace the existing @mriekki/lean trusted publisher with direct-publish permission for mriekki/lean-platform/.github/workflows/npm-publish.yml?
+Replace the existing @mriekki/lean trusted publisher with direct-publish permission for mriekki/project-forge-platform/.github/workflows/npm-publish.yml?
 ```
 
 Only after approval, use the observed trust ID:
 
 ```powershell
 npm trust revoke @mriekki/lean --id <observed-id>
-npm trust github @mriekki/lean --file npm-publish.yml --repo mriekki/lean-platform --allow-publish --yes
+npm trust github @mriekki/lean --file npm-publish.yml --repo mriekki/project-forge-platform --allow-publish --yes
 npm trust list @mriekki/lean --json
 ```
 
@@ -188,7 +188,7 @@ If no trust relationship exists, skip revoke and create the required relationshi
 Once all of these are true:
 
 - release PR merged;
-- Lean Platform local checkout is exact clean `origin/main`;
+- Project Forge Platform local checkout is exact clean `origin/main`;
 - configured post-merge CI for that exact `main` commit is green;
 - package version and component pins are internally consistent;
 - target npm version does not already exist;
@@ -200,7 +200,7 @@ present exactly one publication gate:
 NPM PUBLISH READY
 
 Package: @mriekki/lean@<version>
-Lean Platform source: <exact main SHA>
+Project Forge Platform source: <exact main SHA>
 Core: <exact commit/version>
 Deployment Kit: <exact commit>
 Post-merge CI: GREEN
@@ -228,7 +228,7 @@ If `main`, version, pins, or workflow evidence changes before publication, stop 
 
 `npm-publish.yml` must fail closed before `npm publish` unless:
 
-- the checked-out Lean Platform commit equals the authorized `source_commit` input;
+- the checked-out Project Forge Platform commit equals the authorized `source_commit` input;
 - `package.json` equals the authorized version input;
 - the exact pinned Core and Deployment Kit commits can be checked out;
 - `scripts/prepare-release.mjs` passes its reproducibility, assembly, test, and clean-install checks;
@@ -248,7 +248,7 @@ On success report only evidence-backed state:
 LEAN PACKAGE RELEASE COMPLETE
 
 Package: @mriekki/lean@<version>
-Lean Platform source: <sha>
+Project Forge Platform source: <sha>
 Core: <sha/version>
 Deployment Kit: <sha>
 Publish workflow: GREEN

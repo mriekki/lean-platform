@@ -1,7 +1,7 @@
 {
   "name": "@mriekki/lean",
   "version": "0.4.8",
-  "description": "Public consumer distribution and updater for Lean engineering assets.",
+  "description": "Public consumer distribution and updater for Project Forge engineering assets.",
   "type": "module",
   "bin": {
     "lean": "bin/lean.mjs"
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mriekki/lean-platform.git"
+    "url": "git+https://github.com/mriekki/project-forge-platform.git"
   },
   "publishConfig": {
     "access": "public",

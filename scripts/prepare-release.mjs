@@ -56,10 +56,10 @@ function assertCleanTracked(root, label) {
 
 function assertReleaseSource(packageData) {
   const root = packageData.root;
-  assertCleanTracked(root, 'Lean Platform checkout');
+  assertCleanTracked(root, 'Project Forge Platform checkout');
   const origin = git(root, ['remote', 'get-url', 'origin']);
-  if (!/github\.com[:/]mriekki\/lean-platform(?:\.git)?$/i.test(origin.replace(/\\/g, '/'))) {
-    throw new Error(`Unexpected Lean Platform origin: ${origin}`);
+  if (!/github\.com[:/]mriekki\/project-forge-platform(?:\.git)?$/i.test(origin.replace(/\\/g, '/'))) {
+    throw new Error(`Unexpected Project Forge Platform origin: ${origin}`);
   }
   run('git', ['-C', root, 'fetch', '--quiet', 'origin', 'main'], { cwd: root });
   const head = git(root, ['rev-parse', 'HEAD']);

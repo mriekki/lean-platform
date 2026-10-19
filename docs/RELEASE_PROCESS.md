@@ -1,6 +1,6 @@
 # npm Release Process
 
-`@mriekki/lean` is the public npm distribution assembled from exact accepted commits of the private canonical Lean repositories.
+`@mriekki/lean` is the public npm distribution assembled from exact accepted commits of the private canonical Project Forge repositories.
 
 Release preparation and npm publication are intentionally automated, but publication remains an explicit decision for one exact package/version/source tuple.
 
@@ -34,7 +34,7 @@ Publishing the package does not update consumers. Existing package-managed POCs 
 
 Before npm publication, the exact release candidate must satisfy all of these:
 
-- Lean Platform publication source is an exact clean `main` commit;
+- Project Forge Platform publication source is an exact clean `main` commit;
 - `assets/components.json` pins exact accepted component commits;
 - the canonical Core and Deployment Kit commits are clean exact accepted `main` states when a release PR is prepared locally;
 - the packaged distribution descriptors exactly match their pinned canonical descriptors;
@@ -43,7 +43,7 @@ Before npm publication, the exact release candidate must satisfy all of these:
 - two independent `npm pack` runs produce the same SHA-256;
 - a clean temporary install of the packed tarball can run `lean version` through both direct Node and npm executable resolution, then run `lean install` and `lean check` successfully;
 - the npm version does not already exist;
-- the exact Lean Platform source commit and package version are passed to the publication workflow and revalidated there.
+- the exact Project Forge Platform source commit and package version are passed to the publication workflow and revalidated there.
 
 `scripts/prepare-release.mjs` enforces the release-candidate checks and writes only ignored artifacts under `dist/release/` plus ignored generated package assets under `assets/generated/`.
 
@@ -52,14 +52,14 @@ Before npm publication, the exact release candidate must satisfy all of these:
 The release skill uses:
 
 ```powershell
-Set-Location D:\Projects\lean-platform
+Set-Location D:\Projects\project-forge-platform
 node .\scripts\prepare-package-update.mjs `
   --version <version> `
-  --core-root D:\Projects\lean-agentic-core `
-  --deployment-root D:\Projects\lean-poc-deployment-kit
+  --core-root D:\Projects\project-forge-core `
+  --deployment-root D:\Projects\project-forge-deployment-kit
 ```
 
-The script refuses to modify `main`, requires a clean Lean Platform release branch, resolves clean exact `origin/main` component checkouts, and updates only:
+The script refuses to modify `main`, requires a clean Project Forge Platform release branch, resolves clean exact `origin/main` component checkouts, and updates only:
 
 - `package.json` version;
 - `package-lock.json` version metadata;
@@ -84,7 +84,7 @@ Normal releases use npm Trusted Publishing (OIDC) from:
 
 ```text
 GitHub owner: mriekki
-Repository: lean-platform
+Repository: project-forge-platform
 Workflow: npm-publish.yml
 Allowed action: npm publish
 ```
@@ -97,7 +97,7 @@ The package can retain npm's `Require two-factor authentication and disallow tok
 
 Routine releases do not require a local npm login. GitHub Actions uses OIDC, and a successful publish from the exact workflow confirms that the trusted-publisher relationship works. Do not run `npm trust list` on every release: npm may require fresh browser/2FA authorization even when `npm whoami` succeeds.
 
-Use npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher** for initial setup or inspection. Configure GitHub Actions with owner `mriekki`, repository `lean-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission.
+Use npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher** for initial setup or inspection. Configure GitHub Actions with owner `mriekki`, repository `project-forge-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission.
 
 If CLI access is needed to configure or investigate the relationship, sign in interactively:
 
@@ -123,7 +123,7 @@ After explicit `[NPM TRUST WRITE]` approval in `/release-lean`, revoke the obser
 
 ```powershell
 npm trust revoke @mriekki/lean --id <observed-id>
-npm trust github @mriekki/lean --file npm-publish.yml --repo mriekki/lean-platform --allow-publish --yes
+npm trust github @mriekki/lean --file npm-publish.yml --repo mriekki/project-forge-platform --allow-publish --yes
 npm trust list @mriekki/lean --json
 ```
 
@@ -135,13 +135,13 @@ Once this relationship exists, normal package releases require no npm staging or
 
 A merged package PR does not itself publish npm.
 
-After the release PR is merged and exact post-merge `main` CI is green, `/release-lean` shows the exact package version, Lean Platform main SHA, Core pin/version, Deployment Kit pin, and trusted publisher evidence.
+After the release PR is merged and exact post-merge `main` CI is green, `/release-lean` shows the exact package version, Project Forge Platform main SHA, Core pin/version, Deployment Kit pin, and trusted publisher evidence.
 
 The single publication decision is:
 
 ```text
 [NPM PUBLISH]
-Publish this exact @mriekki/lean version from this exact Lean Platform main commit and component pin set?
+Publish this exact @mriekki/lean version from this exact Project Forge Platform main commit and component pin set?
 ```
 
 If approved, the skill triggers:
@@ -158,14 +158,14 @@ The workflow refuses changed/stale evidence.
 
 `.github/workflows/npm-publish.yml`:
 
-1. checks out Lean Platform `main`;
+1. checks out Project Forge Platform `main`;
 2. requires `HEAD == source_commit` from the human-approved invocation;
 3. requires `package.json` version to equal the approved version;
 4. refuses an already-published version;
 5. resolves exact component pins from `assets/components.json`;
 6. checks out those exact private Core and Deployment Kit commits using read-only `LEAN_SOURCE_TOKEN` Contents access;
 7. runs `scripts/prepare-release.mjs` to reproduce/test the package;
-8. verifies the release manifest matches the authorized Lean Platform commit/version;
+8. verifies the release manifest matches the authorized Project Forge Platform commit/version;
 9. publishes the exact tarball with `npm publish --access public` using OIDC;
 10. waits up to 10 minutes, with exponential backoff, for registry visibility and verifies npm integrity/shasum against the release manifest;
 11. runs `npx --yes @mriekki/lean@<version> version` from a neutral temporary directory.
@@ -177,13 +177,13 @@ If any pre-publication step fails, npm is not published. If publication succeeds
 The underlying deterministic preparation remains directly available for troubleshooting:
 
 ```powershell
-Set-Location D:\Projects\lean-platform
+Set-Location D:\Projects\project-forge-platform
 node .\scripts\prepare-release.mjs `
-  --core-root D:\Projects\lean-agentic-core `
-  --deployment-root D:\Projects\lean-poc-deployment-kit
+  --core-root D:\Projects\project-forge-core `
+  --deployment-root D:\Projects\project-forge-deployment-kit
 ```
 
-Expected output includes the package/version, tarball path, SHA-256, and exact Lean Platform source commit.
+Expected output includes the package/version, tarball path, SHA-256, and exact Project Forge Platform source commit.
 
 Review artifacts when diagnosing a release issue:
 
