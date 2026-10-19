@@ -6,7 +6,7 @@
   "documents": [
     {
       "path": "chatgpt/contracts/v4/ADMIN.md",
-      "sha256": "61925f88405630beedc4593538a2aa852fc5e04f33fe1287cbd5e6da285279aa"
+      "sha256": "a0632205662b8681a2bc9fca8461c883123520851d3caf49d3ffd05f38fb19fe"
     },
     {
       "path": "chatgpt/contracts/v4/EXISTING_POC.md",
@@ -18,7 +18,7 @@
     },
     {
       "path": "chatgpt/contracts/v4/ONBOARDING.md",
-      "sha256": "e36bc6c82a8ccf8bc08f4288004b06fe68c945010f6643b540b8614835754558"
+      "sha256": "1648c798736f80f65e87ea8c628a038f8b1067a30c2fdb0c7ee8b22e3a721235"
     },
     {
       "path": "chatgpt/contracts/v4/PROJECT_INSTRUCTIONS.md",
@@ -26,7 +26,7 @@
     },
     {
       "path": "chatgpt/contracts/v4/PROJECT_RULES.md",
-      "sha256": "1fca7dfc93c0fb95becc02c6aefbe8bb5136982af20a5c02a8d369c49d85606b"
+      "sha256": "cd3d4025b66765a6059511169919b3416efa171ddb8ea9288830aae59dd3ee8c"
     },
     {
       "path": "chatgpt/contracts/v4/USER_PROFILE.schema.json",
