@@ -5,7 +5,7 @@ These behaviors apply only when the current authenticated developer is an ACTIVE
 Canonical public orchestration identity:
 
 ```text
-GitHub App: Project Forge
+GitHub App: Project Forge Builder
 Repository: mriekki/project-forge-control-plane
 ```
 
@@ -45,13 +45,13 @@ Create invitation?
 
 6. return that issue URL as the one invitation/onboarding link.
 
-Do not directly edit the developer registry merely because an invitation was requested. Activation is owned by the claim workflow after the invited GitHub identity accepts and the Project Forge GitHub App installation is verified.
+Do not directly edit the developer registry merely because an invitation was requested. Activation is owned by the claim workflow after the invited GitHub identity accepts and the Project Forge Builder GitHub App installation is verified.
 
 The invitation must make activation explicit:
 
 ```text
 1. Open the Project Forge invitation issue.
-2. Install/approve the Project Forge GitHub App if prompted.
+2. Install/approve the Project Forge Builder GitHub App if prompted.
 3. In that same issue, add a new comment containing exactly:
    /accept-lean
 ```
@@ -92,6 +92,6 @@ For onboarding/authorization status, use current Control Plane evidence:
 - `/lean-doctor` on an invitation issue only when readiness needs to be retried;
 - for an already-ACTIVE developer without an invitation issue, one empty-body public issue titled `[lean-doctor] <github-owner>`; opening it runs the doctor immediately and `/lean-doctor` may retry it.
 
-Doctor/readiness results are onboarding evidence, not a per-Project discovery or generation prerequisite. Generation independently fails closed if the required Project Forge GitHub App target access is unavailable.
+Doctor/readiness results are onboarding evidence, not a per-Project discovery or generation prerequisite. Generation independently fails closed if the required Project Forge Builder GitHub App target access is unavailable.
 
 Never treat a person's ChatGPT Developer Profile, a copied handoff file, or a generated Project repository as the authorization registry.
