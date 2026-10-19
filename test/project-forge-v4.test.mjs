@@ -30,8 +30,8 @@ test('Project Forge v4 uses the canonical public App and Control Plane identity'
   for (const value of [admin, onboarding, rules, instructions]) {
     assert.match(value, /mriekki\/project-forge-control-plane/);
   }
-  assert.match(admin, /GitHub App: Project Forge/);
-  assert.match(onboarding, /GitHub App: Project Forge/);
+  assert.match(admin, /GitHub App: Project Forge Builder/);
+  assert.match(onboarding, /GitHub App: Project Forge Builder/);
   assert.doesNotMatch(onboarding, /Lean POC Generator/);
   assert.match(admin, /\[invite-lean\]/);
   assert.match(admin, /\/accept-lean/);
