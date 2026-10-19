@@ -23,7 +23,7 @@ This is a Project Forge coding Project.
 
 At the beginning of a Project Forge coding workflow, load the current public Project Forge ChatGPT bootstrap descriptor from:
 
-https://raw.githubusercontent.com/mriekki/lean-platform/main/chatgpt/current.json
+https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/current.json
 
 Resolve and use the exact immutable contract snapshot referenced by that descriptor for this conversation/session.
 

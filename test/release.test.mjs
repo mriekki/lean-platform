@@ -94,6 +94,10 @@ test('trusted publish workflow is exact-source, direct OIDC publication with ver
   assert.match(workflow, /version:/);
   assert.match(workflow, /id-token:\s*write/);
   assert.match(workflow, /actions\/checkout@d23441a48e516b6c34aea4fa41551a30e30af803/);
+  assert.match(workflow, /repository:\s+mriekki\/project-forge-core/);
+  assert.match(workflow, /repository:\s+mriekki\/project-forge-deployment-kit/);
+  assert.doesNotMatch(workflow, /repository:\s+mriekki\/lean-agentic-core/);
+  assert.doesNotMatch(workflow, /repository:\s+mriekki\/lean-poc-deployment-kit/);
   assert.match(workflow, /actions\/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38/);
   assert.doesNotMatch(workflow, /uses:\s+actions\/(?:checkout|setup-node)@v\d+/);
   assert.match(workflow, /npm install --global npm@11\.21\.0/);
@@ -125,33 +129,35 @@ test('release skill owns automatic version selection, package preparation, trust
   assert.match(skill, /EOTP/);
   assert.match(skill, /npm trust list @mriekki\/lean --json/);
   assert.match(skill, /\[NPM TRUST WRITE\]/);
+  assert.match(skill, /mriekki\/project-forge-platform\/\.github\/workflows\/npm-publish\.yml/);
+  assert.doesNotMatch(skill, /mriekki\/lean-platform\/\.github\/workflows\/npm-publish\.yml/);
   assert.match(skill, /\[NPM PUBLISH\]/);
   assert.match(skill, /gh workflow run npm-publish\.yml/);
   assert.match(skill, /\/lean-update/);
   assert.doesNotMatch(skill, /^\s*npm stage (?:publish|approve)(?:\s|$)/m);
 });
 
-test('package update origin matching accepts legacy and Project Forge repository identities', () => {
+test('package update origin matching accepts canonical Project Forge identities and rejects legacy aliases', () => {
   const cases = [
     {
-      repositories: ['mriekki/lean-platform', 'mriekki/project-forge-platform'],
+      repositories: ['mriekki/project-forge-platform'],
       legacy: 'https://github.com/mriekki/lean-platform.git',
       canonical: 'git@github.com:mriekki/project-forge-platform.git'
     },
     {
-      repositories: ['mriekki/lean-agentic-core', 'mriekki/project-forge-core'],
+      repositories: ['mriekki/project-forge-core'],
       legacy: 'git@github.com:mriekki/lean-agentic-core.git',
       canonical: 'https://github.com/mriekki/project-forge-core'
     },
     {
-      repositories: ['mriekki/lean-poc-deployment-kit', 'mriekki/project-forge-deployment-kit'],
+      repositories: ['mriekki/project-forge-deployment-kit'],
       legacy: 'https://github.com/mriekki/lean-poc-deployment-kit.git',
       canonical: 'git@github.com:mriekki/project-forge-deployment-kit.git'
     }
   ];
 
   for (const value of cases) {
-    assert.equal(originMatchesRepositories(value.legacy, value.repositories), true);
+    assert.equal(originMatchesRepositories(value.legacy, value.repositories), false);
     assert.equal(originMatchesRepositories(value.canonical, value.repositories), true);
     assert.equal(
       originMatchesRepositories('https://github.com/example/unrelated.git', value.repositories),

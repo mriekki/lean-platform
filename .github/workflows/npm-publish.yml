@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       source_commit:
-        description: Exact Lean Platform main commit authorized for publication
+        description: Exact Project Forge Platform main commit authorized for publication
         required: true
         type: string
 
@@ -20,13 +20,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Lean Platform
+      - name: Checkout Project Forge Platform
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Verify authorized Lean Platform source
+      - name: Verify authorized Project Forge Platform source
         shell: bash
         run: |
           set -euo pipefail
@@ -82,7 +82,7 @@ jobs:
       - name: Checkout exact Core source
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          repository: mriekki/lean-agentic-core
+          repository: mriekki/project-forge-core
           ref: ${{ steps.pins.outputs.core }}
           path: .release-sources/core
           token: ${{ secrets.LEAN_SOURCE_TOKEN }}
@@ -91,7 +91,7 @@ jobs:
       - name: Checkout exact Deployment Kit source
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          repository: mriekki/lean-poc-deployment-kit
+          repository: mriekki/project-forge-deployment-kit
           ref: ${{ steps.pins.outputs.deployment }}
           path: .release-sources/deployment
           token: ${{ secrets.LEAN_SOURCE_TOKEN }}

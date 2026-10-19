@@ -80,13 +80,13 @@ function assertExactAcceptedMain(root, expectedRepositories, label) {
 function assertPlatformPreparationState(root) {
   assertExpectedOrigin(
     root,
-    ['mriekki/lean-platform', 'mriekki/project-forge-platform'],
-    'Lean Platform checkout'
+    ['mriekki/project-forge-platform'],
+    'Project Forge Platform checkout'
   );
-  assertCleanTracked(root, 'Lean Platform checkout');
+  assertCleanTracked(root, 'Project Forge Platform checkout');
   const branch = git(root, ['branch', '--show-current']);
   if (!branch || branch === 'main') {
-    throw new Error('Refusing to modify Lean Platform main directly; create/switch to a release branch first');
+    throw new Error('Refusing to modify Project Forge Platform main directly; create/switch to a release branch first');
   }
 }
 
@@ -128,13 +128,13 @@ export function preparePackageUpdate(args, root = ROOT) {
 
   const core = assertExactAcceptedMain(
     args.coreRoot,
-    ['mriekki/lean-agentic-core', 'mriekki/project-forge-core'],
-    'Lean Agentic Core'
+    ['mriekki/project-forge-core'],
+    'Project Forge Core'
   );
   const deployment = assertExactAcceptedMain(
     args.deploymentRoot,
-    ['mriekki/lean-poc-deployment-kit', 'mriekki/project-forge-deployment-kit'],
-    'Lean POC Deployment Kit'
+    ['mriekki/project-forge-deployment-kit'],
+    'Project Forge Deployment Kit'
   );
 
   const coreCompatibility = readJson(path.join(core.root, 'COMPATIBILITY.json'));
