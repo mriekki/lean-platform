@@ -50,7 +50,7 @@
     },
     "bootstrap": {
       "repository": "mriekki/lean-poc-bootstrap",
-      "commit": "6fbe37989a2337dad012b2a90e1162613d9b80c6",
+      "commit": "901ba6da40b7abab509e8f9c38a514af85fbd99f",
       "sources": [
         {
           "path": "docs/discovery/QUESTION_MODEL.md",
@@ -58,25 +58,25 @@
         },
         {
           "path": "docs/PROJECT_FORGE_TERMINOLOGY.md",
-          "blobSha": "8ec31d16074729202a427c3cea16d65747b079f5"
+          "blobSha": "ab30c5675ec6c216d834687e02699371c7a08078"
         },
         {
           "path": "CHATGPT_START.md",
-          "blobSha": "6c777d40bad6d119f70f9b7a490925fd77eafbea"
+          "blobSha": "71e9cd736214ac74087b65e5d76938bbd7b3166d"
         },
         {
           "path": "catalog/policies/generation-destination.json",
-          "blobSha": "d291d9c0c8235a7e775d24429cc32688365d5517"
+          "blobSha": "288ffbab2b85194d8595f24e1354f04d9562574c"
         }
       ]
     },
     "controlPlane": {
       "repository": "mriekki/project-forge-control-plane",
-      "commit": "dce7b3b0a16241b61baf76a8b135cde74b50883e",
+      "commit": "341f2df64b91d07c64db4b92339a5e0449a0fec4",
       "sources": [
         {
           "path": "docs/SETUP.md",
-          "blobSha": "35c97d7fae346dd52de1811e3692a8c095b737bf"
+          "blobSha": "993fd8dfdb6983fcd7e35f6b37d7f03228dd2508"
         },
         {
           "path": ".github/workflows/generate-poc.yml",
@@ -84,15 +84,15 @@
         },
         {
           "path": "docs/INVITATIONS.md",
-          "blobSha": "2b5c62accec0aa671ddaf0cb56aca59b874239da"
+          "blobSha": "3995f05023c528b3c95fb7357662a256313c9b19"
         },
         {
           "path": ".github/workflows/invite-developer.yml",
-          "blobSha": "dd9d5d290dff050b4b354822386a641ec1a13575"
+          "blobSha": "0119017933d3d51541d2d28e10b34aa56f633874"
         },
         {
           "path": ".github/workflows/claim-invitation.yml",
-          "blobSha": "0cc3af6e7735f54daaa810feccfc75947776871e"
+          "blobSha": "c0de653b577a35bd38b3b78534950c82e883db15"
         },
         {
           "path": ".github/workflows/onboarding-doctor.yml",
