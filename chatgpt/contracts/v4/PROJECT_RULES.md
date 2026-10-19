@@ -15,7 +15,7 @@ Use these terms in human-facing conversation and onboarding:
 Canonical public orchestration identity:
 
 ```text
-GitHub App: Project Forge
+GitHub App: Project Forge Builder
 Repository: mriekki/project-forge-control-plane
 ```
 
