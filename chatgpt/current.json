@@ -1,36 +1,36 @@
 {
   "schemaVersion": 1,
   "channel": "stable",
-  "contractVersion": 3,
-  "snapshotPath": "chatgpt/contracts/v3",
+  "contractVersion": 4,
+  "snapshotPath": "chatgpt/contracts/v4",
   "documents": [
     {
-      "path": "chatgpt/contracts/v3/ADMIN.md",
-      "sha256": "cc0dc98c86c3861b65c92fe1ad2d19db4b7c2f01473fc5bc7ebf8c3724f58b80"
+      "path": "chatgpt/contracts/v4/ADMIN.md",
+      "sha256": "61925f88405630beedc4593538a2aa852fc5e04f33fe1287cbd5e6da285279aa"
     },
     {
-      "path": "chatgpt/contracts/v3/EXISTING_POC.md",
+      "path": "chatgpt/contracts/v4/EXISTING_POC.md",
       "sha256": "10dec89078f0ab62cf1d9a6f37cf782bc6b0f6cb9277a579e6d592c7c3aff795"
     },
     {
-      "path": "chatgpt/contracts/v3/NEW_POC.md",
+      "path": "chatgpt/contracts/v4/NEW_POC.md",
       "sha256": "949b99db659d620e5514282454d53dad135ad9da68d3f919b45be33ee9700a69"
     },
     {
-      "path": "chatgpt/contracts/v3/ONBOARDING.md",
-      "sha256": "96ad4aed9cce14032ed6f60a8ecf28204c0c947cba5139c9592e63b2f04c3b0a"
+      "path": "chatgpt/contracts/v4/ONBOARDING.md",
+      "sha256": "e36bc6c82a8ccf8bc08f4288004b06fe68c945010f6643b540b8614835754558"
     },
     {
-      "path": "chatgpt/contracts/v3/PROJECT_INSTRUCTIONS.md",
-      "sha256": "d9d4425204d6e90fc545077d3dbb630724484e7e76e998ac55479c69b45eaaaa"
+      "path": "chatgpt/contracts/v4/PROJECT_INSTRUCTIONS.md",
+      "sha256": "80a75bd65e35cce02dc39113f5b4754e4dc04f61062e7cd1ee2cd8cc8d585d1d"
     },
     {
-      "path": "chatgpt/contracts/v3/PROJECT_RULES.md",
-      "sha256": "d4f5b4d3d9d3ef6da7595479c9f1115f4f6a7eac3a62f8eae529405638ca5296"
+      "path": "chatgpt/contracts/v4/PROJECT_RULES.md",
+      "sha256": "1fca7dfc93c0fb95becc02c6aefbe8bb5136982af20a5c02a8d369c49d85606b"
     },
     {
-      "path": "chatgpt/contracts/v3/USER_PROFILE.schema.json",
-      "sha256": "5cf56d30a4bd11ff4979ea50b879176534114d4cedd542a4f1593c835a59a52a"
+      "path": "chatgpt/contracts/v4/USER_PROFILE.schema.json",
+      "sha256": "5d5d4e766f473fe99ee61375d12852750a248bfd46ae86cf4a416e9fedb7ee84"
     }
   ],
   "sourceProvenance": {
@@ -50,7 +50,7 @@
     },
     "bootstrap": {
       "repository": "mriekki/lean-poc-bootstrap",
-      "commit": "285dfaae2562f8c14e1184a2da3cdcf264023651",
+      "commit": "6fbe37989a2337dad012b2a90e1162613d9b80c6",
       "sources": [
         {
           "path": "docs/discovery/QUESTION_MODEL.md",
@@ -58,21 +58,25 @@
         },
         {
           "path": "docs/PROJECT_FORGE_TERMINOLOGY.md",
-          "blobSha": "332fb4fe035f0f0ce98a2449293d2461aeb8a29e"
+          "blobSha": "8ec31d16074729202a427c3cea16d65747b079f5"
         },
         {
           "path": "CHATGPT_START.md",
-          "blobSha": "cff7ef3bdd03f261f2b487a8ba36666f9d344f0e"
+          "blobSha": "6c777d40bad6d119f70f9b7a490925fd77eafbea"
+        },
+        {
+          "path": "catalog/policies/generation-destination.json",
+          "blobSha": "d291d9c0c8235a7e775d24429cc32688365d5517"
         }
       ]
     },
     "controlPlane": {
-      "repository": "mriekki/lean-poc-control-plane",
-      "commit": "44247e17a39c38c40c7e333da905aea4b798327a",
+      "repository": "mriekki/project-forge-control-plane",
+      "commit": "dce7b3b0a16241b61baf76a8b135cde74b50883e",
       "sources": [
         {
           "path": "docs/SETUP.md",
-          "blobSha": "547a152ca6d64ca1c8008a0e67abadd6c7d7b195"
+          "blobSha": "35c97d7fae346dd52de1811e3692a8c095b737bf"
         },
         {
           "path": ".github/workflows/generate-poc.yml",
@@ -80,15 +84,15 @@
         },
         {
           "path": "docs/INVITATIONS.md",
-          "blobSha": "1bd6a68b2403e5ee91edcde24f02a93eac5c4ab8"
+          "blobSha": "2b5c62accec0aa671ddaf0cb56aca59b874239da"
         },
         {
           "path": ".github/workflows/invite-developer.yml",
-          "blobSha": "be622c34ce7f74ff1286cba7af54105a49477814"
+          "blobSha": "dd9d5d290dff050b4b354822386a641ec1a13575"
         },
         {
           "path": ".github/workflows/claim-invitation.yml",
-          "blobSha": "554a86e2b62744a398b25b482764ca50c34c3de7"
+          "blobSha": "0cc3af6e7735f54daaa810feccfc75947776871e"
         },
         {
           "path": ".github/workflows/onboarding-doctor.yml",
@@ -97,19 +101,23 @@
         {
           "path": "tools/onboarding_doctor.py",
           "blobSha": "11ec4a41357baa769d4bc85941ba83fcab7efbed"
+        },
+        {
+          "path": "tools/request.py",
+          "blobSha": "a33ff5013696ec90121d8258308e81317c38fe97"
         }
       ]
     }
   },
   "controlPlane": {
-    "repository": "mriekki/lean-poc-control-plane",
+    "repository": "mriekki/project-forge-control-plane",
     "inviteIssuePrefix": "[invite-lean]",
     "revokeIssuePrefix": "[revoke-lean]",
     "doctorIssuePrefix": "[lean-doctor]",
     "acceptCommand": "/accept-lean",
     "declineCommand": "/decline-lean",
     "doctorCommand": "/lean-doctor",
-    "invitationPolicyUrl": "https://raw.githubusercontent.com/mriekki/lean-poc-control-plane/main/config/invitation-policy.json"
+    "invitationPolicyUrl": "https://raw.githubusercontent.com/mriekki/project-forge-control-plane/main/config/invitation-policy.json"
   },
   "bootstrapUrl": "https://raw.githubusercontent.com/mriekki/lean-platform/main/chatgpt/current.json"
 }
