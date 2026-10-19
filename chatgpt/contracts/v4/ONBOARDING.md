@@ -5,7 +5,7 @@ Project Forge onboarding separates identity/authorization from operating rules a
 Canonical public onboarding surfaces:
 
 ```text
-GitHub App: Project Forge
+GitHub App: Project Forge Builder
 Control Plane: mriekki/project-forge-control-plane
 ```
 
@@ -37,7 +37,7 @@ Expected happy path:
 ```text
 PENDING
 → open Project Forge invitation issue
-→ install/approve Project Forge GitHub App
+→ install/approve Project Forge Builder GitHub App
 → in that same issue, invited GitHub owner comments /accept-lean
 → identity + GitHub App installation verified
 → ACTIVE
@@ -50,7 +50,7 @@ The invitation notification and issue must state the activation action explicitl
 
 The invited owner may comment `/decline-lean` to decline without changing developer authorization. Unclaimed invitations expire according to the public Control Plane invitation policy; expiration also makes no authorization change.
 
-Knowing the URL alone does not grant access: claim identity must match the GitHub owner named by the invitation, the invitation must still be valid, and the required Project Forge GitHub App installation must be verifiable.
+Knowing the URL alone does not grant access: claim identity must match the GitHub owner named by the invitation, the invitation must still be valid, and the required Project Forge Builder GitHub App installation must be verifiable.
 
 ## Automatic readiness and doctor retry
 
@@ -59,7 +59,7 @@ Successful `/accept-lean` activation performs normal onboarding readiness verifi
 The automatic readiness check verifies that:
 
 - the developer is ACTIVE;
-- the Project Forge GitHub App installation is available;
+- the Project Forge Builder GitHub App installation is available;
 - the public `lean-platform/chatgpt/current.json` descriptor is reachable;
 - every referenced public contract document matches its SHA-256 digest.
 
@@ -83,7 +83,7 @@ For an already-ACTIVE developer without an invitation issue, use the standalone 
 
 Opening that public issue runs the readiness check immediately. After fixing a failed prerequisite, the developer or an admin can comment exactly `/lean-doctor` on the same issue to retry.
 
-Doctor/readiness is onboarding evidence, not a mandatory prerequisite for every `New Project:`. Once a developer is ACTIVE, generation independently revalidates exact target Project Forge GitHub App access at the fail-closed Control Plane boundary.
+Doctor/readiness is onboarding evidence, not a mandatory prerequisite for every `New Project:`. Once a developer is ACTIVE, generation independently revalidates exact target Project Forge Builder GitHub App access at the fail-closed Control Plane boundary.
 
 ## Admin onboarding self-test
 
