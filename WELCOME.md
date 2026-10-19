@@ -13,17 +13,17 @@ A typical project journey looks like this:
 ```text
 Your idea
    ↓
-Guided project discovery
+Guided Project Discovery
    ↓
 V1 scope + non-goals
    ↓
 Technology, testing, data, and deployment choices
    ↓
-Private GitHub project repository
+Private GitHub Project Repository
    ↓
 Ready-to-use development workspace
    ↓
-Small work items
+Small Work Items
    ↓
 AI-assisted implementation + tests
    ↓
@@ -31,7 +31,7 @@ Meaningful review and pull-request delivery
    ↓
 Optional environments and deployment
    ↓
-Optional code walkthrough / learning review / coaching
+Optional Code Walkthrough / Learning Review / Coaching
 ```
 
 You do not need to know the final architecture before you start. Project Forge asks one material question at a time, recommends choices when useful, explains tradeoffs, and records the decisions you approve.
@@ -52,11 +52,11 @@ Project Forge may help you work through questions such as:
 - What stack best fits the goal and what you want to learn?
 - What data needs to persist?
 - What testing approach makes sense?
-- Should V1 run only locally, or should it have Demo/Staging/Production later?
+- Should V1 run only locally, or should it have Demo, Staging, or Production environments later?
 
 Before project creation, you see the proposed scope and technical shape and decide whether to accept or change it.
 
-Once approved, Project Forge can create/generate the initial private GitHub project under **your own GitHub account**, verify its CI, and hand you into local setup.
+Once approved, Project Forge can create and generate the initial private GitHub project under **your own GitHub account**, verify its CI, and guide you into local setup.
 
 ## What the AI does—and what you still control
 
@@ -66,7 +66,7 @@ It does not remove meaningful human gates. You remain responsible for decisions 
 
 - what you are actually building;
 - material scope changes;
-- accepting meaningful implementation/diff changes;
+- accepting meaningful implementation or diff changes;
 - merging pull requests;
 - publishing releases;
 - Production deployment and destructive Production actions.
@@ -91,11 +91,7 @@ A Developer Profile can record a learning preference such as minimal, normal, or
 
 Learning never has to block delivery.
 
-## Projects, not disposable demos
-
-Project Forge used to describe every generated repository as a POC (proof of concept). That no longer reflects the full experience.
-
-The normal term is now **Project**.
+## Projects can grow with you
 
 A Project may be a small experiment, but it may also grow to include:
 
@@ -104,9 +100,7 @@ A Project may be a small experiment, but it may also grow to include:
 - multiple developers or workstations;
 - Demo, Staging, Production, or other named environments;
 - deployment and tear-down workflows;
-- ongoing work items and roadmap development.
-
-The older `POC` wording remains in some technical identifiers for compatibility.
+- ongoing Work Items and roadmap development.
 
 ## Your projects and credentials stay yours
 
@@ -116,7 +110,7 @@ Joining Project Forge does **not** grant access to another developer's private a
 
 Project Forge also does not require you to send another developer or ChatGPT your GitHub password, personal access token, SSH private key, or other secrets.
 
-Technical automation uses scoped Project Forge Builder GitHub App access and project/workstation-specific credential boundaries.
+Technical automation uses scoped **Project Forge Builder** GitHub App access and project/workstation-specific credential boundaries.
 
 ## What you need to join
 
@@ -124,7 +118,7 @@ A new Builder normally needs:
 
 - a GitHub account;
 - an invitation from an active Project Forge admin;
-- permission to install/approve the **Project Forge Builder** GitHub App;
+- permission to install or approve the **Project Forge Builder** GitHub App;
 - a ChatGPT account with a coding Project for the guided experience.
 
 Developer tools such as VS Code, language SDKs, Docker, databases, or platform-specific tooling are handled later by each generated project's `/setup` workflow as needed. You do not need to preinstall every technology Project Forge supports before joining.
@@ -146,7 +140,7 @@ A successful onboarding ends with:
 READY FOR PROJECT FORGE
 ```
 
-The manual `/lean-doctor` command remains available if a readiness check ever needs to be retried, but it is not part of the normal happy path.
+The `/lean-doctor` command is available if a readiness check ever needs to be retried, but it is not part of the normal happy path.
 
 ## Configure ChatGPT once
 
@@ -165,9 +159,3 @@ New Project: <your idea>
 ```
 
 If you're not sure what to build, you can ask for project ideas or for a walkthrough of an example Project Forge journey before creating anything.
-
----
-
-### Technical compatibility note
-
-Project Forge is the public product name and the public orchestration surface is `mriekki/project-forge-control-plane`. The historical repository name `mriekki/lean-poc-control-plane` may redirect for compatibility. Other implementation identifiers such as `lean-platform`, `lean-poc-bootstrap`, `@mriekki/lean`, `POC_BOOTSTRAP.json`, `[generate-poc]`, `/accept-lean`, and `/lean-update` remain stable unless a separate migration provides enough developer value to justify changing them.
