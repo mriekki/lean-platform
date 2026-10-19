@@ -6,7 +6,12 @@ import test from 'node:test';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { npmPackArgs, parseArgs, resolveNpmInvocation } from '../scripts/prepare-release.mjs';
-import { assertVersionIncrease, parseArgs as parseUpdateArgs, parseSemver } from '../scripts/prepare-package-update.mjs';
+import {
+  assertVersionIncrease,
+  originMatchesRepositories,
+  parseArgs as parseUpdateArgs,
+  parseSemver
+} from '../scripts/prepare-package-update.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -124,6 +129,35 @@ test('release skill owns automatic version selection, package preparation, trust
   assert.match(skill, /gh workflow run npm-publish\.yml/);
   assert.match(skill, /\/lean-update/);
   assert.doesNotMatch(skill, /^\s*npm stage (?:publish|approve)(?:\s|$)/m);
+});
+
+test('package update origin matching accepts legacy and Project Forge repository identities', () => {
+  const cases = [
+    {
+      repositories: ['mriekki/lean-platform', 'mriekki/project-forge-platform'],
+      legacy: 'https://github.com/mriekki/lean-platform.git',
+      canonical: 'git@github.com:mriekki/project-forge-platform.git'
+    },
+    {
+      repositories: ['mriekki/lean-agentic-core', 'mriekki/project-forge-core'],
+      legacy: 'git@github.com:mriekki/lean-agentic-core.git',
+      canonical: 'https://github.com/mriekki/project-forge-core'
+    },
+    {
+      repositories: ['mriekki/lean-poc-deployment-kit', 'mriekki/project-forge-deployment-kit'],
+      legacy: 'https://github.com/mriekki/lean-poc-deployment-kit.git',
+      canonical: 'git@github.com:mriekki/project-forge-deployment-kit.git'
+    }
+  ];
+
+  for (const value of cases) {
+    assert.equal(originMatchesRepositories(value.legacy, value.repositories), true);
+    assert.equal(originMatchesRepositories(value.canonical, value.repositories), true);
+    assert.equal(
+      originMatchesRepositories('https://github.com/example/unrelated.git', value.repositories),
+      false
+    );
+  }
 });
 
 test('package update preparation requires an exact increasing semantic version and both component roots', () => {
