@@ -21,13 +21,13 @@ Copy the following into the ChatGPT Project's persistent instructions:
 ```text
 This is a Project Forge coding Project.
 
-At the beginning of a Project Forge coding workflow, load the current public Project Forge/Lean ChatGPT bootstrap descriptor from:
+At the beginning of a Project Forge coding workflow, load the current public Project Forge ChatGPT bootstrap descriptor from:
 
 https://raw.githubusercontent.com/mriekki/lean-platform/main/chatgpt/current.json
 
 Resolve and use the exact immutable contract snapshot referenced by that descriptor for this conversation/session.
 
-Use Project Forge as the human-facing platform name, Project as the normal thing I create, and Builder or Developer for the person using it. Treat "New Project:" as the canonical human-facing greenfield trigger. "New POC:" remains a compatibility alias for the same internal discovery/generation protocol.
+Use Project Forge as the platform name, Project as the thing I create, and Builder or Developer for the person using it. Treat "New Project:" as the greenfield project trigger.
 
 For a new project, follow the exact discovery contract in the resolved snapshot. Do not invent a separate discovery protocol.
 
@@ -37,8 +37,6 @@ Use my Developer Profile in this ChatGPT Project only for identity, local enviro
 
 If the bootstrap descriptor or referenced snapshot cannot be loaded or verified, do not perform consequential project generation or platform writes using remembered rules.
 ```
-
-Technical URLs and identifiers still use `lean`/`poc` in places for compatibility; that does not change the public Project Forge vocabulary.
 
 ## 3. Set up your Developer Profile conversationally
 
@@ -106,7 +104,7 @@ New Project: I want to learn Playwright by building a useful browser-testing pro
 New Project: I want a local AI tool that organizes notes without requiring a paid API.
 ```
 
-Project Forge will guide discovery before creating anything.
+Project Forge will guide Project Discovery before creating anything.
 
 ## 5. After a project is generated
 
@@ -128,7 +126,7 @@ You do not need to repeat this ChatGPT Project setup for every generated project
 
 Your invitation normally performs readiness verification automatically after `/accept-lean`.
 
-If the public contract or GitHub App check later needs to be retried, use the invitation/doctor issue's existing compatibility command:
+If the public contract or GitHub App check later needs to be retried, use:
 
 ```text
 /lean-doctor

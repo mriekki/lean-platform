@@ -147,9 +147,10 @@ test('developer profile is small, secret-free, and not project state', async () 
   }
 });
 
-test('public welcome and setup pages expose the streamlined Builder journey', async () => {
+test('public Builder pages present only the final Project Forge starting vocabulary', async () => {
   const welcome = await text('WELCOME.md');
   const setup = await text('chatgpt/SETUP.md');
+  const startHere = await text('chatgpt/START_HERE.md');
 
   assert.match(welcome, /Build real software\. Learn the engineering behind it\./);
   assert.match(welcome, /Project Forge Builder.*GitHub App/i);
@@ -157,10 +158,15 @@ test('public welcome and setup pages expose the streamlined Builder journey', as
   assert.match(welcome, /\/accept-lean/);
   assert.match(welcome, /New Project: <your idea>/);
   assert.match(welcome, /READY FOR PROJECT FORGE/);
-  assert.match(welcome, /manual `\/lean-doctor` command remains available/i);
+  assert.match(welcome, /`\/lean-doctor` command is available/i);
+  assert.doesNotMatch(welcome, /New POC:/);
 
   assert.match(setup, /Project Forge — Coding Projects/);
   assert.match(setup, /Set up my Project Forge Developer Profile/);
   assert.match(setup, /You should not need to hand-author JSON/);
   assert.match(setup, /New Project: <your idea>/);
+  assert.doesNotMatch(setup, /New POC:/);
+
+  assert.match(startHere, /New Project: <idea>/);
+  assert.doesNotMatch(startHere, /New POC:/);
 });
