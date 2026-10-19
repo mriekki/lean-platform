@@ -38,8 +38,8 @@ test('public ChatGPT descriptor resolves one immutable Project Forge contract sn
   const value = await descriptor();
   assert.equal(value.schemaVersion, 1);
   assert.equal(value.channel, 'stable');
-  assert.equal(value.contractVersion, 3);
-  assert.equal(value.snapshotPath, 'chatgpt/contracts/v3');
+  assert.equal(value.contractVersion, 4);
+  assert.equal(value.snapshotPath, 'chatgpt/contracts/v4');
   assert.ok(value.documents.length >= 7);
 
   for (const document of value.documents) {
@@ -57,12 +57,13 @@ test('descriptor records exact canonical source provenance for Project Forge pro
   }
   assert.equal(value.sourceProvenance.core.repository, 'mriekki/lean-agentic-core');
   assert.equal(value.sourceProvenance.bootstrap.repository, 'mriekki/lean-poc-bootstrap');
-  assert.equal(value.sourceProvenance.controlPlane.repository, 'mriekki/lean-poc-control-plane');
+  assert.equal(value.sourceProvenance.controlPlane.repository, 'mriekki/project-forge-control-plane');
 
   const bootstrapSources = new Set(value.sourceProvenance.bootstrap.sources.map((item) => item.path));
   assert.ok(bootstrapSources.has('docs/discovery/QUESTION_MODEL.md'));
   assert.ok(bootstrapSources.has('docs/PROJECT_FORGE_TERMINOLOGY.md'));
   assert.ok(bootstrapSources.has('CHATGPT_START.md'));
+  assert.ok(bootstrapSources.has('catalog/policies/generation-destination.json'));
 
   const controlPlaneSources = new Set(value.sourceProvenance.controlPlane.sources.map((item) => item.path));
   assert.ok(controlPlaneSources.has('.github/workflows/generate-poc.yml'));
@@ -70,15 +71,22 @@ test('descriptor records exact canonical source provenance for Project Forge pro
   assert.ok(controlPlaneSources.has('.github/workflows/claim-invitation.yml'));
   assert.ok(controlPlaneSources.has('.github/workflows/onboarding-doctor.yml'));
   assert.ok(controlPlaneSources.has('docs/INVITATIONS.md'));
+  assert.ok(controlPlaneSources.has('docs/SETUP.md'));
   assert.ok(controlPlaneSources.has('tools/onboarding_doctor.py'));
+  assert.ok(controlPlaneSources.has('tools/request.py'));
 });
 
 test('Project Forge contract preserves canonical ownership, safety, and compatibility behavior', async () => {
   const value = await descriptor();
+  const admin = await text(contractPath(value, 'ADMIN.md'));
   const projectRules = await text(contractPath(value, 'PROJECT_RULES.md'));
   const projectInstructions = await text(contractPath(value, 'PROJECT_INSTRUCTIONS.md'));
   const newProject = await text(contractPath(value, 'NEW_POC.md'));
   const onboarding = await text(contractPath(value, 'ONBOARDING.md'));
+
+  assert.match(admin, /GitHub App: Project Forge Builder/);
+  assert.match(admin, /mriekki\/project-forge-control-plane/);
+  assert.match(admin, /\[test-invite-forge\]/);
 
   assert.match(projectRules, /Project Forge.*platform/i);
   assert.match(projectRules, /Project.*normal thing a Builder creates/i);
@@ -87,6 +95,7 @@ test('Project Forge contract preserves canonical ownership, safety, and compatib
   assert.match(projectRules, /New Project:.*canonical/i);
   assert.match(projectRules, /New POC:.*compatibility alias/s);
   assert.match(projectRules, /POC_BOOTSTRAP\.json/);
+  assert.match(projectRules, /mriekki\/project-forge-control-plane/);
 
   assert.match(projectInstructions, /current\.json/);
   assert.match(projectInstructions, /New Project:/);
@@ -106,6 +115,9 @@ test('Project Forge contract preserves canonical ownership, safety, and compatib
   assert.match(newProject, /Do not ask the human to look up, paste, or approve npm `dist\.integrity`/);
   assert.match(newProject, /Do not require `\/lean-doctor` as a per-Project discovery or approval gate/);
 
+  assert.match(onboarding, /Project Forge Builder GitHub App/);
+  assert.match(onboarding, /mriekki\/project-forge-control-plane/);
+  assert.match(onboarding, /Opening the issue alone does not activate access/);
   assert.match(onboarding, /Knowing the URL alone does not grant access/);
   assert.match(onboarding, /readiness verification automatically/i);
   assert.match(onboarding, /READY FOR PROJECT FORGE/);
@@ -116,10 +128,12 @@ test('Project Forge contract preserves canonical ownership, safety, and compatib
   assert.match(onboarding, /Opening that public issue runs the readiness check immediately/);
   assert.match(onboarding, /Revocation removes future Control Plane authorization/);
 
+  assert.equal(value.controlPlane.repository, 'mriekki/project-forge-control-plane');
   assert.equal(value.controlPlane.inviteIssuePrefix, '[invite-lean]');
   assert.equal(value.controlPlane.acceptCommand, '/accept-lean');
   assert.equal(value.controlPlane.doctorIssuePrefix, '[lean-doctor]');
   assert.equal(value.controlPlane.doctorCommand, '/lean-doctor');
+  assert.match(value.controlPlane.invitationPolicyUrl, /mriekki\/project-forge-control-plane/);
 });
 
 test('developer profile is small, secret-free, and not project state', async () => {
@@ -138,6 +152,9 @@ test('public welcome and setup pages expose the streamlined Builder journey', as
   const setup = await text('chatgpt/SETUP.md');
 
   assert.match(welcome, /Build real software\. Learn the engineering behind it\./);
+  assert.match(welcome, /Project Forge Builder.*GitHub App/i);
+  assert.doesNotMatch(welcome, /Lean POC Generator/);
+  assert.match(welcome, /\/accept-lean/);
   assert.match(welcome, /New Project: <your idea>/);
   assert.match(welcome, /READY FOR PROJECT FORGE/);
   assert.match(welcome, /manual `\/lean-doctor` command remains available/i);

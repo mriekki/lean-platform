@@ -116,7 +116,7 @@ Joining Project Forge does **not** grant access to another developer's private a
 
 Project Forge also does not require you to send another developer or ChatGPT your GitHub password, personal access token, SSH private key, or other secrets.
 
-Technical automation uses scoped GitHub App access and project/workstation-specific credential boundaries.
+Technical automation uses scoped Project Forge Builder GitHub App access and project/workstation-specific credential boundaries.
 
 ## What you need to join
 
@@ -124,21 +124,21 @@ A new Builder normally needs:
 
 - a GitHub account;
 - an invitation from an active Project Forge admin;
-- permission to install/approve the Project Forge GitHub App (currently registered as **Lean POC Generator**);
+- permission to install/approve the **Project Forge Builder** GitHub App;
 - a ChatGPT account with a coding Project for the guided experience.
 
 Developer tools such as VS Code, language SDKs, Docker, databases, or platform-specific tooling are handled later by each generated project's `/setup` workflow as needed. You do not need to preinstall every technology Project Forge supports before joining.
 
 ## Activation is intentionally short
 
-Your personal invitation page guides you through two actions:
+Your personal invitation issue guides you through two actions:
 
 ```text
-1. Install/approve the GitHub App
-2. Comment /accept-lean on your invitation
+1. Install/approve the Project Forge Builder GitHub App
+2. In that same issue, add a comment containing exactly: /accept-lean
 ```
 
-Project Forge then verifies your identity, App installation, authorization, and public platform contract automatically.
+Opening the invitation link alone does not activate access. Project Forge verifies the exact invited GitHub identity, App installation, authorization, and public platform contract after the explicit `/accept-lean` comment.
 
 A successful onboarding ends with:
 
@@ -170,4 +170,4 @@ If you're not sure what to build, you can ask for project ideas or for a walkthr
 
 ### Technical compatibility note
 
-Project Forge is the public product name. Existing implementation identifiers such as `lean-platform`, `lean-poc-bootstrap`, `lean-poc-control-plane`, `@mriekki/lean`, `POC_BOOTSTRAP.json`, `[generate-poc]`, `/accept-lean`, and `/lean-update` remain in place for compatibility unless a future migration provides enough developer value to justify changing them.
+Project Forge is the public product name and the public orchestration surface is `mriekki/project-forge-control-plane`. The historical repository name `mriekki/lean-poc-control-plane` may redirect for compatibility. Other implementation identifiers such as `lean-platform`, `lean-poc-bootstrap`, `@mriekki/lean`, `POC_BOOTSTRAP.json`, `[generate-poc]`, `/accept-lean`, and `/lean-update` remain stable unless a separate migration provides enough developer value to justify changing them.
