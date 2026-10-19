@@ -45,11 +45,18 @@ function normalizeRemote(value) {
   return value.replace(/\\/g, '/').replace(/\.git$/i, '');
 }
 
-function assertExpectedOrigin(root, expectedRepository, label) {
-  const origin = normalizeRemote(git(root, ['remote', 'get-url', 'origin']));
-  const expected = expectedRepository.toLowerCase();
-  if (!origin.toLowerCase().endsWith(`github.com/${expected}`) && !origin.toLowerCase().endsWith(`github.com:${expected}`)) {
-    throw new Error(`${label} has unexpected origin: ${origin}`);
+export function originMatchesRepositories(origin, expectedRepositories) {
+  const normalized = normalizeRemote(origin).toLowerCase();
+  return expectedRepositories.some((repository) => {
+    const expected = repository.toLowerCase();
+    return normalized.endsWith(`github.com/${expected}`) || normalized.endsWith(`github.com:${expected}`);
+  });
+}
+
+function assertExpectedOrigin(root, expectedRepositories, label) {
+  const origin = git(root, ['remote', 'get-url', 'origin']);
+  if (!originMatchesRepositories(origin, expectedRepositories)) {
+    throw new Error(`${label} has unexpected origin: ${normalizeRemote(origin)}`);
   }
 }
 
@@ -58,10 +65,10 @@ function assertCleanTracked(root, label) {
   if (status) throw new Error(`${label} has tracked working-tree changes`);
 }
 
-function assertExactAcceptedMain(root, expectedRepository, label) {
+function assertExactAcceptedMain(root, expectedRepositories, label) {
   const resolved = path.resolve(root);
   if (!fs.existsSync(resolved)) throw new Error(`${label} checkout not found: ${resolved}`);
-  assertExpectedOrigin(resolved, expectedRepository, label);
+  assertExpectedOrigin(resolved, expectedRepositories, label);
   assertCleanTracked(resolved, label);
   run('git', ['-C', resolved, 'fetch', '--quiet', 'origin', 'main'], { cwd: resolved, capture: false });
   const head = git(resolved, ['rev-parse', 'HEAD']);
@@ -71,7 +78,11 @@ function assertExactAcceptedMain(root, expectedRepository, label) {
 }
 
 function assertPlatformPreparationState(root) {
-  assertExpectedOrigin(root, 'mriekki/lean-platform', 'Lean Platform checkout');
+  assertExpectedOrigin(
+    root,
+    ['mriekki/lean-platform', 'mriekki/project-forge-platform'],
+    'Lean Platform checkout'
+  );
   assertCleanTracked(root, 'Lean Platform checkout');
   const branch = git(root, ['branch', '--show-current']);
   if (!branch || branch === 'main') {
@@ -115,8 +126,16 @@ export function preparePackageUpdate(args, root = ROOT) {
   }
   assertVersionIncrease(pkg.version, args.version);
 
-  const core = assertExactAcceptedMain(args.coreRoot, 'mriekki/lean-agentic-core', 'Lean Agentic Core');
-  const deployment = assertExactAcceptedMain(args.deploymentRoot, 'mriekki/lean-poc-deployment-kit', 'Lean POC Deployment Kit');
+  const core = assertExactAcceptedMain(
+    args.coreRoot,
+    ['mriekki/lean-agentic-core', 'mriekki/project-forge-core'],
+    'Lean Agentic Core'
+  );
+  const deployment = assertExactAcceptedMain(
+    args.deploymentRoot,
+    ['mriekki/lean-poc-deployment-kit', 'mriekki/project-forge-deployment-kit'],
+    'Lean POC Deployment Kit'
+  );
 
   const coreCompatibility = readJson(path.join(core.root, 'COMPATIBILITY.json'));
   const coreVersion = coreCompatibility.leanCoreVersion;
