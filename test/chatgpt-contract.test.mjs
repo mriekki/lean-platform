@@ -84,7 +84,7 @@ test('Project Forge contract preserves canonical ownership, safety, and compatib
   const newProject = await text(contractPath(value, 'NEW_POC.md'));
   const onboarding = await text(contractPath(value, 'ONBOARDING.md'));
 
-  assert.match(admin, /GitHub App: Project Forge/);
+  assert.match(admin, /GitHub App: Project Forge Builder/);
   assert.match(admin, /mriekki\/project-forge-control-plane/);
   assert.match(admin, /\[test-invite-forge\]/);
 
@@ -115,7 +115,7 @@ test('Project Forge contract preserves canonical ownership, safety, and compatib
   assert.match(newProject, /Do not ask the human to look up, paste, or approve npm `dist\.integrity`/);
   assert.match(newProject, /Do not require `\/lean-doctor` as a per-Project discovery or approval gate/);
 
-  assert.match(onboarding, /Project Forge GitHub App/);
+  assert.match(onboarding, /Project Forge Builder GitHub App/);
   assert.match(onboarding, /mriekki\/project-forge-control-plane/);
   assert.match(onboarding, /Opening the issue alone does not activate access/);
   assert.match(onboarding, /Knowing the URL alone does not grant access/);
@@ -152,7 +152,7 @@ test('public welcome and setup pages expose the streamlined Builder journey', as
   const setup = await text('chatgpt/SETUP.md');
 
   assert.match(welcome, /Build real software\. Learn the engineering behind it\./);
-  assert.match(welcome, /Project Forge.*GitHub App/i);
+  assert.match(welcome, /Project Forge Builder.*GitHub App/i);
   assert.doesNotMatch(welcome, /Lean POC Generator/);
   assert.match(welcome, /\/accept-lean/);
   assert.match(welcome, /New Project: <your idea>/);
