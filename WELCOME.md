@@ -116,7 +116,7 @@ Joining Project Forge does **not** grant access to another developer's private a
 
 Project Forge also does not require you to send another developer or ChatGPT your GitHub password, personal access token, SSH private key, or other secrets.
 
-Technical automation uses scoped Project Forge GitHub App access and project/workstation-specific credential boundaries.
+Technical automation uses scoped Project Forge Builder GitHub App access and project/workstation-specific credential boundaries.
 
 ## What you need to join
 
@@ -124,7 +124,7 @@ A new Builder normally needs:
 
 - a GitHub account;
 - an invitation from an active Project Forge admin;
-- permission to install/approve the **Project Forge** GitHub App;
+- permission to install/approve the **Project Forge Builder** GitHub App;
 - a ChatGPT account with a coding Project for the guided experience.
 
 Developer tools such as VS Code, language SDKs, Docker, databases, or platform-specific tooling are handled later by each generated project's `/setup` workflow as needed. You do not need to preinstall every technology Project Forge supports before joining.
@@ -134,7 +134,7 @@ Developer tools such as VS Code, language SDKs, Docker, databases, or platform-s
 Your personal invitation issue guides you through two actions:
 
 ```text
-1. Install/approve the Project Forge GitHub App
+1. Install/approve the Project Forge Builder GitHub App
 2. In that same issue, add a comment containing exactly: /accept-lean
 ```
 
