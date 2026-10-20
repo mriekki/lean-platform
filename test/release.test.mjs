@@ -66,7 +66,7 @@ test('release npm pack disables lifecycle scripts after explicit asset verificat
 });
 
 test('packed CLI resolves through npm exec from a neutral directory', () => {
-  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-npm-bin-test-'));
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'project-forge-npm-bin-test-'));
   try {
     const packDir = path.join(temp, 'pack');
     fs.mkdirSync(packDir);
@@ -79,7 +79,7 @@ test('packed CLI resolves through npm exec from a neutral directory', () => {
     fs.writeFileSync(path.join(consumer, 'package.json'), JSON.stringify({ private: true }) + '\n');
     runNpm(['install', '--ignore-scripts', '--no-audit', '--no-fund', tarball], consumer);
 
-    const actual = runNpm(['exec', '--', 'lean', 'version'], consumer).trim();
+    const actual = runNpm(['exec', '--', 'project-forge', 'version'], consumer).trim();
     const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
     assert.equal(actual, `${pkg.name} ${pkg.version}`);
   } finally {
@@ -96,8 +96,6 @@ test('trusted publish workflow is exact-source, direct OIDC publication with ver
   assert.match(workflow, /actions\/checkout@d23441a48e516b6c34aea4fa41551a30e30af803/);
   assert.match(workflow, /repository:\s+mriekki\/project-forge-core/);
   assert.match(workflow, /repository:\s+mriekki\/project-forge-deployment-kit/);
-  assert.doesNotMatch(workflow, /repository:\s+mriekki\/lean-agentic-core/);
-  assert.doesNotMatch(workflow, /repository:\s+mriekki\/lean-poc-deployment-kit/);
   assert.match(workflow, /actions\/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38/);
   assert.doesNotMatch(workflow, /uses:\s+actions\/(?:checkout|setup-node)@v\d+/);
   assert.match(workflow, /npm install --global npm@11\.21\.0/);
@@ -115,10 +113,10 @@ test('trusted publish workflow is exact-source, direct OIDC publication with ver
 });
 
 test('release skill owns automatic version selection, package preparation, trust migration, exact publish gate, and consumer handoff', () => {
-  const skill = fs.readFileSync(path.join(ROOT, '.github', 'skills', 'release-lean', 'SKILL.md'), 'utf8');
-  assert.match(skill, /name: release-lean/);
+  const skill = fs.readFileSync(path.join(ROOT, '.github', 'skills', 'release-project-forge', 'SKILL.md'), 'utf8');
+  assert.match(skill, /name: release-project-forge/);
   assert.doesNotMatch(skill, /^argument-hint:/m);
-  assert.match(skill, /Default invocation is `\/release-lean` with no version argument/);
+  assert.match(skill, /Default invocation is `\/release-project-forge` with no version argument/);
   assert.match(skill, /Choose the next package version automatically/);
   assert.match(skill, /Do not require the user to choose `patch`, `minor`, or `major`/);
   assert.match(skill, /Explicit bump or exact-version arguments are optional overrides/);
@@ -127,40 +125,41 @@ test('release skill owns automatic version selection, package preparation, trust
   assert.match(skill, /do not query `npm trust list` on every routine release/);
   assert.match(skill, /npm login --auth-type=web/);
   assert.match(skill, /EOTP/);
-  assert.match(skill, /npm trust list @mriekki\/lean --json/);
+  assert.match(skill, /npm trust list @mriekki\/project-forge --json/);
   assert.match(skill, /\[NPM TRUST WRITE\]/);
   assert.match(skill, /mriekki\/project-forge-platform\/\.github\/workflows\/npm-publish\.yml/);
-  assert.doesNotMatch(skill, /mriekki\/lean-platform\/\.github\/workflows\/npm-publish\.yml/);
   assert.match(skill, /\[NPM PUBLISH\]/);
   assert.match(skill, /gh workflow run npm-publish\.yml/);
-  assert.match(skill, /\/lean-update/);
+  assert.match(skill, /\/project-forge-update/);
   assert.doesNotMatch(skill, /^\s*npm stage (?:publish|approve)(?:\s|$)/m);
 });
 
-test('package update origin matching accepts canonical Project Forge identities and rejects legacy aliases', () => {
+test('package update origin matching accepts canonical Project Forge identities', () => {
   const cases = [
     {
       repositories: ['mriekki/project-forge-platform'],
-      legacy: 'https://github.com/mriekki/lean-platform.git',
       canonical: 'git@github.com:mriekki/project-forge-platform.git'
     },
     {
       repositories: ['mriekki/project-forge-core'],
-      legacy: 'git@github.com:mriekki/lean-agentic-core.git',
       canonical: 'https://github.com/mriekki/project-forge-core'
     },
     {
       repositories: ['mriekki/project-forge-deployment-kit'],
-      legacy: 'https://github.com/mriekki/lean-poc-deployment-kit.git',
       canonical: 'git@github.com:mriekki/project-forge-deployment-kit.git'
     }
   ];
 
   for (const value of cases) {
-    assert.equal(originMatchesRepositories(value.legacy, value.repositories), false);
-    assert.equal(originMatchesRepositories(value.canonical, value.repositories), true);
     assert.equal(
-      originMatchesRepositories('https://github.com/example/unrelated.git', value.repositories),
+      originMatchesRepositories(value.canonical, value.repositories),
+      true
+    );
+    assert.equal(
+      originMatchesRepositories(
+        'https://github.com/example/unrelated.git',
+        value.repositories
+      ),
       false
     );
   }

@@ -27,9 +27,9 @@ export function verifyAssets(packageData = loadPackageData()) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
-    console.log(`Lean asset verification: PASS (${verifyAssets()} files)`);
+    console.log(`Project Forge asset verification: PASS (${verifyAssets()} files)`);
   } catch (error) {
-    console.error(`Lean asset verification: FAIL: ${error.message}`);
+    console.error(`Project Forge asset verification: FAIL: ${error.message}`);
     process.exitCode = 2;
   }
 }

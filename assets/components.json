@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "package": "@mriekki/lean",
-  "version": "0.4.8",
-  "defaultProfile": "greenfield-poc",
+  "package": "@mriekki/project-forge",
+  "version": "1.0.0",
+  "defaultProfile": "greenfield-project",
   "profiles": {
-    "greenfield-poc": {
+    "greenfield-project": {
       "components": [
         "core",
         "deployment"
@@ -13,21 +13,21 @@
   },
   "components": {
     "core": {
-      "repository": "mriekki/lean-agentic-core",
-      "commit": "21a4c25e8475f89556360777f916c3366d6b1cc9",
-      "version": "1.13.0",
+      "repository": "mriekki/project-forge-core",
+      "commit": "78065f0ab59506e8cc703f6bf7dfd31fc71f313f",
+      "version": "2.0.0",
       "distribution": "greenfield-workspace",
       "descriptor": "assets/core/distribution.json",
       "sourceRoot": "assets/generated/core",
       "canonicalDescriptor": "distributions/greenfield-workspace.json"
     },
     "deployment": {
-      "repository": "mriekki/lean-poc-deployment-kit",
-      "commit": "85c46917da97ab610581b33b042eb1b973ef50e1",
-      "distribution": "greenfield-poc",
+      "repository": "mriekki/project-forge-deployment-kit",
+      "commit": "54fcc256c525ea8762568043c3900f4d2d36c816",
+      "distribution": "greenfield-project",
       "descriptor": "assets/deployment/distribution.json",
       "sourceRoot": "assets/generated/deployment",
-      "canonicalDescriptor": "distributions/greenfield-poc.json"
+      "canonicalDescriptor": "distributions/greenfield-project.json"
     }
   }
 }

@@ -182,7 +182,7 @@ function buildComponentBaseline(plan, consumer, consumerBaseline) {
 
 export function planProfile(packageData, profileName, targetRoot, acceptedRetired = new Map()) {
   const profile = packageData.assets.profiles[profileName];
-  if (!profile) throw new Error(`Unknown Lean profile: ${profileName}`);
+  if (!profile) throw new Error(`Unknown Project Forge profile: ${profileName}`);
   const plans = profile.components.map((id) => planComponent(packageData, id, targetRoot, acceptedRetired.get(id) ?? new Set()));
   const destinations = new Map();
   for (const plan of plans) {
@@ -212,7 +212,7 @@ export function applyProfile(packageData, profilePlan, targetRoot, consumer, con
     const baseline = buildComponentBaseline(plan, consumer, consumerBaseline);
     fs.writeFileSync(path.join(targetRoot, plan.filename), JSON.stringify(baseline, null, 2) + '\n');
   }
-  const leanBaseline = {
+  const projectForgeBaseline = {
     schemaVersion: 1,
     package: packageData.pkg.name,
     version: packageData.pkg.version,
@@ -226,18 +226,18 @@ export function applyProfile(packageData, profilePlan, targetRoot, consumer, con
       distribution: plan.component.distribution
     }]))
   };
-  fs.writeFileSync(path.join(targetRoot, 'LEAN_BASELINE.json'), JSON.stringify(leanBaseline, null, 2) + '\n');
-  return leanBaseline;
+  fs.writeFileSync(path.join(targetRoot, 'PROJECT_FORGE_BASELINE.json'), JSON.stringify(projectForgeBaseline, null, 2) + '\n');
+  return projectForgeBaseline;
 }
 
 export function checkProfile(packageData, profileName, targetRoot) {
   const plan = planProfile(packageData, profileName, targetRoot);
-  const lean = loadOptionalJson(path.join(targetRoot, 'LEAN_BASELINE.json'));
-  const leanCurrent = lean.schemaVersion === 1 && lean.package === packageData.pkg.name && lean.version === packageData.pkg.version && lean.profile === profileName;
+  const projectForgeBaseline = loadOptionalJson(path.join(targetRoot, 'PROJECT_FORGE_BASELINE.json'));
+  const projectForgeCurrent = projectForgeBaseline.schemaVersion === 1 && projectForgeBaseline.package === packageData.pkg.name && projectForgeBaseline.version === packageData.pkg.version && projectForgeBaseline.profile === profileName;
   const componentClean = plan.plans.every((component) => component.metadataCurrent && component.rows.every((row) => row.state === 'SAME') && component.retired.length === 0);
-  return { clean: leanCurrent && componentClean, leanCurrent, plan, lean };
+  return { clean: projectForgeCurrent && componentClean, projectForgeCurrent, plan, projectForgeBaseline };
 }
 
-export function loadLeanBaseline(targetRoot) {
-  return loadOptionalJson(path.join(targetRoot, 'LEAN_BASELINE.json'));
+export function loadProjectForgeBaseline(targetRoot) {
+  return loadOptionalJson(path.join(targetRoot, 'PROJECT_FORGE_BASELINE.json'));
 }

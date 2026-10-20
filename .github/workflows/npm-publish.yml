@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Exact @mriekki/lean version to publish
+        description: Exact @mriekki/project-forge version to publish
         required: true
         type: string
       source_commit:
@@ -58,8 +58,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if npm view "@mriekki/lean@${{ inputs.version }}" version >/dev/null 2>&1; then
-            echo "@mriekki/lean@${{ inputs.version }} is already published" >&2
+          if npm view "@mriekki/project-forge@${{ inputs.version }}" version >/dev/null 2>&1; then
+            echo "@mriekki/project-forge@${{ inputs.version }} is already published" >&2
             exit 1
           fi
 
@@ -85,7 +85,7 @@ jobs:
           repository: mriekki/project-forge-core
           ref: ${{ steps.pins.outputs.core }}
           path: .release-sources/core
-          token: ${{ secrets.LEAN_SOURCE_TOKEN }}
+          token: ${{ secrets.PROJECT_FORGE_SOURCE_TOKEN }}
           persist-credentials: false
 
       - name: Checkout exact Deployment Kit source
@@ -94,7 +94,7 @@ jobs:
           repository: mriekki/project-forge-deployment-kit
           ref: ${{ steps.pins.outputs.deployment }}
           path: .release-sources/deployment
-          token: ${{ secrets.LEAN_SOURCE_TOKEN }}
+          token: ${{ secrets.PROJECT_FORGE_SOURCE_TOKEN }}
           persist-credentials: false
 
       - name: Prepare reproducible release candidate
@@ -141,7 +141,7 @@ jobs:
           LAST_ERROR="${RUNNER_TEMP}/npm-registry-query-error.log"
           while (( SECONDS < DEADLINE )); do
             ATTEMPT=$((ATTEMPT + 1))
-            if ACTUAL_VERSION="$(npm view "@mriekki/lean@${VERSION}" version 2>"$LAST_ERROR")"; then
+            if ACTUAL_VERSION="$(npm view "@mriekki/project-forge@${VERSION}" version 2>"$LAST_ERROR")"; then
               if [ "$ACTUAL_VERSION" = "$VERSION" ]; then
                 FOUND=1
                 break
@@ -175,8 +175,8 @@ jobs:
             fi
             exit 1
           fi
-          ACTUAL_INTEGRITY="$(npm view "@mriekki/lean@${VERSION}" dist.integrity)"
-          ACTUAL_SHASUM="$(npm view "@mriekki/lean@${VERSION}" dist.shasum)"
+          ACTUAL_INTEGRITY="$(npm view "@mriekki/project-forge@${VERSION}" dist.integrity)"
+          ACTUAL_SHASUM="$(npm view "@mriekki/project-forge@${VERSION}" dist.shasum)"
           test "$ACTUAL_INTEGRITY" = "$EXPECTED_INTEGRITY"
           test "$ACTUAL_SHASUM" = "$EXPECTED_SHASUM"
 
@@ -187,5 +187,5 @@ jobs:
           SMOKE_ROOT="$(mktemp -d)"
           trap 'rm -rf "$SMOKE_ROOT"' EXIT
           cd "$SMOKE_ROOT"
-          ACTUAL="$(npx --yes "@mriekki/lean@${{ inputs.version }}" version)"
-          test "$ACTUAL" = "@mriekki/lean ${{ inputs.version }}"
+          ACTUAL="$(npx --yes "@mriekki/project-forge@${{ inputs.version }}" version)"
+          test "$ACTUAL" = "@mriekki/project-forge ${{ inputs.version }}"
