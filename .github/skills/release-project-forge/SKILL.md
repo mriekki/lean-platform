@@ -1,13 +1,13 @@
 ---
-name: release-lean
-description: Prepare, deliver, publish, and verify an exact @mriekki/lean package release from accepted Project Forge component commits.
+name: release-project-forge
+description: Prepare, deliver, publish, and verify an exact @mriekki/project-forge package release from accepted Project Forge component commits.
 user-invocable: true
 disable-model-invocation: true
 ---
 
-# Release Lean
+# Release Project Forge
 
-`/release-lean` is the Project Forge Platform-specific release workflow for `@mriekki/lean`.
+`/release-project-forge` is the Project Forge Platform-specific release workflow for `@mriekki/project-forge`.
 
 It owns package transport mechanics. Canonical Core and Deployment Kit repositories still own their reusable source behavior.
 
@@ -46,7 +46,7 @@ A component that has not changed since the installed package stays on its existi
 
 ## 3. Select the package version automatically
 
-Default invocation is `/release-lean` with no version argument.
+Default invocation is `/release-project-forge` with no version argument.
 
 Inspect the consumer-visible change between the currently packaged component pins and the accepted component commits selected in step 2. Choose the next package version automatically from that evidence. Do not require the user to choose `patch`, `minor`, or `major` when the classification is clear.
 
@@ -55,10 +55,10 @@ Before modifying package metadata, report the decision concisely, for example:
 ```text
 Version decision: 0.2.1 -> 0.3.0
 Classification: minor
-Reason: consumer-visible breaking managed-path/command rename while @mriekki/lean is pre-1.0
+Reason: consumer-visible breaking managed-path/command rename while @mriekki/project-forge is pre-1.0
 ```
 
-For pre-1.0 `@mriekki/lean` releases, use this default policy unless a repository decision supersedes it:
+For pre-1.0 `@mriekki/project-forge` releases, use this default policy unless a repository decision supersedes it:
 
 - `patch` — compatible corrections, additive behavior, documentation, or tooling changes that do not break existing consumers;
 - `minor` — consumer-visible breaking changes such as managed-path removal/rename, command removal/rename, or an incompatible consumer contract change;
@@ -78,13 +78,13 @@ After choosing the version, use the exact computed version internally for releas
 
 ## 4. Prepare the release PR automatically
 
-Invoking `/release-lean` authorizes safe release-preparation mechanics but does **not** authorize npm publication.
+Invoking `/release-project-forge` authorizes safe release-preparation mechanics but does **not** authorize npm publication.
 
 When preparation has not happened yet:
 
 1. require Project Forge Platform tracked state to be clean;
 2. refresh `main` using fast-forward-only behavior;
-3. create/switch to `release/lean-<version>` unless the matching release branch already exists safely;
+3. create/switch to `release/project-forge-<version>` unless the matching release branch already exists safely;
 4. run:
 
 ```powershell
@@ -111,7 +111,7 @@ Generated assets remain ignored release-build products; do not commit them unles
 
 If the diff contains anything outside the expected release-preparation scope, stop.
 
-After successful verification, routine branch/stage/commit/push/PR creation and PR-CI observation are authorized by this invocation. Use a concise release commit/PR such as `Prepare @mriekki/lean <version>`.
+After successful verification, routine branch/stage/commit/push/PR creation and PR-CI observation are authorized by this invocation. Use a concise release commit/PR such as `Prepare @mriekki/project-forge <version>`.
 
 Do not publish npm from a release branch or PR.
 
@@ -146,7 +146,7 @@ Normal publication uses `.github/workflows/npm-publish.yml` with npm Trusted Pub
 When inspecting or changing trust settings, the npm website is the simplest route. The CLI may require a separate browser authorization even when `npm whoami` succeeds.
 
 ```powershell
-npm trust list @mriekki/lean --json
+npm trust list @mriekki/project-forge --json
 ```
 
 If the CLI returns `EOTP`, have the operator open the URL printed in their local terminal, finish npm's browser authorization, then rerun the command. If `npm whoami` returns `E401`, use `npm login --auth-type=web --registry=https://registry.npmjs.org/` before retrying CLI trust management. Never request or copy the one-time URL or OTP.
@@ -160,7 +160,7 @@ workflow file: npm-publish.yml
 allowed action: npm publish
 ```
 
-It can be managed on npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher**. Select GitHub Actions, owner `mriekki`, repository `project-forge-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission. The CLI equivalent for creating a missing relationship is documented below; both routes require maintainer authorization, and npm may prompt for 2FA.
+It can be managed on npmjs.com under **Packages → `@mriekki/project-forge` → Settings → Trusted Publisher**. Select GitHub Actions, owner `mriekki`, repository `project-forge-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission. The CLI equivalent for creating a missing relationship is documented below; both routes require maintainer authorization, and npm may prompt for 2FA.
 
 If that exact relationship already exists, do not touch it.
 
@@ -168,15 +168,15 @@ If the existing relationship is stage-only or points at the retired `npm-stage.y
 
 ```text
 [NPM TRUST WRITE]
-Replace the existing @mriekki/lean trusted publisher with direct-publish permission for mriekki/project-forge-platform/.github/workflows/npm-publish.yml?
+Replace the existing @mriekki/project-forge trusted publisher with direct-publish permission for mriekki/project-forge-platform/.github/workflows/npm-publish.yml?
 ```
 
 Only after approval, use the observed trust ID:
 
 ```powershell
-npm trust revoke @mriekki/lean --id <observed-id>
-npm trust github @mriekki/lean --file npm-publish.yml --repo mriekki/project-forge-platform --allow-publish --yes
-npm trust list @mriekki/lean --json
+npm trust revoke @mriekki/project-forge --id <observed-id>
+npm trust github @mriekki/project-forge --file npm-publish.yml --repo mriekki/project-forge-platform --allow-publish --yes
+npm trust list @mriekki/project-forge --json
 ```
 
 npm may require interactive 2FA for this one-time trust-configuration change. Do not store or request an OTP in repository files, chat transcripts, scripts, or CI secrets.
@@ -199,7 +199,7 @@ present exactly one publication gate:
 ```text
 NPM PUBLISH READY
 
-Package: @mriekki/lean@<version>
+Package: @mriekki/project-forge@<version>
 Project Forge Platform source: <exact main SHA>
 Core: <exact commit/version>
 Deployment Kit: <exact commit>
@@ -245,9 +245,9 @@ Registry propagation is asynchronous. The workflow polls with exponential backof
 On success report only evidence-backed state:
 
 ```text
-LEAN PACKAGE RELEASE COMPLETE
+PROJECT_FORGE PACKAGE RELEASE COMPLETE
 
-Package: @mriekki/lean@<version>
+Package: @mriekki/project-forge@<version>
 Project Forge Platform source: <sha>
 Core: <sha/version>
 Deployment Kit: <sha>
@@ -256,6 +256,6 @@ Registry verification: GREEN
 Neutral npx smoke: GREEN
 ```
 
-Publishing the package does not update existing consumers. Package-managed consumers adopt it separately through `/lean-update`.
+Publishing the package does not update existing consumers. Package-managed consumers adopt it separately through `/project-forge-update`.
 
-Do not regenerate a POC, modify Bootstrap provenance, deploy an application, publish Core/Deployment-Kit tags/releases, or update consumers as an implicit side effect of `/release-lean`.
+Do not regenerate a POC, modify Bootstrap provenance, deploy an application, publish Core/Deployment-Kit tags/releases, or update consumers as an implicit side effect of `/release-project-forge`.

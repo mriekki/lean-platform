@@ -1,10 +1,10 @@
 {
-  "name": "@mriekki/lean",
-  "version": "0.4.8",
+  "name": "@mriekki/project-forge",
+  "version": "1.0.0",
   "description": "Public consumer distribution and updater for Project Forge engineering assets.",
   "type": "module",
   "bin": {
-    "lean": "bin/lean.mjs"
+    "project-forge": "bin/project-forge.mjs"
   },
   "files": [
     "bin/",

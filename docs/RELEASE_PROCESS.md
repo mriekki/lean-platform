@@ -1,6 +1,6 @@
 # npm Release Process
 
-`@mriekki/lean` is the public npm distribution assembled from exact accepted commits of the private canonical Project Forge repositories.
+`@mriekki/project-forge` is the public npm distribution assembled from exact accepted commits of the private canonical Project Forge repositories.
 
 Release preparation and npm publication are intentionally automated, but publication remains an explicit decision for one exact package/version/source tuple.
 
@@ -9,7 +9,7 @@ Release preparation and npm publication are intentionally automated, but publica
 Use the repository-local VS Code skill:
 
 ```text
-/release-lean [version | patch | minor | major]
+/release-project-forge [version | patch | minor | major]
 ```
 
 The skill is resume-aware and owns the normal package-release orchestration:
@@ -28,7 +28,7 @@ accepted Core / Deployment Kit main commits
 → package release complete
 ```
 
-Publishing the package does not update consumers. Existing package-managed POCs adopt it separately through `/lean-update`.
+Publishing the package does not update consumers. Existing package-managed POCs adopt it separately through `/project-forge-update`.
 
 ## Release invariants
 
@@ -41,7 +41,7 @@ Before npm publication, the exact release candidate must satisfy all of these:
 - all package tests pass;
 - generated assets verify against the assembly ledger;
 - two independent `npm pack` runs produce the same SHA-256;
-- a clean temporary install of the packed tarball can run `lean version` through both direct Node and npm executable resolution, then run `lean install` and `lean check` successfully;
+- a clean temporary install of the packed tarball can run `project-forge version` through both direct Node and npm executable resolution, then run `project-forge install` and `project-forge check` successfully;
 - the npm version does not already exist;
 - the exact Project Forge Platform source commit and package version are passed to the publication workflow and revalidated there.
 
@@ -97,34 +97,34 @@ The package can retain npm's `Require two-factor authentication and disallow tok
 
 Routine releases do not require a local npm login. GitHub Actions uses OIDC, and a successful publish from the exact workflow confirms that the trusted-publisher relationship works. Do not run `npm trust list` on every release: npm may require fresh browser/2FA authorization even when `npm whoami` succeeds.
 
-Use npmjs.com under **Packages → `@mriekki/lean` → Settings → Trusted Publisher** for initial setup or inspection. Configure GitHub Actions with owner `mriekki`, repository `project-forge-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission.
+Use npmjs.com under **Packages → `@mriekki/project-forge` → Settings → Trusted Publisher** for initial setup or inspection. Configure GitHub Actions with owner `mriekki`, repository `project-forge-platform`, workflow file `npm-publish.yml`, no environment, and direct publish permission.
 
 If CLI access is needed to configure or investigate the relationship, sign in interactively:
 
 ```powershell
 npm login --auth-type=web --registry=https://registry.npmjs.org/
 npm whoami --registry=https://registry.npmjs.org/
-npm trust list @mriekki/lean --json
+npm trust list @mriekki/project-forge --json
 ```
 
-The account must be allowed to manage `@mriekki/lean`. `npm trust list` can require a separate browser authorization (`EOTP`) even after login; open the URL printed in the local terminal, finish npm's prompt, and rerun the command. Never paste or save that one-time URL or an OTP in chat, repository files, or CI. The same relationship can be created through `npm trust github` after the release skill's `[NPM TRUST WRITE]` gate.
+The account must be allowed to manage `@mriekki/project-forge`. `npm trust list` can require a separate browser authorization (`EOTP`) even after login; open the URL printed in the local terminal, finish npm's prompt, and rerun the command. Never paste or save that one-time URL or an OTP in chat, repository files, or CI. The same relationship can be created through `npm trust github` after the release skill's `[NPM TRUST WRITE]` gate.
 
-No long-lived npm token is needed or appropriate for this flow. Local npm login is only for occasional maintainer operations and trust configuration; GitHub Actions publishes with OIDC. The workflow uses the repository's `LEAN_SOURCE_TOKEN` only to read the private canonical component repositories.
+No long-lived npm token is needed or appropriate for this flow. Local npm login is only for occasional maintainer operations and trust configuration; GitHub Actions publishes with OIDC. The workflow uses the repository's `PROJECT_FORGE_SOURCE_TOKEN` only to read the private canonical component repositories.
 
 ### One-time migration from the old staged workflow
 
 If the npm trusted publisher still points at `npm-stage.yml` or only permits staged publication, replace it once. Inspect the current relationship:
 
 ```powershell
-npm trust list @mriekki/lean --json
+npm trust list @mriekki/project-forge --json
 ```
 
-After explicit `[NPM TRUST WRITE]` approval in `/release-lean`, revoke the observed old relationship and create the direct-publish relationship:
+After explicit `[NPM TRUST WRITE]` approval in `/release-project-forge`, revoke the observed old relationship and create the direct-publish relationship:
 
 ```powershell
-npm trust revoke @mriekki/lean --id <observed-id>
-npm trust github @mriekki/lean --file npm-publish.yml --repo mriekki/project-forge-platform --allow-publish --yes
-npm trust list @mriekki/lean --json
+npm trust revoke @mriekki/project-forge --id <observed-id>
+npm trust github @mriekki/project-forge --file npm-publish.yml --repo mriekki/project-forge-platform --allow-publish --yes
+npm trust list @mriekki/project-forge --json
 ```
 
 npm may require interactive 2FA for this one-time trust configuration change. Do not store an OTP anywhere in the repository, skill, workflow, CI secret, or documentation.
@@ -135,13 +135,13 @@ Once this relationship exists, normal package releases require no npm staging or
 
 A merged package PR does not itself publish npm.
 
-After the release PR is merged and exact post-merge `main` CI is green, `/release-lean` shows the exact package version, Project Forge Platform main SHA, Core pin/version, Deployment Kit pin, and trusted publisher evidence.
+After the release PR is merged and exact post-merge `main` CI is green, `/release-project-forge` shows the exact package version, Project Forge Platform main SHA, Core pin/version, Deployment Kit pin, and trusted publisher evidence.
 
 The single publication decision is:
 
 ```text
 [NPM PUBLISH]
-Publish this exact @mriekki/lean version from this exact Project Forge Platform main commit and component pin set?
+Publish this exact @mriekki/project-forge version from this exact Project Forge Platform main commit and component pin set?
 ```
 
 If approved, the skill triggers:
@@ -163,12 +163,12 @@ The workflow refuses changed/stale evidence.
 3. requires `package.json` version to equal the approved version;
 4. refuses an already-published version;
 5. resolves exact component pins from `assets/components.json`;
-6. checks out those exact private Core and Deployment Kit commits using read-only `LEAN_SOURCE_TOKEN` Contents access;
+6. checks out those exact private Core and Deployment Kit commits using read-only `PROJECT_FORGE_SOURCE_TOKEN` Contents access;
 7. runs `scripts/prepare-release.mjs` to reproduce/test the package;
 8. verifies the release manifest matches the authorized Project Forge Platform commit/version;
 9. publishes the exact tarball with `npm publish --access public` using OIDC;
 10. waits up to 10 minutes, with exponential backoff, for registry visibility and verifies npm integrity/shasum against the release manifest;
-11. runs `npx --yes @mriekki/lean@<version> version` from a neutral temporary directory.
+11. runs `npx --yes @mriekki/project-forge@<version> version` from a neutral temporary directory.
 
 If any pre-publication step fails, npm is not published. If publication succeeds but a post-publish verification fails, report the published state accurately and diagnose the verification failure; do not attempt to republish the same version.
 
@@ -189,11 +189,11 @@ Review artifacts when diagnosing a release issue:
 
 ```text
 dist/release/RELEASE_MANIFEST.json
-dist/release/mriekki-lean-<version>.tgz
+dist/release/mriekki-project-forge-<version>.tgz
 ```
 
-These are implementation evidence, not a separate mandatory manual-review ceremony in the normal `/release-lean` flow.
+These are implementation evidence, not a separate mandatory manual-review ceremony in the normal `/release-project-forge` flow.
 
 ## What release does not imply
 
-Publishing `@mriekki/lean` does not regenerate existing POCs, update Bootstrap provenance, deploy an application, publish Core/Deployment Kit GitHub releases/tags, or update Family Meal Planner. Those remain separately owned actions.
+Publishing `@mriekki/project-forge` does not regenerate existing POCs, update Bootstrap provenance, deploy an application, publish Core/Deployment Kit GitHub releases/tags, or update Family Meal Planner. Those remain separately owned actions.

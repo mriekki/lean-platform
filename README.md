@@ -58,7 +58,7 @@ Each Builder owns their own project repositories and development credentials.
 
 Project Forge authorization does not grant access to another developer's private projects. Builders do not need access to Project Forge's private platform implementation repositories.
 
-Private platform components provide the engineering workflow, project-generation, deployment, and orchestration capabilities behind the public Project Forge experience. Builders interact with Project Forge through the public onboarding flow, their own generated project repositories, the public ChatGPT contract, and the published `@mriekki/lean` package.
+Private platform components provide the engineering workflow, project-generation, deployment, and orchestration capabilities behind the public Project Forge experience. Builders interact with Project Forge through the public onboarding flow, their own generated project repositories, the public ChatGPT contract, and the published `@mriekki/project-forge` package.
 
 ## New Builder onboarding
 
@@ -69,7 +69,7 @@ An invited Builder normally does only this:
 ```text
 open personal invitation
 → install/approve Project Forge Builder
-→ /accept-lean
+→ accept invitation
 → automatic readiness verification
 → configure one ChatGPT coding Project
 → New Project: <idea>
@@ -101,27 +101,27 @@ The stable descriptor at `chatgpt/current.json` resolves an immutable Project Fo
 
 ## Public engineering distribution
 
-`@mriekki/lean` is the public distribution for Project Forge engineering assets used by generated projects.
+`@mriekki/project-forge` is the public distribution for Project Forge engineering assets used by generated projects.
 
 Project Forge assembles that package from approved private platform components using exact pinned source commits and deterministic distribution descriptors. Published packages are self-contained; Builders do not need access to the private implementation repositories to install or update managed assets.
 
 Install:
 
 ```powershell
-npx @mriekki/lean install
+npx @mriekki/project-forge install
 ```
 
 Update to the newest published package:
 
 ```powershell
-npx @mriekki/lean@latest update
+npx @mriekki/project-forge@latest update
 ```
 
 Inspect and verify:
 
 ```powershell
-npx @mriekki/lean@latest status
-npx @mriekki/lean@latest check
+npx @mriekki/project-forge@latest status
+npx @mriekki/project-forge@latest check
 ```
 
 Managed updates verify baselines and refuse unsafe drift or conflicts before modifying Project Forge-managed files.

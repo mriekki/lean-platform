@@ -118,7 +118,7 @@ export function preparePackageUpdate(args, root = ROOT) {
   const lock = readJson(lockFile);
   const components = readJson(componentsFile);
 
-  if (pkg.name !== '@mriekki/lean' || components.package !== pkg.name) {
+  if (pkg.name !== '@mriekki/project-forge' || components.package !== pkg.name) {
     throw new Error('Unexpected package identity');
   }
   if (pkg.version !== components.version || lock.version !== pkg.version || lock.packages?.['']?.version !== pkg.version) {
@@ -138,7 +138,7 @@ export function preparePackageUpdate(args, root = ROOT) {
   );
 
   const coreCompatibility = readJson(path.join(core.root, 'COMPATIBILITY.json'));
-  const coreVersion = coreCompatibility.leanCoreVersion;
+  const coreVersion = coreCompatibility.projectForgeCoreVersion;
   parseSemver(coreVersion);
 
   const nextComponents = structuredClone(components);

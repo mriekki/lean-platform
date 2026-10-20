@@ -67,7 +67,7 @@ export function assembleAssets(packageData, sourceRoots, outputRoot = path.join(
       if (trackedStatus) throw new Error(`${componentId} checkout has tracked working-tree changes; release assembly requires a clean exact checkout`);
       if (componentId === 'core') {
         const compatibility = readJson(path.join(sourceRoot, 'COMPATIBILITY.json'));
-        if (compatibility.leanCoreVersion !== component.version) throw new Error(`Core version mismatch: expected ${component.version}, got ${compatibility.leanCoreVersion}`);
+        if (compatibility.projectForgeCoreVersion !== component.version) throw new Error(`Core version mismatch: expected ${component.version}, got ${compatibility.projectForgeCoreVersion}`);
       }
       const packagedDescriptor = readJson(resolveUnder(packageData.root, component.descriptor, 'packaged descriptor'));
       const canonicalDescriptor = readJson(canonicalDescriptorPath(component, sourceRoot));
@@ -125,7 +125,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const args = parse(process.argv.slice(2));
     const packageData = loadPackageData();
     const result = assembleAssets(packageData, { core: args.core, deployment: args.deployment }, args.output ? path.resolve(args.output) : undefined);
-    console.log(`Assembled ${Object.values(result.components).reduce((sum, component) => sum + component.files.length, 0)} Lean asset files.`);
+    console.log(`Assembled ${Object.values(result.components).reduce((sum, component) => sum + component.files.length, 0)} Project Forge asset files.`);
   } catch (error) {
     console.error(`Asset assembly failed: ${error.message}`);
     process.exitCode = 2;

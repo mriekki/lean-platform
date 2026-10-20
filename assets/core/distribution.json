@@ -1,12 +1,12 @@
 {
   "name": "greenfield-workspace",
-  "profileSource": "profiles/greenfield/lean-workspace.json",
-  "profileDestination": ".github/lean-workspace.json",
+  "profileSource": "profiles/greenfield/project-forge-workspace.json",
+  "profileDestination": ".github/project-forge-workspace.json",
   "mappings": [
     {"source":"core/agents/reviewer.agent.md","destination":".github/agents/reviewer.agent.md"},
     {"source":"core/agents/coach.agent.md","destination":".github/agents/coach.agent.md"},
-    {"source":"core/instructions/lean-workflow.instructions.md","destination":".github/instructions/lean-workflow.instructions.md"},
-    {"source":"core/instructions/lean-docs.instructions.md","destination":".github/instructions/lean-docs.instructions.md"},
+    {"source":"core/instructions/project-forge-workflow.instructions.md","destination":".github/instructions/project-forge-workflow.instructions.md"},
+    {"source":"core/instructions/project-forge-docs.instructions.md","destination":".github/instructions/project-forge-docs.instructions.md"},
     {"source":"core/skills/define-feature/SKILL.md","destination":".github/skills/define-feature/SKILL.md"},
     {"source":"core/skills/grill-me/SKILL.md","destination":".github/skills/grill-me/SKILL.md"},
     {"source":"core/skills/grill-with-docs/SKILL.md","destination":".github/skills/grill-with-docs/SKILL.md"},
@@ -18,7 +18,7 @@
     {"source":"core/skills/deliver/SKILL.md","destination":".github/skills/deliver/SKILL.md"},
     {"source":"core/skills/cleanup-branches/SKILL.md","destination":".github/skills/cleanup-branches/SKILL.md"},
     {"source":"core/skills/pull-latest/SKILL.md","destination":".github/skills/pull-latest/SKILL.md"},
-    {"source":"core/skills/lean-update/SKILL.md","destination":".github/skills/lean-update/SKILL.md"},
+    {"source":"core/skills/project-forge-update/SKILL.md","destination":".github/skills/project-forge-update/SKILL.md"},
     {"source":"core/skills/core-sync/SKILL.md","destination":".github/skills/core-sync/SKILL.md"},
     {"source":"core/skills/upstream-fix/SKILL.md","destination":".github/skills/upstream-fix/SKILL.md"},
     {"source":"core/skills/wait-what/SKILL.md","destination":".github/skills/wait-what/SKILL.md"},
@@ -42,7 +42,7 @@
     {"source":"core/process/DATABASE_LEARNING_WORKBENCH.md","destination":"docs/process/DATABASE_LEARNING_WORKBENCH.md"},
     {"source":"core/process/SYSTEM_DESIGN_LEARNING_WORKBENCH.md","destination":"docs/process/SYSTEM_DESIGN_LEARNING_WORKBENCH.md"},
     {"source":"core/process/PROJECT_DOCUMENTATION_FRAMEWORK.md","destination":"docs/process/PROJECT_DOCUMENTATION_FRAMEWORK.md"},
-    {"source":"core/process/LEAN_ENGINEERING_GUIDE.md","destination":"docs/lean/LEAN_ENGINEERING_GUIDE.md"},
+    {"source":"core/process/PROJECT_FORGE_ENGINEERING_GUIDE.md","destination":"docs/project-forge/PROJECT_FORGE_ENGINEERING_GUIDE.md"},
     {"source":"core/process/SETUP_ACCEPTANCE_CHECKLIST.md","destination":"docs/process/SETUP_ACCEPTANCE_CHECKLIST.md"},
     {"source":"core/templates/PULL_REQUEST_TEMPLATE.md","destination":".github/PULL_REQUEST_TEMPLATE.md"},
     {"source":"core/templates/PRODUCT_BRIEF_TEMPLATE.md","destination":"docs/templates/PRODUCT_BRIEF_TEMPLATE.md"},
@@ -57,10 +57,10 @@
     {"source":"core/learning/SYSTEM_DESIGN_DRILLS.md","destination":"learning/SYSTEM_DESIGN_DRILLS.md"},
     {"source":"core/learning/DIAGRAM_GUIDE.md","destination":"learning/DIAGRAM_GUIDE.md"},
     {"source":"core/learning/RESOURCE_CATALOG.md","destination":"learning/RESOURCE_CATALOG.md"},
-    {"source":"tools/db_lab/sqlite_workbench.py","destination":"tools/lean-db-lab/sqlite-workbench.py"},
-    {"source":"tools/system_lab/system_workbench.py","destination":"tools/lean-system-lab/system-workbench.py"},
-    {"source":"tools/docs_site/docs_site.py","destination":"tools/lean-docs/docs-site.py"},
-    {"source":"tools/package/check_baseline.py","destination":"tools/lean-core/check-core-baseline.py"},
-    {"source":"tools/package/check_upstream.py","destination":"tools/lean-core/check-core-upstream.py"}
+    {"source":"tools/db_lab/sqlite_workbench.py","destination":"tools/project-forge-db-lab/sqlite-workbench.py"},
+    {"source":"tools/system_lab/system_workbench.py","destination":"tools/project-forge-system-lab/system-workbench.py"},
+    {"source":"tools/docs_site/docs_site.py","destination":"tools/project-forge-docs/docs-site.py"},
+    {"source":"tools/package/check_baseline.py","destination":"tools/project-forge-core/check-core-baseline.py"},
+    {"source":"tools/package/check_upstream.py","destination":"tools/project-forge-core/check-core-upstream.py"}
   ]
 }

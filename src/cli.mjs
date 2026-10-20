@@ -3,7 +3,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
-import { applyProfile, checkProfile, loadLeanBaseline, planProfile } from './engine.mjs';
+import { applyProfile, checkProfile, loadProjectForgeBaseline, planProfile } from './engine.mjs';
 import { loadPackageData } from './package-data.mjs';
 
 function parseArgs(argv) {
@@ -44,7 +44,7 @@ function inferConsumer(root) {
 }
 
 function printPlan(plan) {
-  console.log(`Lean profile: ${plan.profileName}`);
+  console.log(`Project Forge profile: ${plan.profileName}`);
   for (const component of plan.plans) {
     console.log(`\n${component.componentId.toUpperCase()} ${component.component.commit}`);
     for (const row of component.rows) console.log(`${row.state.padEnd(20)} ${row.path}`);
@@ -59,7 +59,7 @@ async function shouldApply(options) {
   if (!input.isTTY || !output.isTTY) return false;
   const rl = readline.createInterface({ input, output });
   try {
-    const answer = (await rl.question('Apply this safe Lean asset plan? [y/N] ')).trim().toLowerCase();
+    const answer = (await rl.question('Apply this safe Project Forge asset plan? [y/N] ')).trim().toLowerCase();
     return answer === 'y' || answer === 'yes';
   } finally {
     rl.close();
@@ -68,19 +68,19 @@ async function shouldApply(options) {
 
 function usage(command) {
   const commandUsage = {
-    install: 'lean install [--root PATH] [--profile NAME] [--apply|--yes] [--consumer NAME] [--consumer-baseline LABEL] [--accept-retired component:path]',
-    update: 'lean update [--root PATH] [--profile NAME] [--apply|--yes] [--accept-retired component:path]',
-    status: 'lean status [--root PATH] [--profile NAME]',
-    check: 'lean check [--root PATH] [--profile NAME]',
-    version: 'lean version'
+    install: 'project-forge install [--root PATH] [--profile NAME] [--apply|--yes] [--consumer NAME] [--consumer-baseline LABEL] [--accept-retired component:path]',
+    update: 'project-forge update [--root PATH] [--profile NAME] [--apply|--yes] [--accept-retired component:path]',
+    status: 'project-forge status [--root PATH] [--profile NAME]',
+    check: 'project-forge check [--root PATH] [--profile NAME]',
+    version: 'project-forge version'
   };
 
   if (commandUsage[command]) {
-    console.log(`@mriekki/lean\n\nUsage:\n  ${commandUsage[command]}\n`);
+    console.log(`@mriekki/project-forge\n\nUsage:\n  ${commandUsage[command]}\n`);
     return;
   }
 
-  console.log(`@mriekki/lean\n\nCommands:\n  install   Preview/install bundled Lean assets\n  update    Preview/update to this package's bundled Lean assets\n  status    Show installed umbrella/component provenance\n  check     Verify managed files and baselines exactly match this package\n  version   Show package version\n\nCommon options:\n  --root PATH\n  --profile greenfield-poc\n  --apply | --yes\n  --consumer NAME\n  --consumer-baseline LABEL\n  --accept-retired core:path\n  -h, --help\n`);
+  console.log(`@mriekki/project-forge\n\nCommands:\n  install   Preview/install bundled Project Forge assets\n  update    Preview/update to this package's bundled Project Forge assets\n  status    Show installed umbrella/component provenance\n  check     Verify managed files and baselines exactly match this package\n  version   Show package version\n\nCommon options:\n  --root PATH\n  --profile greenfield-project\n  --apply | --yes\n  --consumer NAME\n  --consumer-baseline LABEL\n  --accept-retired core:path\n  -h, --help\n`);
 }
 
 export async function run(argv = process.argv.slice(2), packageData = loadPackageData()) {
@@ -94,15 +94,15 @@ export async function run(argv = process.argv.slice(2), packageData = loadPackag
   if (command === 'version') { console.log(`${packageData.pkg.name} ${packageData.pkg.version}`); return 0; }
   const root = path.resolve(options.root ?? process.cwd());
   if (!fs.existsSync(root) || !fs.statSync(root).isDirectory()) throw new Error(`Repository root not found: ${root}`);
-  const installed = loadLeanBaseline(root);
+  const installed = loadProjectForgeBaseline(root);
   const profile = options.profile ?? installed.profile ?? packageData.assets.defaultProfile;
 
   if (command === 'status') {
     if (!Object.keys(installed).length) {
-      console.log(`Lean: not installed\nAvailable package: ${packageData.pkg.name}@${packageData.pkg.version}\nProfile: ${profile}`);
+      console.log(`Project Forge: not installed\nAvailable package: ${packageData.pkg.name}@${packageData.pkg.version}\nProfile: ${profile}`);
       return 0;
     }
-    console.log(`Lean package: ${installed.package}@${installed.version}`);
+    console.log(`Project Forge package: ${installed.package}@${installed.version}`);
     console.log(`Available package: ${packageData.pkg.name}@${packageData.pkg.version}`);
     console.log(`Profile: ${installed.profile}`);
     for (const [name, component] of Object.entries(installed.components ?? {})) {
@@ -113,19 +113,19 @@ export async function run(argv = process.argv.slice(2), packageData = loadPackag
 
   if (command === 'check') {
     const result = checkProfile(packageData, profile, root);
-    console.log(`Lean package baseline current: ${result.leanCurrent ? 'yes' : 'no'}`);
+    console.log(`Project Forge package baseline current: ${result.projectForgeCurrent ? 'yes' : 'no'}`);
     for (const component of result.plan.plans) {
       const clean = component.metadataCurrent && component.rows.every((row) => row.state === 'SAME') && component.retired.length === 0;
       console.log(`${component.componentId}: ${clean ? 'PASS' : 'STALE OR DRIFTED'}`);
     }
-    console.log(`Lean check: ${result.clean ? 'PASS' : 'STALE OR DRIFTED'}`);
+    console.log(`Project Forge check: ${result.clean ? 'PASS' : 'STALE OR DRIFTED'}`);
     return result.clean ? 0 : 1;
   }
 
   if (!['install', 'update'].includes(command)) throw new Error(`Unknown command: ${command}`);
-  if (command === 'install' && Object.keys(installed).length) throw new Error('LEAN_BASELINE.json already exists; use update instead of install');
-  if (command === 'update' && !Object.keys(installed).length) throw new Error('LEAN_BASELINE.json is missing; use install first');
-  if (installed.profile && installed.profile !== profile) throw new Error(`Installed Lean profile is ${installed.profile}; refusing implicit profile change to ${profile}`);
+  if (command === 'install' && Object.keys(installed).length) throw new Error('PROJECT_FORGE_BASELINE.json already exists; use update instead of install');
+  if (command === 'update' && !Object.keys(installed).length) throw new Error('PROJECT_FORGE_BASELINE.json is missing; use install first');
+  if (installed.profile && installed.profile !== profile) throw new Error(`Installed Project Forge profile is ${installed.profile}; refusing implicit profile change to ${profile}`);
 
   const plan = planProfile(packageData, profile, root, options.acceptedRetired);
   printPlan(plan);

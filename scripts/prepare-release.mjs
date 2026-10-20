@@ -77,18 +77,18 @@ function pack(packageData, destination) {
 }
 
 function smokeTarball(tarball, expectedVersion) {
-  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'lean-release-smoke-'));
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'project-forge-release-smoke-'));
   try {
     fs.writeFileSync(path.join(temp, 'package.json'), JSON.stringify({ private: true }) + '\n');
     runNpm(['install', '--ignore-scripts', '--no-audit', '--no-fund', tarball], { cwd: temp });
-    const bin = path.join(temp, 'node_modules', '@mriekki', 'lean', 'bin', 'lean.mjs');
+    const bin = path.join(temp, 'node_modules', '@mriekki', 'project-forge', 'bin', 'project-forge.mjs');
     const directVersion = run(process.execPath, [bin, 'version'], { cwd: temp, capture: true }).trim();
-    if (directVersion !== `@mriekki/lean ${expectedVersion}`) throw new Error(`Tarball version smoke mismatch: ${directVersion}`);
-    const npmVersion = runNpm(['exec', '--', 'lean', 'version'], { cwd: temp, capture: true }).trim();
-    if (npmVersion !== `@mriekki/lean ${expectedVersion}`) throw new Error(`Tarball npm bin smoke mismatch: ${npmVersion}`);
+    if (directVersion !== `@mriekki/project-forge ${expectedVersion}`) throw new Error(`Tarball version smoke mismatch: ${directVersion}`);
+    const npmVersion = runNpm(['exec', '--', 'project-forge', 'version'], { cwd: temp, capture: true }).trim();
+    if (npmVersion !== `@mriekki/project-forge ${expectedVersion}`) throw new Error(`Tarball npm bin smoke mismatch: ${npmVersion}`);
     const consumer = path.join(temp, 'consumer');
     fs.mkdirSync(consumer);
-    run(process.execPath, [bin, 'install', '--root', consumer, '--apply', '--consumer', 'release-smoke', '--consumer-baseline', `@mriekki/lean@${expectedVersion}`], { cwd: temp });
+    run(process.execPath, [bin, 'install', '--root', consumer, '--apply', '--consumer', 'release-smoke', '--consumer-baseline', `@mriekki/project-forge@${expectedVersion}`], { cwd: temp });
     run(process.execPath, [bin, 'check', '--root', consumer], { cwd: temp });
   } finally {
     fs.rmSync(temp, { recursive: true, force: true });
@@ -134,7 +134,7 @@ export function prepareRelease(args, packageData = loadPackageData()) {
       schemaVersion: 1,
       package: packageData.pkg.name,
       version: packageData.pkg.version,
-      sourceRepository: 'mriekki/lean-platform',
+      sourceRepository: 'mriekki/project-forge-platform',
       sourceCommit,
       components: assembly.components,
       assetCount,
