@@ -145,6 +145,6 @@ export async function run(argv = process.argv.slice(2), packageData = loadPackag
   const consumer = options.consumer ?? installed.consumer ?? baselineConsumers[0] ?? inferConsumer(root);
   const consumerBaseline = options.consumerBaseline ?? installed.consumerBaseline ?? baselineLabels[0] ?? `${packageData.pkg.name}@${packageData.pkg.version}`;
   applyProfile(packageData, plan, root, consumer, consumerBaseline);
-  console.log(`\nLean ${command}: PASS (${packageData.pkg.name}@${packageData.pkg.version})`);
+  console.log(`\nProject Forge ${command}: PASS (${packageData.pkg.name}@${packageData.pkg.version})`);
   return 0;
 }

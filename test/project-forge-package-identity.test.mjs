@@ -96,6 +96,18 @@ test('canonical Project Forge npm package identity', () => {
   );
 });
 
+test('CLI apply success line uses canonical Project Forge identity', () => {
+  const cli = fs.readFileSync(
+    path.join(root, 'src', 'cli.mjs'),
+    'utf8',
+  );
+
+  assert.match(
+    cli,
+    /console\.log\(`\\nProject Forge \$\{command\}: PASS \(\$\{packageData\.pkg\.name\}@\$\{packageData\.pkg\.version\}\)`\);/,
+  );
+});
+
 test('package and release surfaces contain no retired identity', () => {
   const lower = 'le' + 'an';
   const title = lower[0].toUpperCase() + lower.slice(1);
