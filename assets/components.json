@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "@mriekki/project-forge",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "defaultProfile": "greenfield-project",
   "profiles": {
     "greenfield-project": {
@@ -14,8 +14,8 @@
   "components": {
     "core": {
       "repository": "mriekki/project-forge-core",
-      "commit": "78065f0ab59506e8cc703f6bf7dfd31fc71f313f",
-      "version": "2.0.0",
+      "commit": "80ff581ec89533f5a22bd05c65c7b67bb314c715",
+      "version": "3.0.0",
       "distribution": "greenfield-workspace",
       "descriptor": "assets/core/distribution.json",
       "sourceRoot": "assets/generated/core",

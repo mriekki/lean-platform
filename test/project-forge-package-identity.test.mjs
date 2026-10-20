@@ -46,7 +46,7 @@ test('canonical Project Forge npm package identity', () => {
   const components = readJson('assets/components.json');
 
   assert.equal(pkg.name, '@mriekki/project-forge');
-  assert.equal(pkg.version, '1.0.0');
+  assert.equal(pkg.version, '2.0.0');
 
   assert.deepEqual(pkg.bin, {
     'project-forge': 'bin/project-forge.mjs',
@@ -72,12 +72,12 @@ test('canonical Project Forge npm package identity', () => {
 
   assert.equal(
     components.components.core.commit,
-    '78065f0ab59506e8cc703f6bf7dfd31fc71f313f',
+    '80ff581ec89533f5a22bd05c65c7b67bb314c715',
   );
 
   assert.equal(
     components.components.core.version,
-    '2.0.0',
+    '3.0.0',
   );
 
   assert.equal(
