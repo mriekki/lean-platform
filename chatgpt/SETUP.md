@@ -2,134 +2,79 @@
 
 This is a one-time setup for a Builder's normal Project Forge coding workspace in ChatGPT.
 
-You do **not** need to copy platform repositories, long handoff documents, commit SHAs, or project state into ChatGPT.
+You do **not** need to copy platform repositories, long handoff documents, commit SHAs, or Project state into ChatGPT.
 
 ## 1. Create a ChatGPT coding Project
 
-Create a new ChatGPT Project named something clear, for example:
+Create a Project named something clear, for example:
 
 ```text
 Project Forge — Coding Projects
 ```
 
-Use that Project for Project Forge discovery and project work.
-
 ## 2. Add this Project instruction
-
-Copy the following into the ChatGPT Project's persistent instructions:
 
 ```text
 This is a Project Forge coding Project.
 
-At the beginning of a Project Forge coding workflow, load the current public Project Forge ChatGPT bootstrap descriptor from:
-
+At the beginning of a Project Forge coding workflow, load:
 https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/current.json
 
 Resolve and use the exact immutable contract snapshot referenced by that descriptor for this conversation/session.
 
-Use Project Forge as the platform name, Project as the thing I create, and Builder or Developer for the person using it. Treat "New Project:" as the greenfield project trigger.
+Use Project Forge as the platform name, Project as the thing I create, and Builder or Developer for the person using it. Treat "New Project:" and "New POC:" as supported greenfield triggers for the same discovery protocol.
 
-For a new project, follow the exact discovery contract in the resolved snapshot. Do not invent a separate discovery protocol.
+For a new Project, follow the exact discovery contract in the resolved snapshot. For an existing generated Project, treat its repository-owned artifacts, Git history, pull requests, and CI as authoritative.
 
-For an existing generated project, treat its repository-owned artifacts, Git history, pull requests, and CI as authoritative current state.
+Use my Developer Profile only for identity, local environment, and personal working/learning preferences. Never store secrets or durable Project state in it.
 
-Use my Developer Profile in this ChatGPT Project only for identity, local environment, and personal working/learning preferences. Do not use it as project state and never store secrets in it.
-
-If the bootstrap descriptor or referenced snapshot cannot be loaded or verified, do not perform consequential project generation or platform writes using remembered rules.
+If the descriptor or referenced snapshot cannot be loaded or verified, do not perform consequential generation or platform writes using remembered rules.
 ```
 
-## 3. Set up your Developer Profile conversationally
+## 3. Set up your Developer Profile
 
-In the Project, say:
+Say:
 
 ```text
 Set up my Project Forge Developer Profile.
 ```
 
-ChatGPT should ask only for useful personal information, normally:
+Useful profile data may include GitHub owner, OS, shell, editor, normal workspace root, and learning preference. Only the GitHub owner is required. Never store passwords, PATs, private SSH keys, access tokens, Production credentials, or Project state.
 
-- your exact GitHub username;
-- your primary operating system;
-- preferred shell;
-- editor (VS Code is the normal supported default);
-- normal projects/workspace folder;
-- learning preference: minimal, normal, or strong.
+## 4. Start a Project
 
-The only required identity field is the GitHub owner. Other preferences may be omitted when unknown or unnecessary.
-
-A conceptual profile looks like:
-
-```json
-{
-  "schemaVersion": 1,
-  "githubOwner": "your-github-user",
-  "operatingSystem": "windows",
-  "shell": "powershell",
-  "editor": "VS Code",
-  "workspaceRoot": "D:\\Projects",
-  "learningEmphasis": "normal",
-  "contractChannel": "stable"
-}
-```
-
-You should not need to hand-author JSON; the conversation is the normal setup surface.
-
-Never put passwords, PATs, private SSH keys, access tokens, Production credentials, or project state in the Developer Profile.
-
-## 4. Start your first project
-
-When your Project Forge invitation/readiness says:
-
-```text
-READY FOR PROJECT FORGE
-```
-
-start with:
+When onboarding says `READY FOR PROJECT FORGE`, start with:
 
 ```text
 New Project: <your idea>
 ```
 
-Examples:
+or:
 
 ```text
-New Project: I want a small web app for tracking hiking trails I've completed.
-```
-
-```text
-New Project: I want to learn Playwright by building a useful browser-testing project.
-```
-
-```text
-New Project: I want a local AI tool that organizes notes without requiring a paid API.
+New POC: <your idea>
 ```
 
 Project Forge will guide Project Discovery before creating anything.
 
-## 5. After a project is generated
-
-The generated GitHub repository becomes the durable handoff for that project.
-
-The normal workstation flow is:
+## 5. After generation
 
 ```text
-clone the repository
-→ open the generated VS Code workspace
+clone repository
+→ open generated workspace
 → /setup
 → /progress or /next-step
 → /start-work <ID>
 ```
 
-You do not need to repeat this ChatGPT Project setup for every generated project.
+You do not repeat this ChatGPT setup for every generated Project.
 
-## If something is not ready
+## If readiness needs recovery
 
-Your invitation normally performs readiness verification automatically after `/accept-lean`.
-
-If the public contract or GitHub App check later needs to be retried, use:
+Normal activation verifies readiness automatically after `/accept-project-forge`. If the public contract or App check later needs retrying, use:
 
 ```text
-/lean-doctor
+/project-forge-doctor
 ```
 
-That is a troubleshooting/retry path, not a normal per-project step.
+That is a troubleshooting path, not a normal per-Project step.
