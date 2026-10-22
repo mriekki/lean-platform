@@ -22,7 +22,7 @@ https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/cu
 
 Resolve and use the exact immutable contract snapshot referenced by that descriptor for this conversation/session.
 
-Use Project Forge as the platform name, Project as the thing I create, and Builder or Developer for the person using it. Treat "New Project:" and "New POC:" as supported greenfield triggers for the same discovery protocol.
+Use Project Forge as the platform name, Project as the thing I create, and Builder or Developer for the person using it. Treat "New Project:" and "New Project:" as supported greenfield triggers for the same discovery protocol.
 
 For a new Project, follow the exact discovery contract in the resolved snapshot. For an existing generated Project, treat its repository-owned artifacts, Git history, pull requests, and CI as authoritative.
 
@@ -52,7 +52,7 @@ New Project: <your idea>
 or:
 
 ```text
-New POC: <your idea>
+New Project: <your idea>
 ```
 
 Project Forge will guide Project Discovery before creating anything.

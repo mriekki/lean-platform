@@ -1,36 +1,36 @@
 {
   "schemaVersion": 1,
   "channel": "stable",
-  "contractVersion": 5,
-  "snapshotPath": "chatgpt/contracts/v5",
+  "contractVersion": 6,
+  "snapshotPath": "chatgpt/contracts/v6",
   "documents": [
     {
-      "path": "chatgpt/contracts/v5/ADMIN.md",
+      "path": "chatgpt/contracts/v6/ADMIN.md",
       "sha256": "98ab8850d46194a5c62697346e71b1aba1bfb71328c22e170e0e37b94fd538cd"
     },
     {
-      "path": "chatgpt/contracts/v5/EXISTING_POC.md",
-      "sha256": "ba44e5aeea3c58b586aa26f5bce6a9acb04cee8ea4f2dccd20064b9a024df269"
+      "path": "chatgpt/contracts/v6/EXISTING_PROJECT.md",
+      "sha256": "a52324f1df4e802a8b1c78bbf063215a146d1caf9af49250a5b9c9a9f6e9fda8"
     },
     {
-      "path": "chatgpt/contracts/v5/NEW_POC.md",
-      "sha256": "f840a6793f9c4355cbbc00ddaf886a8b017b8264e2c1495e0d644dce0302153e"
+      "path": "chatgpt/contracts/v6/NEW_PROJECT.md",
+      "sha256": "145fc3e44640fe5d12558bd33f4f4368c8cb07fdbc600166534f29790acf3d58"
     },
     {
-      "path": "chatgpt/contracts/v5/ONBOARDING.md",
-      "sha256": "a557f2425bc4e8c81dcfed68da1c43a6ddcc365d8d41f4f7e104412e3447e589"
+      "path": "chatgpt/contracts/v6/ONBOARDING.md",
+      "sha256": "58b424d3a1f1ac5141a153fddee6722b03f1082230635d3b5324d010ff8a427e"
     },
     {
-      "path": "chatgpt/contracts/v5/PROJECT_INSTRUCTIONS.md",
-      "sha256": "20487c1225a84ef1f01c75c37bed13393977534dd7bde601ddb340c6ae9a33ef"
+      "path": "chatgpt/contracts/v6/PROJECT_INSTRUCTIONS.md",
+      "sha256": "0899530e2427c42789be50c37253c26c443f1ad7c02b157b63feda52591cb7e5"
     },
     {
-      "path": "chatgpt/contracts/v5/PROJECT_RULES.md",
-      "sha256": "fe6fbe8e922fa5bba4d6287a62ee359992d65f07f624438db1414842aff4f639"
+      "path": "chatgpt/contracts/v6/PROJECT_RULES.md",
+      "sha256": "2278e7bdd6a06f64acd5583c24682c16389b0753887b9e591d884f9a745b17bf"
     },
     {
-      "path": "chatgpt/contracts/v5/USER_PROFILE.schema.json",
-      "sha256": "482d41a71278f916f467f5042da6d80d8da94d2ee61caed01d589b7e6244885a"
+      "path": "chatgpt/contracts/v6/USER_PROFILE.schema.json",
+      "sha256": "1e20ac3d56f75bcd91b333d949415ca17e9398e5a994791e71ce57eafa2daaef"
     }
   ],
   "sourceProvenance": {
