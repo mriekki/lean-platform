@@ -28,7 +28,7 @@ accepted Core / Deployment Kit main commits
 → package release complete
 ```
 
-Publishing the package does not update consumers. Existing package-managed POCs adopt it separately through `/project-forge-update`.
+Publishing the package does not update consumers. Existing package-managed Projects adopt it separately through `/project-forge-update`.
 
 ## Release invariants
 
@@ -68,15 +68,15 @@ The script refuses to modify `main`, requires a clean Project Forge Platform rel
 
 Afterward the skill runs package tests, asset assembly/verification, `git diff --check`, and meaningful diff review before routine PR delivery.
 
-## Package version policy while pre-1.0
+## Package version policy
 
-Unless a repository decision supersedes it:
+Unless a repository decision supersedes it, Project Forge follows normal post-1.0 semantic versioning:
 
-- patch: compatible corrections/content/tooling updates;
-- minor: consumer-visible breaking changes such as managed-path rename/removal or command removal;
-- major: explicit exceptional decision only.
+- patch: backward-compatible corrections, content changes, or tooling fixes;
+- minor: backward-compatible consumer-visible features or additions;
+- major: consumer-visible breaking changes such as managed-path rename/removal, command removal, authorization-contract changes, or other incompatible contract changes.
 
-The exact version is still reviewed as part of the release PR.
+The exact version is still reviewed as part of the release PR. The Project terminology migration is a major release because it removes or renames active consumer-facing technical contracts.
 
 ## Trusted Publishing: direct publish
 
@@ -109,7 +109,7 @@ npm trust list @mriekki/project-forge --json
 
 The account must be allowed to manage `@mriekki/project-forge`. `npm trust list` can require a separate browser authorization (`EOTP`) even after login; open the URL printed in the local terminal, finish npm's prompt, and rerun the command. Never paste or save that one-time URL or an OTP in chat, repository files, or CI. The same relationship can be created through `npm trust github` after the release skill's `[NPM TRUST WRITE]` gate.
 
-No long-lived npm token is needed or appropriate for this flow. Local npm login is only for occasional maintainer operations and trust configuration; GitHub Actions publishes with OIDC. The workflow uses the repository's `PROJECT_FORGE_SOURCE_TOKEN` only to read the private canonical component repositories.
+No long-lived npm token is needed or appropriate for this flow. Local npm login is only for occasional maintainer operations and trust configuration. GitHub Actions publishes with OIDC. The workflow uses the repository's `PROJECT_FORGE_SOURCE_TOKEN` only to read the private canonical component repositories.
 
 ### One-time migration from the old staged workflow
 
@@ -196,4 +196,4 @@ These are implementation evidence, not a separate mandatory manual-review ceremo
 
 ## What release does not imply
 
-Publishing `@mriekki/project-forge` does not regenerate existing POCs, update Bootstrap provenance, deploy an application, publish Core/Deployment Kit GitHub releases/tags, or update Family Meal Planner. Those remain separately owned actions.
+Publishing `@mriekki/project-forge` does not regenerate existing Projects, update Bootstrap provenance, deploy an application, publish Core/Deployment Kit GitHub releases/tags, or update Family Meal Planner. Those remain separately owned actions.
