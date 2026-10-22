@@ -10,7 +10,7 @@ For a product overview, start with [`../WELCOME.md`](../WELCOME.md). For one-tim
 2. Resolve the exact immutable contract snapshot named there.
 3. Use that snapshot for the current conversation/session.
 4. Keep identity and local working/learning preferences in a small Developer Profile only.
-5. Treat `New Project: ...` and `New POC: ...` as supported greenfield triggers for the same Project Discovery contract.
+5. Treat `New Project: ...` and `New Project: ...` as supported greenfield triggers for the same Project Discovery contract.
 6. For an existing generated Project, treat its repository and Project-owned artifacts as authoritative.
 
 If the descriptor or referenced snapshot cannot be loaded and verified, do not perform consequential generation or platform writes using remembered rules.

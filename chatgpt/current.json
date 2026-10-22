@@ -1,78 +1,78 @@
 {
   "schemaVersion": 1,
   "channel": "stable",
-  "contractVersion": 5,
-  "snapshotPath": "chatgpt/contracts/v5",
+  "contractVersion": 6,
+  "snapshotPath": "chatgpt/contracts/v6",
   "documents": [
     {
-      "path": "chatgpt/contracts/v5/ADMIN.md",
+      "path": "chatgpt/contracts/v6/ADMIN.md",
       "sha256": "98ab8850d46194a5c62697346e71b1aba1bfb71328c22e170e0e37b94fd538cd"
     },
     {
-      "path": "chatgpt/contracts/v5/EXISTING_POC.md",
-      "sha256": "ba44e5aeea3c58b586aa26f5bce6a9acb04cee8ea4f2dccd20064b9a024df269"
+      "path": "chatgpt/contracts/v6/EXISTING_PROJECT.md",
+      "sha256": "a52324f1df4e802a8b1c78bbf063215a146d1caf9af49250a5b9c9a9f6e9fda8"
     },
     {
-      "path": "chatgpt/contracts/v5/NEW_POC.md",
-      "sha256": "f840a6793f9c4355cbbc00ddaf886a8b017b8264e2c1495e0d644dce0302153e"
+      "path": "chatgpt/contracts/v6/NEW_PROJECT.md",
+      "sha256": "145fc3e44640fe5d12558bd33f4f4368c8cb07fdbc600166534f29790acf3d58"
     },
     {
-      "path": "chatgpt/contracts/v5/ONBOARDING.md",
-      "sha256": "a557f2425bc4e8c81dcfed68da1c43a6ddcc365d8d41f4f7e104412e3447e589"
+      "path": "chatgpt/contracts/v6/ONBOARDING.md",
+      "sha256": "58b424d3a1f1ac5141a153fddee6722b03f1082230635d3b5324d010ff8a427e"
     },
     {
-      "path": "chatgpt/contracts/v5/PROJECT_INSTRUCTIONS.md",
-      "sha256": "20487c1225a84ef1f01c75c37bed13393977534dd7bde601ddb340c6ae9a33ef"
+      "path": "chatgpt/contracts/v6/PROJECT_INSTRUCTIONS.md",
+      "sha256": "0899530e2427c42789be50c37253c26c443f1ad7c02b157b63feda52591cb7e5"
     },
     {
-      "path": "chatgpt/contracts/v5/PROJECT_RULES.md",
-      "sha256": "fe6fbe8e922fa5bba4d6287a62ee359992d65f07f624438db1414842aff4f639"
+      "path": "chatgpt/contracts/v6/PROJECT_RULES.md",
+      "sha256": "2278e7bdd6a06f64acd5583c24682c16389b0753887b9e591d884f9a745b17bf"
     },
     {
-      "path": "chatgpt/contracts/v5/USER_PROFILE.schema.json",
-      "sha256": "482d41a71278f916f467f5042da6d80d8da94d2ee61caed01d589b7e6244885a"
+      "path": "chatgpt/contracts/v6/USER_PROFILE.schema.json",
+      "sha256": "1e20ac3d56f75bcd91b333d949415ca17e9398e5a994791e71ce57eafa2daaef"
     }
   ],
   "sourceProvenance": {
     "core": {
       "repository": "mriekki/project-forge-core",
-      "commit": "80ff581ec89533f5a22bd05c65c7b67bb314c715",
+      "commit": "0cbbfc5e333780e3ec40c0fa4ebb5ca6a4463901",
       "sources": [
         {
           "path": "core/instructions/project-forge-workflow.instructions.md",
-          "blobSha": "722c7b0c908b0d53bfc1c288f37169bc1c16fe8c"
+          "blobSha": "021c793d8fa6646fa7cb2316c26516b9a3d76dac"
         },
         {
           "path": "core/process/PROJECT_DOCUMENTATION_FRAMEWORK.md",
-          "blobSha": "1436c5bd58eae8f39804b2423cc8b27f998fc1a3"
+          "blobSha": "55bda02a82a20fb8997103fea2559e838300a652"
         }
       ]
     },
     "bootstrap": {
       "repository": "mriekki/project-forge-bootstrap",
-      "commit": "38ba1c5d21c98162e29a912292dd1a3ed87aab2e",
+      "commit": "7b49fdc29dd2c8e2c7afe2524e3b0f8f7efe203a",
       "sources": [
         {
           "path": "docs/discovery/QUESTION_MODEL.md",
-          "blobSha": "5439e6bea6ecc9fbac33c198e998020373142444"
+          "blobSha": "a3aa2b4415a7b21aee3ea98290d6ed6878c71452"
         },
         {
           "path": "docs/PROJECT_FORGE_TERMINOLOGY.md",
-          "blobSha": "edcd8b8f0870a015fa833722cd75cbc9570a0895"
+          "blobSha": "dd65d25832d5323d5e5a4391a9f8c0c5d53d53d3"
         },
         {
           "path": "CHATGPT_START.md",
-          "blobSha": "3d767fd9d7c7d0c5cfe3f883959bdb084363277c"
+          "blobSha": "2a2f45febb2ea33ca1e917bf65e64924b201ad17"
         },
         {
           "path": "catalog/policies/generation-destination.json",
-          "blobSha": "bb47bb5357a4dd1a70484285895a7db44bccd23a"
+          "blobSha": "cbd4caf90c465e3e5a1e22ecff321b64922736de"
         }
       ]
     },
     "controlPlane": {
       "repository": "mriekki/project-forge-control-plane",
-      "commit": "65a8d086c4982457b85884cd40f5e0ec056ba30e",
+      "commit": "b3fa5f94a5adec6298473140a67918ff43bab132",
       "sources": [
         {
           "path": "docs/SETUP.md",
@@ -80,7 +80,7 @@
         },
         {
           "path": "docs/INVITATIONS.md",
-          "blobSha": "191fff82618ef4015ed649af3f2b1aca4e3b6221"
+          "blobSha": "d3c392351cf373b982e486d5bda138898ecb9b17"
         },
         {
           "path": ".github/workflows/generate-project.yml",
@@ -121,7 +121,7 @@
     "package": "@mriekki/project-forge",
     "packageVersion": "2.1.0",
     "profile": "greenfield-project",
-    "bootstrapProtocolVersion": 11
+    "bootstrapProtocolVersion": 12
   },
   "bootstrapUrl": "https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/current.json"
 }

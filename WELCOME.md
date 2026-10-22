@@ -79,4 +79,3 @@ Then start with:
 New Project: <your idea>
 ```
 
-`New POC: <your idea>` is also accepted and enters the same Project Discovery protocol.
