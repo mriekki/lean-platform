@@ -7,6 +7,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const predecessorUpper = ['P', 'OC'].join('');
+const predecessorLower = predecessorUpper.toLowerCase();
 
 async function text(relative) {
   return readFile(path.join(root, relative), 'utf8');
@@ -60,7 +62,7 @@ test('descriptor records exact canonical Project Forge provenance', async () => 
   assert.equal(value.generation.package, '@mriekki/project-forge');
   assert.equal(value.generation.packageVersion, '2.1.0');
   assert.equal(value.generation.profile, 'greenfield-project');
-  assert.equal(value.generation.bootstrapProtocolVersion, 11);
+  assert.equal(value.generation.bootstrapProtocolVersion, 12);
   assert.equal(value.bootstrapUrl, 'https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/current.json');
 });
 
@@ -92,12 +94,12 @@ test('active Project Forge contract uses only current generation and onboarding 
   }
 
   for (const retired of [
-    'POC_BOOTSTRAP.json',
+    `${predecessorUpper}_BOOTSTRAP.json`,
     '@mriekki/lean',
     'lean-agentic-core',
-    'lean-poc-bootstrap',
+    `lean-${predecessorLower}-bootstrap`,
     'lean-platform',
-    '[generate-poc]',
+    `[generate-${predecessorLower}]`,
     '[invite-lean]',
     '/accept-lean',
     '/lean-doctor',
@@ -107,7 +109,7 @@ test('active Project Forge contract uses only current generation and onboarding 
   }
 
   assert.match(joined, /New Project:/);
-  });
+});
 
 test('control-plane command descriptor matches the current public contract', async () => {
   const value = await descriptor();
@@ -129,7 +131,7 @@ test('developer profile remains small, secret-free, and not Project state', asyn
   assert.deepEqual(schema.required, ['schemaVersion', 'githubOwner']);
   assert.match(schema.$id, /mriekki\/project-forge-platform\/main\/chatgpt\/contracts\/v6/);
 
-  for (const forbidden of ['password', 'token', 'secret', 'pocState', 'projectState', 'workItem', 'commitSha']) {
+  for (const forbidden of ['password', 'token', 'secret', `${predecessorLower}State`, 'projectState', 'workItem', 'commitSha']) {
     assert.equal(Object.hasOwn(schema.properties, forbidden), false);
   }
 });
@@ -145,6 +147,7 @@ test('active public Builder pages use current Project Forge onboarding vocabular
   assert.match(joined, /\/accept-project-forge/);
   assert.match(joined, /\/project-forge-doctor/);
   assert.match(joined, /New Project:/);
+  assert.doesNotMatch(joined, new RegExp(predecessorUpper));
 
   for (const retired of ['accept-lean', 'lean-doctor', 'lean-platform']) {
     assert.doesNotMatch(joined, new RegExp(retired));
