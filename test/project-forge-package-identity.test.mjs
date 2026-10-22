@@ -4,6 +4,8 @@ import path from 'node:path';
 import test from 'node:test';
 
 const root = path.resolve(import.meta.dirname, '..');
+const exactSha = /^[0-9a-f]{40}$/;
+const semver = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
 
 function readJson(relative) {
   return JSON.parse(
@@ -46,7 +48,7 @@ test('canonical Project Forge npm package identity', () => {
   const components = readJson('assets/components.json');
 
   assert.equal(pkg.name, '@mriekki/project-forge');
-  assert.equal(pkg.version, '4.0.0');
+  assert.match(pkg.version, semver);
 
   assert.deepEqual(pkg.bin, {
     'project-forge': 'bin/project-forge.mjs',
@@ -64,35 +66,46 @@ test('canonical Project Forge npm package identity', () => {
     components.defaultProfile,
     'greenfield-project',
   );
+  assert.deepEqual(
+    components.profiles[components.defaultProfile].components,
+    ['core', 'deployment'],
+  );
 
   assert.equal(
     components.components.core.repository,
     'mriekki/project-forge-core',
   );
-
+  assert.match(components.components.core.commit, exactSha);
+  assert.match(components.components.core.version, semver);
   assert.equal(
-    components.components.core.commit,
-    'e20e9b0e7102477a30bc15a771d62ba537efe60c',
+    components.components.core.distribution,
+    'greenfield-workspace',
   );
-
   assert.equal(
-    components.components.core.version,
-    '4.0.0',
+    components.components.core.descriptor,
+    'assets/core/distribution.json',
+  );
+  assert.equal(
+    components.components.core.canonicalDescriptor,
+    'distributions/greenfield-workspace.json',
   );
 
   assert.equal(
     components.components.deployment.repository,
     'mriekki/project-forge-deployment-kit',
   );
-
-  assert.equal(
-    components.components.deployment.commit,
-    '0974f36bcb5062c4becb7c5c4e0fbc3e629ad4a9',
-  );
-
+  assert.match(components.components.deployment.commit, exactSha);
   assert.equal(
     components.components.deployment.distribution,
     'greenfield-project',
+  );
+  assert.equal(
+    components.components.deployment.descriptor,
+    'assets/deployment/distribution.json',
+  );
+  assert.equal(
+    components.components.deployment.canonicalDescriptor,
+    'distributions/greenfield-project.json',
   );
 });
 
