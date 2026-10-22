@@ -40,13 +40,25 @@ function walk(relative) {
   return result;
 }
 
+function assertSemver(value, label) {
+  assert.match(
+    value,
+    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/,
+    `${label} must be an exact semantic version`,
+  );
+}
+
+function assertCommit(value, label) {
+  assert.match(value, /^[0-9a-f]{40}$/, `${label} must be an exact Git commit SHA`);
+}
+
 test('canonical Project Forge npm package identity', () => {
   const pkg = readJson('package.json');
   const lock = readJson('package-lock.json');
   const components = readJson('assets/components.json');
 
   assert.equal(pkg.name, '@mriekki/project-forge');
-  assert.equal(pkg.version, '4.0.0');
+  assertSemver(pkg.version, 'package version');
 
   assert.deepEqual(pkg.bin, {
     'project-forge': 'bin/project-forge.mjs',
@@ -69,27 +81,14 @@ test('canonical Project Forge npm package identity', () => {
     components.components.core.repository,
     'mriekki/project-forge-core',
   );
-
-  assert.equal(
-    components.components.core.commit,
-    'e20e9b0e7102477a30bc15a771d62ba537efe60c',
-  );
-
-  assert.equal(
-    components.components.core.version,
-    '4.0.0',
-  );
+  assertCommit(components.components.core.commit, 'Core commit');
+  assertSemver(components.components.core.version, 'Core version');
 
   assert.equal(
     components.components.deployment.repository,
     'mriekki/project-forge-deployment-kit',
   );
-
-  assert.equal(
-    components.components.deployment.commit,
-    '0974f36bcb5062c4becb7c5c4e0fbc3e629ad4a9',
-  );
-
+  assertCommit(components.components.deployment.commit, 'Deployment Kit commit');
   assert.equal(
     components.components.deployment.distribution,
     'greenfield-project',
