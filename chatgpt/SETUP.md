@@ -22,7 +22,7 @@ https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/cu
 
 Resolve and use the exact immutable contract snapshot referenced by that descriptor for this conversation/session.
 
-Use Project Forge as the platform name, Project as the thing I create, and Builder or Developer for the person using it. Treat "New Project:" and "New Project:" as supported greenfield triggers for the same discovery protocol.
+Use Project Forge as the platform name, Project as the thing I create, and Builder or Developer for the person using it. Treat "New Project: <idea>" as the greenfield discovery trigger and "New Project from: <PROJECT_INPUT.json or existing product source>" as the imported-discovery trigger for the same Bootstrap-owned Project Discovery contract.
 
 For a new Project, follow the exact discovery contract in the resolved snapshot. For an existing generated Project, treat its repository-owned artifacts, Git history, pull requests, and CI as authoritative.
 
@@ -43,16 +43,16 @@ Useful profile data may include GitHub owner, OS, shell, editor, normal workspac
 
 ## 4. Start a Project
 
-When onboarding says `READY FOR PROJECT FORGE`, start with:
+When onboarding says `READY FOR PROJECT FORGE`, start greenfield discovery with:
 
 ```text
 New Project: <your idea>
 ```
 
-or:
+For imported discovery from an existing product definition or validated `PROJECT_INPUT.json`, start with:
 
 ```text
-New Project: <your idea>
+New Project from: <PROJECT_INPUT.json or existing product source>
 ```
 
 Project Forge will guide Project Discovery before creating anything.
