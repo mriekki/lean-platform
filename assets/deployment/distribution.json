@@ -18,6 +18,7 @@
     {"source": "src/project_forge_deployment/entrypoint.py", "destination": "tools/project-forge-deployment/project_forge_deployment/entrypoint.py"},
     {"source": "src/project_forge_deployment/environment_cli.py", "destination": "tools/project-forge-deployment/project_forge_deployment/environment_cli.py"},
     {"source": "src/project_forge_deployment/environment_probe.py", "destination": "tools/project-forge-deployment/project_forge_deployment/environment_probe.py"},
+    {"source": "src/project_forge_deployment/environment_setup.py", "destination": "tools/project-forge-deployment/project_forge_deployment/environment_setup.py"},
     {"source": "src/project_forge_deployment/errors.py", "destination": "tools/project-forge-deployment/project_forge_deployment/errors.py"},
     {"source": "src/project_forge_deployment/home_lab.py", "destination": "tools/project-forge-deployment/project_forge_deployment/home_lab.py"},
     {"source": "src/project_forge_deployment/image_transfer.py", "destination": "tools/project-forge-deployment/project_forge_deployment/image_transfer.py"},
