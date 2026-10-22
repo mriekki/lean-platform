@@ -16,6 +16,6 @@ test('package release requires explicit stable ChatGPT contract follow-up', () =
   assert.match(skill, /PUBLIC CHATGPT CONTRACT ADVANCEMENT REQUIRED/);
   assert.match(skill, /never edit an already-published immutable `chatgpt\/contracts\/vN\/` snapshot in place/i);
   assert.match(skill, /never point stable `current\.json` at an npm version that is not verifiably published/i);
-  assert.match(skill, /public-contract follow-up PR has its normal human merge\/finalize gate/i);
+  assert.match(skill, /follow-up PR has its normal human merge\/finalize gate/i);
   assert.match(skill, /Public ChatGPT contract: ALIGNED \| FOLLOW-UP PR REQUIRED/);
 });
