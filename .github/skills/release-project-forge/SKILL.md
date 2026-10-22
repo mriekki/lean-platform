@@ -13,7 +13,7 @@ It owns package transport mechanics. Canonical Core and Deployment Kit repositor
 
 ## 1. Resume from observed state
 
-Start by inspecting the current Project Forge Platform checkout, Git/GitHub state, package metadata, component pins, open release PRs, CI, registry state, and local canonical component checkouts.
+Start by inspecting the current Project Forge Platform checkout, Git/GitHub state, package metadata, component pins, open release PRs, CI, registry state, public `chatgpt/current.json` state, and local canonical component checkouts.
 
 Default local roots on Mark's workstation are:
 
@@ -23,9 +23,9 @@ D:\Projects\project-forge-core
 D:\Projects\project-forge-deployment-kit
 ```
 
-Use repository facts rather than memory. Do not invent accepted commits, CI status, registry state, or npm trusted-publisher state.
+Use repository facts rather than memory. Do not invent accepted commits, CI status, registry state, public-contract state, or npm trusted-publisher state.
 
-The skill is resume-aware. If preparation, PR creation, merge, publication, or verification already happened, continue from the furthest safe observed state rather than repeating it.
+The skill is resume-aware. If preparation, PR creation, merge, publication, verification, or public-contract follow-up already happened, continue from the furthest safe observed state rather than repeating it.
 
 Routine releases do not require a local npm login. GitHub Actions uses OIDC for publication. Inspect or change npm trusted-publisher settings only during initial setup, migration, after a workflow/repository identity change, or when an OIDC publish attempt reports a trust error. A successful publish by the exact workflow is evidence that the relationship works; do not query `npm trust list` on every routine release.
 
@@ -240,9 +240,40 @@ Do not use `npm stage publish`, `npm stage approve`, a long-lived npm publish to
 
 Registry propagation is asynchronous. The workflow polls with exponential backoff for up to 10 minutes and prints the last registry-query error if it times out. If publishing succeeded but verification still fails, inspect the exact run and registry tarball; never retry publication for an already-existing version.
 
-## 9. Completion
+## 9. Public ChatGPT contract alignment
 
-On success report only evidence-backed state:
+After successful registry and neutral-`npx` verification, inspect `chatgpt/current.json` before declaring the overall Project Forge release follow-up complete.
+
+At minimum compare:
+
+- `generation.package` with `@mriekki/project-forge`;
+- `generation.packageVersion` with the exact package version just published;
+- the immutable snapshot referenced by `contractVersion`/`snapshotPath`;
+- `sourceProvenance` for the repository-owned ChatGPT contract sources listed in the descriptor.
+
+If the stable descriptor still points at an older package version, report:
+
+```text
+PUBLIC CHATGPT CONTRACT ADVANCEMENT REQUIRED
+```
+
+Do not silently leave that as an invisible release-side effect.
+
+Determine whether the referenced immutable snapshot still represents the accepted operating contract:
+
+- if the operating/discovery contract sources listed in `sourceProvenance` have not materially changed and only the exact published package pointer is stale, prepare a small public-contract follow-up PR that advances the mutable descriptor package version while preserving the immutable snapshot;
+- if relevant Core/Bootstrap/Control Plane contract sources changed materially, create a **new immutable contract snapshot version**, compute its document hashes and exact source provenance, and point `chatgpt/current.json` at that new snapshot in the follow-up PR;
+- never edit an already-published immutable `chatgpt/contracts/vN/` snapshot in place;
+- never point stable `current.json` at an npm version that is not verifiably published;
+- never invent Bootstrap/Core/Control Plane SHAs or source blobs.
+
+Routine branch/commit/push/PR mechanics for this public-contract follow-up are authorized after npm publication, but the follow-up PR has its normal human merge/finalize gate. npm publication does not authorize merging that PR.
+
+If no alignment change is needed, record `Public ChatGPT contract: ALIGNED` in the release completion evidence.
+
+## 10. Completion
+
+On successful package publication report only evidence-backed state:
 
 ```text
 PROJECT_FORGE PACKAGE RELEASE COMPLETE
@@ -254,8 +285,9 @@ Deployment Kit: <sha>
 Publish workflow: GREEN
 Registry verification: GREEN
 Neutral npx smoke: GREEN
+Public ChatGPT contract: ALIGNED | FOLLOW-UP PR REQUIRED
 ```
 
-Publishing the package does not update existing consumers. Package-managed consumers adopt it separately through `/project-forge-update`.
+Publishing the package does not update existing package-managed consumers. They adopt it separately through `/project-forge-update`.
 
-Do not regenerate a Project, modify Bootstrap provenance, deploy an application, publish Core/Deployment-Kit tags/releases, or update consumers as an implicit side effect of `/release-project-forge`.
+Do not regenerate a Project, modify Bootstrap provenance outside the reviewed public-contract follow-up, deploy an application, publish Core/Deployment-Kit tags/releases, or update consumers as an implicit side effect of `/release-project-forge`.
