@@ -258,4 +258,4 @@ Neutral npx smoke: GREEN
 
 Publishing the package does not update existing consumers. Package-managed consumers adopt it separately through `/project-forge-update`.
 
-Do not regenerate a POC, modify Bootstrap provenance, deploy an application, publish Core/Deployment-Kit tags/releases, or update consumers as an implicit side effect of `/release-project-forge`.
+Do not regenerate a Project, modify Bootstrap provenance, deploy an application, publish Core/Deployment-Kit tags/releases, or update consumers as an implicit side effect of `/release-project-forge`.
