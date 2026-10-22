@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "@mriekki/project-forge",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "defaultProfile": "greenfield-project",
   "profiles": {
     "greenfield-project": {
@@ -14,7 +14,7 @@
   "components": {
     "core": {
       "repository": "mriekki/project-forge-core",
-      "commit": "d4487e07e732db4129bd092f86f6ceab36b02c15",
+      "commit": "17a09fc913a12902c4a9172e53bc70d421f5b0d5",
       "version": "3.3.0",
       "distribution": "greenfield-workspace",
       "descriptor": "assets/core/distribution.json",
@@ -23,7 +23,7 @@
     },
     "deployment": {
       "repository": "mriekki/project-forge-deployment-kit",
-      "commit": "54fcc256c525ea8762568043c3900f4d2d36c816",
+      "commit": "0974f36bcb5062c4becb7c5c4e0fbc3e629ad4a9",
       "distribution": "greenfield-project",
       "descriptor": "assets/deployment/distribution.json",
       "sourceRoot": "assets/generated/deployment",

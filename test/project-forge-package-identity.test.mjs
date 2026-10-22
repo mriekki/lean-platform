@@ -46,7 +46,7 @@ test('canonical Project Forge npm package identity', () => {
   const components = readJson('assets/components.json');
 
   assert.equal(pkg.name, '@mriekki/project-forge');
-  assert.equal(pkg.version, '2.2.0');
+  assert.equal(pkg.version, '3.0.0');
 
   assert.deepEqual(pkg.bin, {
     'project-forge': 'bin/project-forge.mjs',
@@ -72,7 +72,7 @@ test('canonical Project Forge npm package identity', () => {
 
   assert.equal(
     components.components.core.commit,
-    'd4487e07e732db4129bd092f86f6ceab36b02c15',
+    '17a09fc913a12902c4a9172e53bc70d421f5b0d5',
   );
 
   assert.equal(
@@ -87,7 +87,7 @@ test('canonical Project Forge npm package identity', () => {
 
   assert.equal(
     components.components.deployment.commit,
-    '54fcc256c525ea8762568043c3900f4d2d36c816',
+    '0974f36bcb5062c4becb7c5c4e0fbc3e629ad4a9',
   );
 
   assert.equal(
@@ -108,15 +108,20 @@ test('CLI apply success line uses canonical Project Forge identity', () => {
   );
 });
 
-test('package and release surfaces contain no retired identity', () => {
+test('package and release surfaces contain no retired identity or predecessor project terminology', () => {
   const lower = 'le' + 'an';
   const title = lower[0].toUpperCase() + lower.slice(1);
   const upper = lower.toUpperCase();
+  const predecessor = 'po' + 'c';
 
-  const pattern = new RegExp(
+  const retiredIdentityPattern = new RegExp(
     `(?<![A-Za-z0-9])(?:${lower}|${title}|${upper})` +
       `(?:(?=[^A-Za-z0-9]|$)|(?=[A-Z]))|` +
       `${title}(?=[A-Z])`,
+  );
+  const predecessorProjectPattern = new RegExp(
+    `(?:\\b${predecessor}s?\\b|${predecessor}[-_])`,
+    'i',
   );
 
   const roots = [
@@ -140,7 +145,10 @@ test('package and release surfaces contain no retired identity', () => {
   const hits = [];
 
   for (const relative of roots.flatMap(walk)) {
-    if (pattern.test(relative)) {
+    if (
+      retiredIdentityPattern.test(relative) ||
+      predecessorProjectPattern.test(relative)
+    ) {
       hits.push(`PATH ${relative}`);
     }
 
@@ -148,7 +156,10 @@ test('package and release surfaces contain no retired identity', () => {
     const text = fs.readFileSync(absolute, 'utf8');
 
     text.split(/\r?\n/).forEach((line, index) => {
-      if (pattern.test(line)) {
+      if (
+        retiredIdentityPattern.test(line) ||
+        predecessorProjectPattern.test(line)
+      ) {
         hits.push(
           `${relative}:${index + 1}:${line.trim()}`,
         );
