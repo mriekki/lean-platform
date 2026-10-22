@@ -49,6 +49,6 @@
     {"source": "docs/ENVIRONMENT_PROOF.md", "destination": "docs/project-forge/ENVIRONMENT_PROOF.md"},
     {"source": "docs/images/developer-environment-journey.svg", "destination": "docs/project-forge/images/developer-environment-journey.svg"},
     {"source": "docs/images/personal-environment-architecture.svg", "destination": "docs/project-forge/images/personal-environment-architecture.svg"},
-    {"source": "docs/images/poc-environment-model.svg", "destination": "docs/project-forge/images/poc-environment-model.svg"}
+    {"source": "docs/images/project-environment-model.svg", "destination": "docs/project-forge/images/project-environment-model.svg"}
   ]
 }
