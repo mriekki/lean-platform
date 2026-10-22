@@ -1,5 +1,6 @@
 name: Temporary Project terminology migration
 
+# One-use branch migration; removed after the deterministic commit.
 on:
   push:
     branches:
