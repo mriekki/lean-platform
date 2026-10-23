@@ -119,7 +119,7 @@ Canonical detail entrypoints:
 
 ### `project-forge-deployment-kit` — deterministic deployment mechanics
 
-Owns reusable deployment mechanics: workstation runtime, remote targets and strict access, host-platform state, environment proof, application runtime, isolation preflight, routes, persistence, target binding mechanics, evidence, and scoped tear-down.
+Owns reusable deployment mechanics: workstation runtime, remote targets and strict access, host-platform state, environment proof, application runtime, isolation/collision preflight, routes, persistence, target binding mechanics, evidence, and scoped tear-down.
 
 Deployment Kit owns **mechanics and deterministic evidence**. Core decides how those mechanics are conversationally orchestrated and which human authorizations are required. Bootstrap decides whether a deployment choice is cataloged/supported.
 
@@ -197,27 +197,26 @@ flowchart TB
   CHAT[ChatGPT / agent-enabled editor]
   BOOT[Bootstrap\ndiscovery + catalog + manifest + deterministic generation]
   CP[Control Plane\nauthorization + exact-target orchestration]
-  PLATFORM[Platform / @mriekki/project-forge\nexact accepted reusable assembly]
   CORE[Core\nworkflow + HITL + orchestration]
   DEPLOY[Deployment Kit\ndeployment mechanics + evidence]
   ADOPT[Adoption Kit\nexisting-repo adoption]
+  PLATFORM[Platform / @mriekki/project-forge\nexact accepted reusable assembly]
   CONSUMER[Generated or adopted consumer]
 
   HUMAN --> CHAT
   CHAT --> BOOT
   CHAT --> CP
   CP --> BOOT
-  BOOT --> PLATFORM
-  PLATFORM --> CORE
-  PLATFORM --> DEPLOY
+  CORE --> PLATFORM
+  DEPLOY --> PLATFORM
+  CORE --> ADOPT
+  BOOT -. exact package/profile selection .-> PLATFORM
   BOOT --> CONSUMER
   PLATFORM --> CONSUMER
-  CORE --> CONSUMER
-  DEPLOY --> CONSUMER
   ADOPT --> CONSUMER
 ```
 
-The arrows represent **contract/delivery relationships**, not repository ownership transfer.
+The arrows represent **contract, assembly, or delivery relationships**, not repository ownership transfer. In particular, canonical Core and Deployment Kit sources flow into Platform assembly; Platform does not own those component implementations.
 
 ---
 
@@ -294,7 +293,7 @@ Core owns these workflow semantics. The consumer owns its actual code, tests, pr
 ```text
 consumer deployment topology + app facts
 → Core /deployment-readiness
-→ deterministic Deployment Kit status/isolation/proof evidence
+→ deterministic Deployment Kit status/collision/isolation/proof evidence
 → bounded deployment plan
 → required human authorization
 → Deployment Kit mutation
@@ -432,9 +431,9 @@ Current reusable deployment mechanics and current catalog support maturity are i
 
 Always resolve current support state from Bootstrap catalog evidence rather than from this document.
 
-### Isolation and shared-host safety
+### Collision/isolation and shared-host safety
 
-Real application deployment must consider more than a container name. The deterministic Deployment Kit layer owns environment isolation evidence across the managed footprint, including relevant runtime/route/persistence ownership. Core consumes that evidence and stops before mutation when it is blocked or stale.
+Real application deployment must consume deterministic collision/isolation evidence appropriate to its placement and managed footprint. For remote environments that includes relevant runtime/route/persistence ownership and shared-host isolation. Core consumes the deterministic evidence and stops before mutation when it is blocked or stale.
 
 Shared host infrastructure is not application-Project-owned. Project-scoped deploy or tear-down must preserve shared platform resources and unrelated Projects.
 
