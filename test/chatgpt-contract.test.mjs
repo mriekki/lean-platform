@@ -32,12 +32,12 @@ function contractPath(value, name) {
   return `${value.snapshotPath}/${name}`;
 }
 
-test('public ChatGPT descriptor resolves immutable Project Forge contract v8', async () => {
+test('public ChatGPT descriptor resolves immutable Project Forge contract v9', async () => {
   const value = await descriptor();
   assert.equal(value.schemaVersion, 1);
   assert.equal(value.channel, 'stable');
-  assert.equal(value.contractVersion, 8);
-  assert.equal(value.snapshotPath, 'chatgpt/contracts/v8');
+  assert.equal(value.contractVersion, 9);
+  assert.equal(value.snapshotPath, 'chatgpt/contracts/v9');
   assert.equal(value.documents.length, 7);
 
   for (const document of value.documents) {
@@ -54,7 +54,7 @@ test('descriptor records exact canonical Project Forge provenance', async () => 
   assert.equal(value.sourceProvenance.bootstrap.repository, 'mriekki/project-forge-bootstrap');
   assert.equal(value.sourceProvenance.bootstrap.commit, 'c76542206e52917015868b26a578ca8057c63aac');
   assert.equal(value.sourceProvenance.controlPlane.repository, 'mriekki/project-forge-control-plane');
-  assert.equal(value.sourceProvenance.controlPlane.commit, '9b167b0f7bd35f7dc943f1c9fa45f6db936a5e2e');
+  assert.equal(value.sourceProvenance.controlPlane.commit, '212201454fc4c98dcaf4ffd59f8438cf4f5bbbc0');
 
   for (const key of ['core', 'bootstrap', 'controlPlane']) {
     assert.match(value.sourceProvenance[key].commit, /^[0-9a-f]{40}$/);
@@ -64,12 +64,32 @@ test('descriptor records exact canonical Project Forge provenance', async () => 
   assert.ok(value.sourceProvenance.bootstrap.sources.some((item) => item.path === 'docs/PROJECT_DOCUMENTATION.md'));
   assert.ok(value.sourceProvenance.bootstrap.sources.some((item) => item.path === 'docs/IMPORT_PROJECT_INPUT.md'));
 
+  const generateWorkflow = value.sourceProvenance.controlPlane.sources.find((item) => item.path === '.github/workflows/generate-project.yml');
+  assert.equal(generateWorkflow?.blobSha, 'f88095328cbe0004c2e5e795b21bab790a0eb570');
+  const contractResolver = value.sourceProvenance.controlPlane.sources.find((item) => item.path === 'tools/project_forge_contract.py');
+  assert.equal(contractResolver?.blobSha, '24a4af07dd0b979f20791c88161431de5b01f9d9');
+
   assert.equal(value.generation.manifestFilename, 'PROJECT_BOOTSTRAP.json');
+  assert.equal(value.generation.bootstrap.repository, 'mriekki/project-forge-bootstrap');
+  assert.equal(value.generation.bootstrap.commit, '967e82005532fb92b126105d5d9d7143ac1f53cf');
+  assert.equal(value.generation.bootstrap.protocolVersion, 12);
+  assert.equal(value.generation.bootstrap.catalogVersion, 11);
+  assert.notEqual(value.generation.bootstrap.commit, value.sourceProvenance.bootstrap.commit);
   assert.equal(value.generation.package, '@mriekki/project-forge');
   assert.equal(value.generation.packageVersion, '4.3.0');
   assert.equal(value.generation.profile, 'greenfield-project');
   assert.equal(value.generation.bootstrapProtocolVersion, 12);
   assert.equal(value.bootstrapUrl, 'https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/current.json');
+});
+
+test('stable generation contract distinguishes mutable Bootstrap pin from snapshot provenance', async () => {
+  const value = await descriptor();
+  const newProject = await text(contractPath(value, 'NEW_PROJECT.md'));
+
+  assert.match(newProject, /generation\.bootstrap/);
+  assert.match(newProject, /sourceProvenance\.bootstrap\.commit/);
+  assert.match(newProject, /exact accepted `generation\.bootstrap\.commit`/);
+  assert.match(newProject, /Do not silently substitute a newer Bootstrap `main` revision/);
 });
 
 test('active Project Forge contract uses only current generation and onboarding identifiers', async () => {
@@ -152,7 +172,7 @@ test('developer profile remains small, secret-free, and not Project state', asyn
   assert.equal(schema.title, 'Project Forge Developer Profile');
   assert.equal(schema.additionalProperties, false);
   assert.deepEqual(schema.required, ['schemaVersion', 'githubOwner']);
-  assert.match(schema.$id, /mriekki\/project-forge-platform\/main\/chatgpt\/contracts\/v8/);
+  assert.match(schema.$id, /mriekki\/project-forge-platform\/main\/chatgpt\/contracts\/v9/);
 
   for (const forbidden of ['password', 'token', 'secret', `${predecessorLower}State`, 'projectState', 'workItem', 'commitSha']) {
     assert.equal(Object.hasOwn(schema.properties, forbidden), false);
