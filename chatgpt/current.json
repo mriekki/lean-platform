@@ -127,7 +127,7 @@
   "generation": {
     "manifestFilename": "PROJECT_BOOTSTRAP.json",
     "package": "@mriekki/project-forge",
-    "packageVersion": "4.2.0",
+    "packageVersion": "4.3.0",
     "profile": "greenfield-project",
     "bootstrapProtocolVersion": 12
   },
