@@ -33,11 +33,11 @@ Every reusable Project Forge responsibility MUST have one canonical foundational
 
 ### PF-SYS-002 — Core ownership
 
-`project-forge-core` MUST own reusable engineering-workflow behavior, Human-in-the-Loop semantics, agents/skills/instructions/process guidance, workflow-level deployment orchestration, reusable learning behavior, and package-managed consumer update orchestration.
+`project-forge-core` MUST own reusable engineering-workflow behavior, Human-in-the-Loop semantics, agents/skills/instructions/process guidance, workflow-level deployment orchestration, reusable learning behavior, portable requirements/replatform orchestration, and package-managed consumer update orchestration.
 
 ### PF-SYS-003 — Bootstrap ownership
 
-`project-forge-bootstrap` MUST own New Project discovery, imported discovery reconciliation, catalog/support-state definitions, recipes, manifest/protocol/schema contracts, deterministic greenfield generation, and project-owned workspace/setup/scaffold shell generation.
+`project-forge-bootstrap` MUST own New Project discovery, imported and portable-requirements reconciliation, catalog/support-state definitions, recipes, manifest/protocol/schema contracts, deterministic greenfield generation, and project-owned workspace/setup/scaffold shell generation.
 
 ### PF-SYS-004 — Deployment Kit ownership
 
@@ -235,9 +235,9 @@ Production policy MUST follow Production classification/role rather than relying
 
 Deployment readiness/isolation/proof results MUST be pre-deploy evidence only. They MUST NOT authorize application, route, persistence, migration, Production, or destructive writes.
 
-### PF-SYS-054 — Deterministic isolation before real app mutation
+### PF-SYS-054 — Deterministic collision/isolation evidence before real app mutation
 
-For supported deployment paths, real application deployment MUST consume deterministic isolation evidence for the relevant managed footprint and MUST stop before mutation when that evidence is blocked or stale.
+For supported deployment paths, real application deployment MUST consume deterministic collision/isolation evidence appropriate to its placement and relevant managed footprint and MUST stop before mutation when that evidence is blocked or stale.
 
 ### PF-SYS-055 — Shared infrastructure protection
 
@@ -309,7 +309,31 @@ Adopted repositories MUST use Adoption Kit's recorded adoption provenance/update
 
 ---
 
-## I. Support, evidence, and current-state claims
+## I. Portable requirements and replatforming
+
+### PF-SYS-074 — Portable requirements are derived interchange, not competing authority
+
+`PROJECT_REQUIREMENTS.json` MUST be a derived, reviewable, stack-neutral interchange artifact with source provenance. It MUST NOT silently replace the source consumer's canonical product/domain requirement authorities.
+
+### PF-SYS-075 — Replatform requires human-approved portable requirements
+
+Same-product/new-stack replatforming MUST use human-approved portable requirements that are current relative to material source requirement changes before creating the target platform proposal.
+
+### PF-SYS-076 — Replatform reconciles against current Bootstrap knowledge
+
+A replatform target MUST be reconciled against the current Bootstrap discovery/catalog/protocol contracts rather than copying the source stack/platform choices as assumed requirements.
+
+### PF-SYS-077 — Replatform creates a fresh target
+
+Replatforming MUST produce a fresh approved `PROJECT_BOOTSTRAP.json` and a fresh target/sibling repository. It MUST NOT regenerate over or mutate the source repository as the normal same-product/new-stack path.
+
+### PF-SYS-078 — Preserve product intent, not historical platform provenance
+
+Portable requirements SHOULD preserve product/domain intent, requirement authority/maturity, and meaningful constraints while excluding source implementation/platform provenance or historical execution state unless that information is itself a genuine target requirement.
+
+---
+
+## J. Support, evidence, and current-state claims
 
 ### PF-SYS-080 — Evidence layers remain distinct
 
@@ -333,7 +357,7 @@ Bootstrap support-state promotion MUST identify and satisfy the relevant proof c
 
 ---
 
-## J. Cross-repository change governance
+## K. Cross-repository change governance
 
 ### PF-SYS-090 — Boundary changes require system review
 
@@ -361,7 +385,7 @@ For a thorough Project Forge system analysis, maintainers/agents SHOULD start fr
 
 ---
 
-## K. Failure and recovery
+## L. Failure and recovery
 
 ### PF-SYS-100 — Fail closed on unsafe ambiguity
 
