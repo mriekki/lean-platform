@@ -71,12 +71,12 @@ test('descriptor records exact canonical Project Forge provenance', async () => 
 
   assert.equal(value.generation.manifestFilename, 'PROJECT_BOOTSTRAP.json');
   assert.equal(value.generation.bootstrap.repository, 'mriekki/project-forge-bootstrap');
-  assert.equal(value.generation.bootstrap.commit, '967e82005532fb92b126105d5d9d7143ac1f53cf');
+  assert.equal(value.generation.bootstrap.commit, '7681974874df8b1d0fc75aa873295669f46d5694');
   assert.equal(value.generation.bootstrap.protocolVersion, 12);
-  assert.equal(value.generation.bootstrap.catalogVersion, 11);
+  assert.equal(value.generation.bootstrap.catalogVersion, 12);
   assert.notEqual(value.generation.bootstrap.commit, value.sourceProvenance.bootstrap.commit);
   assert.equal(value.generation.package, '@mriekki/project-forge');
-  assert.equal(value.generation.packageVersion, '4.3.0');
+  assert.equal(value.generation.packageVersion, '4.4.0');
   assert.equal(value.generation.profile, 'greenfield-project');
   assert.equal(value.generation.bootstrapProtocolVersion, 12);
   assert.equal(value.bootstrapUrl, 'https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/current.json');

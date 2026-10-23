@@ -132,12 +132,12 @@
     "manifestFilename": "PROJECT_BOOTSTRAP.json",
     "bootstrap": {
       "repository": "mriekki/project-forge-bootstrap",
-      "commit": "967e82005532fb92b126105d5d9d7143ac1f53cf",
+      "commit": "7681974874df8b1d0fc75aa873295669f46d5694",
       "protocolVersion": 12,
-      "catalogVersion": 11
+      "catalogVersion": 12
     },
     "package": "@mriekki/project-forge",
-    "packageVersion": "4.3.0",
+    "packageVersion": "4.4.0",
     "profile": "greenfield-project",
     "bootstrapProtocolVersion": 12
   },
