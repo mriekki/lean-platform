@@ -31,6 +31,7 @@
     {"source": "src/project_forge_deployment/profile_migration.py", "destination": "tools/project-forge-deployment/project_forge_deployment/profile_migration.py"},
     {"source": "src/project_forge_deployment/profile_repository.py", "destination": "tools/project-forge-deployment/project_forge_deployment/profile_repository.py"},
     {"source": "src/project_forge_deployment/profiles.py", "destination": "tools/project-forge-deployment/project_forge_deployment/profiles.py"},
+    {"source": "src/project_forge_deployment/proof_receipt.py", "destination": "tools/project-forge-deployment/project_forge_deployment/proof_receipt.py"},
     {"source": "src/project_forge_deployment/registry_access.py", "destination": "tools/project-forge-deployment/project_forge_deployment/registry_access.py"},
     {"source": "src/project_forge_deployment/registry_cli.py", "destination": "tools/project-forge-deployment/project_forge_deployment/registry_cli.py"},
     {"source": "src/project_forge_deployment/route_registry.py", "destination": "tools/project-forge-deployment/project_forge_deployment/route_registry.py"},
