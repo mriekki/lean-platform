@@ -71,6 +71,7 @@ Briefings, migration handoffs, old consumer examples, issue discussions, and ret
 | Which Bootstrap generation revision/package does the stable ChatGPT entrypoint resolve? | Platform `chatgpt/current.json` |
 | Which stacks/tools/targets are currently cataloged and at what support state? | Bootstrap `catalog/CATALOG.json` and referenced catalog entries |
 | What exactly generated this consumer? | Consumer `PROJECT_BOOTSTRAP.json` + package/component baselines |
+| What product/domain intent should survive a same-product replatform? | Source authorities + approved `PROJECT_REQUIREMENTS.json` |
 
 ---
 
@@ -78,7 +79,7 @@ Briefings, migration handoffs, old consumer examples, issue discussions, and ret
 
 ### `project-forge-core` — reusable engineering workflow
 
-Owns reusable Project Forge workflow behavior and Human-in-the-Loop semantics, including agents/skills/instructions/process guidance, setup orchestration, implementation/review/delivery behavior, learning flows, package-update orchestration, upstream-defect handoff, deployment orchestration, and destructive-operation policy.
+Owns reusable Project Forge workflow behavior and Human-in-the-Loop semantics, including agents/skills/instructions/process guidance, setup orchestration, implementation/review/delivery behavior, learning flows, package-update orchestration, upstream-defect handoff, portable requirements export/replatform orchestration, deployment orchestration, and destructive-operation policy.
 
 Core owns **human-facing orchestration and gates**, not the deployment implementation itself and not product/application-specific architecture.
 
@@ -87,9 +88,12 @@ Canonical detail entrypoints:
 - `README.md`
 - `core/instructions/project-forge-workflow.instructions.md`
 - `core/process/PROJECT_FORGE_ENGINEERING_GUIDE.md`
-- `core/process/DEPLOYMENT_ENABLEMENT.md`
 - `core/process/PROJECT_DOCUMENTATION_FRAMEWORK.md`
+- `core/process/PROJECT_REQUIREMENTS_EXPORT.md`
+- `core/process/DEPLOYMENT_ENABLEMENT.md`
 - `core/skills/setup/SKILL.md`
+- `core/skills/export-requirements/SKILL.md`
+- `core/skills/replatform/SKILL.md`
 - `core/skills/deployment-readiness/SKILL.md`
 - `core/skills/deploy/SKILL.md`
 - `core/skills/deliver/SKILL.md`
@@ -99,7 +103,7 @@ Canonical detail entrypoints:
 
 ### `project-forge-bootstrap` — definition, catalog, and deterministic generation
 
-Owns New Project discovery, imported discovery, accepted manifest schema/protocol, catalog/support-state definitions, recipes, generation policy, deterministic project/workspace generation, scaffold/setup/doctor shell generation, product/work-item materialization, and selection of one exact public Project Forge package/profile for generation.
+Owns New Project discovery, imported discovery, portable-requirements reconciliation into new project definition, accepted manifest schema/protocol, catalog/support-state definitions, recipes, generation policy, deterministic project/workspace generation, scaffold/setup/doctor shell generation, product/work-item materialization, and selection of one exact public Project Forge package/profile for generation.
 
 Bootstrap owns the distinction between **conversational discovery** and **deterministic post-approval generation**. It does not independently reassemble private Core or Deployment Kit sources during normal generation.
 
@@ -108,6 +112,7 @@ Canonical detail entrypoints:
 - `README.md`
 - `docs/ARCHITECTURE.md`
 - `docs/NEW_PROJECT_PROTOCOL.md`
+- `docs/PROJECT_REQUIREMENTS.md`
 - `docs/discovery/QUESTION_MODEL.md`
 - `catalog/CATALOG.json`
 - `catalog/policies/agentic-workspace-shell.json`
@@ -474,13 +479,42 @@ Adoption Kit preserves existing engineering conventions and owns its own baselin
 
 ---
 
-## 12. Change and compatibility model
+## 12. Portable requirements and replatforming
+
+Same-product/new-stack work is a **requirements portability** flow, not regeneration of the original repository.
+
+```text
+source consumer product/domain authorities
+→ Core /export-requirements
+→ PROJECT_REQUIREMENTS.json state=review
+→ human approval
+→ Core /replatform
+→ Bootstrap current-catalog/protocol reconciliation
+→ fresh PROJECT_BOOTSTRAP.json
+→ fresh sibling consumer repository
+```
+
+`PROJECT_REQUIREMENTS.json` is a derived, reviewable, stack-neutral interchange artifact. It preserves product/domain intent, requirement authority/maturity, and source provenance; it does not become a competing product-requirements authority and should not carry old implementation/platform provenance as if it were a target requirement.
+
+Replatforming uses current Bootstrap discovery/catalog rules for the new stack and target. It must not regenerate over or mutate the source repository merely to produce the new platform variant.
+
+Canonical detail lives in:
+
+- Core `core/process/PROJECT_REQUIREMENTS_EXPORT.md`
+- Core `core/skills/export-requirements/SKILL.md`
+- Core `core/skills/replatform/SKILL.md`
+- Bootstrap `docs/PROJECT_REQUIREMENTS.md`
+
+---
+
+## 13. Change and compatibility model
 
 A foundational change should be classified by the boundary it changes:
 
 | Change | Primary owner | Typical cross-repo impact |
 | --- | --- | --- |
 | Workflow/gate/skill semantics | Core | Platform package; Adoption payload; consumers after update |
+| Portable requirements/replatform orchestration | Core + Bootstrap interface | Source consumer export; new Bootstrap proposal/sibling consumer |
 | Discovery/catalog/recipe/manifest/generator | Bootstrap | Control Plane generation contract; stable generation pointer |
 | Deployment mechanics/evidence/CLI | Deployment Kit | Core orchestration; Platform package; Bootstrap support evidence |
 | Existing-repo adoption mechanics | Adoption Kit | Adopted repo baseline/update behavior |
@@ -491,7 +525,7 @@ A change that alters a **cross-repository invariant or responsibility boundary**
 
 ---
 
-## 13. Failure and recovery principles
+## 14. Failure and recovery principles
 
 Across the system, Project Forge prefers deterministic stop/recovery over silent substitution:
 
@@ -507,7 +541,7 @@ Detailed recovery behavior remains owned by the affected repository.
 
 ---
 
-## 14. Human-in-the-Loop system gates
+## 15. Human-in-the-Loop system gates
 
 The exact wording/mechanics live in Core and owning workflows, but the system preserves distinct human authority for consequential decisions including:
 
@@ -525,7 +559,7 @@ Authorization is bounded. Approval for one gate must not be silently reused for 
 
 ---
 
-## 15. Support-state and proof model
+## 16. Support-state and proof model
 
 Project Forge separates:
 
@@ -545,7 +579,7 @@ This document deliberately does not say which adapters are currently `partial` o
 
 ---
 
-## 16. Live-state resolution map
+## 17. Live-state resolution map
 
 Use these sources when current values matter:
 
@@ -558,12 +592,13 @@ Use these sources when current values matter:
 | Current workflow/HITL behavior | Core instructions/skills/process + tests |
 | Current deployment mechanics/evidence | Deployment Kit source/docs/tests/distribution |
 | Current adoption behavior | Adoption Kit installer/docs/baseline/update tests |
+| Current portable-requirements/replatform contract | Core export/replatform contracts + Bootstrap `docs/PROJECT_REQUIREMENTS.md` |
 | Current consumer provenance | Consumer `PROJECT_BOOTSTRAP.json` and baselines |
 | Current PR/CI/release/proof status | Live GitHub Actions/issues/PRs and relevant registries |
 
 ---
 
-## 17. What this document must not become
+## 18. What this document must not become
 
 Do not turn this file into:
 
