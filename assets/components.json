@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "@mriekki/project-forge",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "defaultProfile": "greenfield-project",
   "profiles": {
     "greenfield-project": {
@@ -23,7 +23,7 @@
     },
     "deployment": {
       "repository": "mriekki/project-forge-deployment-kit",
-      "commit": "eb157c8ae2c638ae1cd08bf27446d430835adc80",
+      "commit": "880a911bc87e38c74ca4b336c9563a6f026ac3b4",
       "distribution": "greenfield-project",
       "descriptor": "assets/deployment/distribution.json",
       "sourceRoot": "assets/generated/deployment",
