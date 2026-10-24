@@ -2,7 +2,22 @@
 
 **Build real software. Learn the engineering behind it.**
 
-Project Forge is an AI-guided software development and learning platform for building real software with a structured engineering workflow while keeping meaningful decisions under human control.
+Project Forge is an AI-guided software development and learning platform for turning a personal software idea into a reproducible engineering project while keeping meaningful decisions under human control.
+
+The goal is not just to generate source code. Project Forge creates an engineering operating model around the project: approved scope, explicit technology choices, deterministic generation, a self-contained VS Code workspace, setup/readiness checks, CI, delivery gates, optional learning, and controlled deployment boundaries.
+
+## Project Forge at a glance
+
+```mermaid
+flowchart LR
+    A["1 · New Project\nStart with an idea in ChatGPT"] --> B["2 · Define & Approve\nUsers · workflows · scope · stack · work items"]
+    B --> C["3 · Generate Repository\nApproved PROJECT_BOOTSTRAP.json\nDeterministic publication + CI"]
+    C --> D["4 · Set Up & Start Building\nClone · VS Code · setup · doctor\nHuman workspace acceptance"]
+    D --> E["5 · Build, Learn & Deliver\n/start-work · code · test · review · /deliver"]
+    E --> F["6 · Deploy When Ready\nLocal → Staging → Production\nExplicit Production authorization"]
+```
+
+The full visual concept is the same one used in the Project Forge integrated briefing: conversation and judgment where they help, deterministic tooling where reproducibility and safety matter, and explicit human gates where consequences are meaningful.
 
 A typical journey is:
 
@@ -11,16 +26,39 @@ idea
 → Guided Project Discovery
 → V1 scope + non-goals
 → technology/testing/data/deployment choices
-→ private GitHub Project repository
+→ approved PROJECT_BOOTSTRAP.json + Work Items
+→ deterministic private GitHub Project repository generation
 → generated development workspace
+→ setup + doctor + human workspace acceptance
 → small Work Items
 → implementation + tests
 → meaningful review + pull-request delivery
-→ optional deployment
 → optional learning/coaching
+→ optional deployment
 ```
 
 Project Forge asks one material question at a time, recommends choices when useful, explains tradeoffs, and records the decisions you approve.
+
+## AI handles mechanics; humans retain engineering authority
+
+```mermaid
+flowchart LR
+    W["Work Item\nrequirements + plan"] --> I["Implement\nAI-assisted bounded change"]
+    I --> R["Review\nReviewer evidence + meaningful diff"]
+    R --> D["Deliver\ncommit · push · PR · CI"]
+    D --> M{"Human merge gate"}
+    M -->|Approve| P["Post-merge CI\nfinalize + safe cleanup"]
+    M -->|Change needed| W
+    R -. optional .-> L["Learn\n/code-walkthrough · /learning-review · /coach"]
+    L -. returns to work .-> D
+
+    H["Human control\nmaterial scope · meaningful diff · merge · release · Production · destructive actions"]
+    H -. governs .-> W
+    H -. governs .-> R
+    H -. governs .-> M
+```
+
+Project Forge standardizes high-frequency mechanics so you spend less time on ceremony, but it does not silently approve material requirements, meaningful implementation changes, merge/finalization, release publication, Production deployment, or destructive operations.
 
 ## Human control
 
@@ -36,9 +74,10 @@ Useful learning tools include:
 /code-walkthrough
 /learning-review
 /coach
+/wait-what
 ```
 
-Learning never blocks delivery.
+Learning is integrated but never blocks delivery. The preferred deeper-learning sequence is `/code-walkthrough <ID>` → `/learning-review <ID>` → targeted `/coach`; `/wait-what` is available for quick re-explanation.
 
 ## Your repositories and credentials stay yours
 
@@ -78,4 +117,3 @@ Then start with:
 ```text
 New Project: <your idea>
 ```
-
