@@ -71,7 +71,7 @@ test('descriptor records exact canonical Project Forge provenance', async () => 
 
   assert.equal(value.generation.manifestFilename, 'PROJECT_BOOTSTRAP.json');
   assert.equal(value.generation.bootstrap.repository, 'mriekki/project-forge-bootstrap');
-  assert.equal(value.generation.bootstrap.commit, '7681974874df8b1d0fc75aa873295669f46d5694');
+  assert.equal(value.generation.bootstrap.commit, '3df0c8847acff9acc58c4d74bb1c5f3cd6dfc8bd');
   assert.equal(value.generation.bootstrap.protocolVersion, 12);
   assert.equal(value.generation.bootstrap.catalogVersion, 12);
   assert.notEqual(value.generation.bootstrap.commit, value.sourceProvenance.bootstrap.commit);
