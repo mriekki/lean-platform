@@ -132,7 +132,7 @@
     "manifestFilename": "PROJECT_BOOTSTRAP.json",
     "bootstrap": {
       "repository": "mriekki/project-forge-bootstrap",
-      "commit": "7681974874df8b1d0fc75aa873295669f46d5694",
+      "commit": "3df0c8847acff9acc58c4d74bb1c5f3cd6dfc8bd",
       "protocolVersion": 12,
       "catalogVersion": 12
     },
