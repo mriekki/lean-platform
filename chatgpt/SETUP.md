@@ -12,24 +12,19 @@ Create a Project named something clear, for example:
 Project Forge — Coding Projects
 ```
 
-## 2. Add this Project instruction
+## 2. Add the exact current Project instruction
+
+The canonical persistent instruction is `PROJECT_INSTRUCTIONS.md` in the immutable contract snapshot named by:
 
 ```text
-This is a Project Forge coding Project.
-
-At the beginning of a Project Forge coding workflow, load:
 https://raw.githubusercontent.com/mriekki/project-forge-platform/main/chatgpt/current.json
-
-Resolve and use the exact immutable contract snapshot referenced by that descriptor for this conversation/session.
-
-Use Project Forge as the platform name, Project as the thing I create, and Builder or Developer for the person using it. Treat "New Project: <idea>" as the greenfield discovery trigger and "New Project from: <PROJECT_INPUT.json or existing product source>" as the imported-discovery trigger for the same Bootstrap-owned Project Discovery contract.
-
-For a new Project, follow the exact discovery contract in the resolved snapshot. For an existing generated Project, treat its repository-owned artifacts, Git history, pull requests, and CI as authoritative.
-
-Use my Developer Profile only for identity, local environment, and personal working/learning preferences. Never store secrets or durable Project state in it.
-
-If the descriptor or referenced snapshot cannot be loaded or verified, do not perform consequential generation or platform writes using remembered rules.
 ```
+
+Read `snapshotPath` from that descriptor, open `PROJECT_INSTRUCTIONS.md` under that exact snapshot directory, and copy the fenced instruction text **verbatim** into the ChatGPT Project instructions.
+
+Do not maintain a second hand-copied variant from this setup page. When Project Forge advances the stable contract, `chatgpt/current.json` is the pointer to the current immutable instruction source.
+
+The persistent instruction should remain small. Do not add legacy/versioned handoff-file references, component commit SHAs, product requirements, or current Project state to it.
 
 ## 3. Set up your Developer Profile
 
@@ -67,7 +62,7 @@ clone repository
 → /start-work <ID>
 ```
 
-You do not repeat this ChatGPT setup for every generated Project.
+You do not repeat this ChatGPT setup for every generated Project. The generated repository is the durable Project handoff and current-state authority.
 
 ## If readiness needs recovery
 
