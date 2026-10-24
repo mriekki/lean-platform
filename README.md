@@ -126,6 +126,15 @@ npx @mriekki/project-forge@latest check
 
 Managed updates verify baselines and refuse unsafe drift or conflicts before modifying Project Forge-managed files.
 
+## Maintainer system reference
+
+For cross-repository architecture, ownership, lifecycle, provenance, deployment, support-evidence, and governance questions, start with:
+
+- [`docs/system/PROJECT_FORGE_SYSTEM_REQUIREMENTS.md`](docs/system/PROJECT_FORGE_SYSTEM_REQUIREMENTS.md) — normative cross-repository invariants;
+- [`docs/system/PROJECT_FORGE_SYSTEM_DESIGN.md`](docs/system/PROJECT_FORGE_SYSTEM_DESIGN.md) — explanatory system map and pointers to detailed owning-repository contracts.
+
+The system reference deliberately does not duplicate current component SHAs, package/catalog versions, support status, or implementation-level CLI/schema detail. Resolve mutable facts from the owning repositories and machine-readable Platform/Bootstrap/consumer provenance.
+
 ## Maintainer release process
 
 Project Forge maintainers use a gated release workflow that resolves accepted component commits, verifies the assembled package, creates the package pull request, verifies CI, and stops at the explicit publication gate.
