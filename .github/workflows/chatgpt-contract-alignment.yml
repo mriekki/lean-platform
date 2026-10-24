@@ -1,0 +1,29 @@
+name: Public ChatGPT Contract Alignment
+
+on:
+  workflow_run:
+    workflows: ["Publish npm Package"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - chatgpt/current.json
+      - scripts/check-chatgpt-contract-alignment.mjs
+      - .github/workflows/chatgpt-contract-alignment.yml
+
+permissions:
+  contents: read
+
+jobs:
+  alignment:
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Check published package and public ChatGPT contract alignment
+        run: node scripts/check-chatgpt-contract-alignment.mjs
